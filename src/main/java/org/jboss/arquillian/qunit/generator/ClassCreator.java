@@ -11,7 +11,21 @@ public class ClassCreator {
             ClassPool pool = ClassPool.getDefault();
             CtClass evalClass = pool.makeClass(className);
             for (String methodName : methodNames) {
-                evalClass.addMethod(CtNewMethod.make("public void " + methodName + " () {}",
+                evalClass.addMethod(CtNewMethod.make("public void " + methodName + " () {};",
+                        evalClass));
+            }
+            return evalClass.toClass();
+        } catch (Exception e) {
+            throw new IllegalStateException(e);
+        }
+    }
+    
+    public static Class<?> createInterface(String className, String... methodNames) {
+        try {
+            ClassPool pool = ClassPool.getDefault();
+            CtClass evalClass = pool.makeInterface(className);
+            for (String methodName : methodNames) {
+                evalClass.addMethod(CtNewMethod.make("void " + methodName + " ();",
                         evalClass));
             }
             return evalClass.toClass();

@@ -2,18 +2,16 @@ import org.jboss.arquillian.drone.api.annotation.Drone;
 import org.jboss.arquillian.testng.Arquillian;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.htmlunit.HtmlUnitDriver;
 import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
 
 @Test
-@Listeners(QUnitMethodAddingInterceptor.class)
-public class TestArquillianQUnit extends Arquillian {
+public class TestArquillianQUnit extends ArquillianQUnit {
     
     @Drone
-    private FirefoxDriver browser;
+    private HtmlUnitDriver browser;
     
-    @Test
-    public void test() {
-        
-    }
+    
+    
 }

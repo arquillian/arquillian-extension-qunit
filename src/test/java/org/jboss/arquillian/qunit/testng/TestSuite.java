@@ -20,7 +20,7 @@ public class TestSuite {
         List<? extends Module> modules = Arrays.asList(new DefaultModule("module", tests));
         
         // when
-        TestNGSuite suite = new TestNGSuite(null, modules);
+        TestNGSuite suite = new TestNGSuite(null, modules, null);
         List<IMethodInstance> methodInstances = suite.getMethodInstances();
         
         // then
