@@ -4,7 +4,6 @@ import static org.mockito.Mockito.when;
 
 import java.lang.reflect.Method;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -17,7 +16,6 @@ import org.testng.IMethodInstance;
 import org.testng.ITestClass;
 import org.testng.ITestNGMethod;
 import org.testng.internal.ConstructorOrMethod;
-import org.testng.internal.MethodInstance;
 import org.testng.xml.XmlTest;
 
 import com.beust.jcommander.internal.Maps;
