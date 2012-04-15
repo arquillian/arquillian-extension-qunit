@@ -8,8 +8,11 @@ import org.jboss.arquillian.qunit.testng.TestNGSuite;
 import org.testng.IMethodInstance;
 import org.testng.IMethodInterceptor;
 import org.testng.ITestContext;
+import org.testng.ITestListener;
+import org.testng.ITestNGMethod;
+import org.testng.ITestResult;
 
-public class QUnitMethodAddingInterceptor implements IMethodInterceptor {
+public class QUnitMethodAddingInterceptor implements IMethodInterceptor, ITestListener {
 
     private List<Module> modules = new TestModuleReader().readModules(null);
     
@@ -18,18 +21,37 @@ public class QUnitMethodAddingInterceptor implements IMethodInterceptor {
     public List<IMethodInstance> intercept(List<IMethodInstance> methods, ITestContext context) {
         
         System.out.println("intercept");
-        
-        IMethodInstance qunitMethod = methods.get(0);
 
         if (suite == null) {
-            suite = new TestNGSuite(null, modules, qunitMethod);
+            suite = new TestNGSuite(null, modules, context.getSuite().getAnnotationFinder());
         }
-        
-        List<IMethodInstance> instances = new LinkedList<IMethodInstance>();
-        instances.add(qunitMethod);
-        instances.addAll(suite.getMethodInstances());
 
-        return instances;
+        return suite.getMethodInstances();
+    }
+
+    public void onTestStart(ITestResult result) {
+    }
+
+    public void onTestSuccess(ITestResult result) {
+        System.out.println("onTestSuccess");
+    }
+
+    public void onTestFailure(ITestResult result) {
+        System.out.println("onTestFailure");
+    }
+
+    public void onTestSkipped(ITestResult result) {
+        System.out.println("onTestSkipped");
+    }
+
+    public void onTestFailedButWithinSuccessPercentage(ITestResult result) {
+        System.out.println("onTestFailedButWithinSuccessPercentage");
+    }
+
+    public void onStart(ITestContext context) {
+    }
+
+    public void onFinish(ITestContext context) {
     }
 
 }
