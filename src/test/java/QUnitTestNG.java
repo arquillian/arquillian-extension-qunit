@@ -2,11 +2,7 @@ import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
 
 
-@Listeners(QUnitMethodAddingInterceptor.class)
 @Test
+@Listeners(QUnitMethodAddingInterceptor.class)
 public class QUnitTestNG {
-
-//    public void method() {
-//        
-//    }
 }

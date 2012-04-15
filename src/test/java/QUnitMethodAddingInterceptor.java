@@ -1,9 +1,15 @@
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.List;
 
+import javassist.ClassPool;
+import javassist.CtClass;
+import javassist.CtNewMethod;
+
+import org.jboss.arquillian.qunit.generator.ClassCreator;
 import org.mockito.Mockito;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
@@ -24,61 +30,50 @@ public class QUnitMethodAddingInterceptor implements IMethodInterceptor {
     private static final String[] EMPTY_STRING_ARRAY = new String[] {};
     private static final ITestNGMethod[] NO_METHODS = new ITestNGMethod[] {};
 
+    private Class<?> realInstanceClass = null;
+
     public List<IMethodInstance> intercept(List<IMethodInstance> methods, ITestContext context) {
-        
-        final Object instance = new QUnitRunner();
-        
+        System.out.println("intercept");
+
+        if (realInstanceClass == null) {
+            realInstanceClass = ClassCreator.createClass("TestClass", "method1");
+        }
+
+        final Object instance = mock(realInstanceClass, new Answer<Object>() {
+            public Object answer(InvocationOnMock invocation) throws Throwable {
+                System.out.println(invocation.getMethod());
+                return invocation.callRealMethod();
+            }
+        });
+        final Class<?> instanceClass = realInstanceClass;
+
         IMethodInstance iMethodInstance = new IMethodInstance() {
 
             public ITestNGMethod getMethod() {
-                
-                ITestNGMethod method = null;
-                
-                try {
-                    // IAnnotationFinder annotationFinder = Mockito.mock(IAnnotationFinder.class, new Answer<Object>() {
-                    // public Object answer(InvocationOnMock invocation) throws Throwable {
-                    // System.out.println("IAnnotationFinder: " + invocation.getMethod());
-                    // return null;
-                    // }
-                    // });
-                    //
-                    // Object instance = new TestNG();
-                    // Method realMethod = TestNG.class.getMethod("method");
-                    // new MyBaseTestMethod(realMethod, annotationFinder, instance);
 
-//                    method = Mockito.mock(ITestNGMethod.class, new Answer<Object>() {
-//                        public Object answer(InvocationOnMock invocation) throws Throwable {
-//                            System.out.println("ITestNGMethod: " + invocation.getMethod());
-//                            return null;
-//                        }
-//                    });
-//
-//                    ITestClass clazz = Mockito.mock(ITestClass.class, new Answer<Object>() {
-//                        public Object answer(InvocationOnMock invocation) throws Throwable {
-//                            System.out.println("ITestClass: " + invocation.getMethod());
-//                            return null;
-//                        }
-//                    });
+                ITestNGMethod method = null;
+
+                try {
                     method = Mockito.mock(ITestNGMethod.class);
                     ITestClass clazz = Mockito.mock(ITestClass.class);
-                    
-                    Method realMethod = QUnitRunner.class.getMethod("method1");
 
-                    when(method.getMethodName()).thenReturn("methodName");
+                    Method realMethod = instanceClass.getMethod("method1");
+
+                    when(method.getMethodName()).thenReturn("method1");
                     when(method.getGroups()).thenReturn(EMPTY_STRING_ARRAY);
                     when(method.getMethodsDependedUpon()).thenReturn(EMPTY_STRING_ARRAY);
                     when(method.getGroupsDependedUpon()).thenReturn(EMPTY_STRING_ARRAY);
                     when(method.getTestClass()).thenReturn(clazz);
-                    when(method.getRealClass()).thenReturn(QUnitRunner.class);
+                    when(method.getRealClass()).thenReturn(instanceClass);
                     when(method.getMethod()).thenReturn(realMethod);
                     when(method.getInvocationCount()).thenReturn(1);
                     when(method.findMethodParameters(Mockito.any(XmlTest.class))).thenReturn(Maps.<String, String>newHashMap());
                     when(method.getConstructorOrMethod()).thenReturn(new ConstructorOrMethod(realMethod));
-                    when(method.toString()).thenReturn("methodName()");
+                    when(method.toString()).thenReturn("method1()");
                     when(method.getInstanceHashCodes()).thenReturn(new long[] { 123 });
 
-                    when(clazz.getName()).thenReturn("className");
-                    when(clazz.getRealClass()).thenReturn(QUnitRunner.class);
+                    when(clazz.getName()).thenReturn("TestClass");
+                    when(clazz.getRealClass()).thenReturn(instanceClass);
                     when(clazz.getBeforeTestMethods()).thenReturn(NO_METHODS);
                     when(clazz.getAfterTestMethods()).thenReturn(NO_METHODS);
                 } catch (Exception e) {
