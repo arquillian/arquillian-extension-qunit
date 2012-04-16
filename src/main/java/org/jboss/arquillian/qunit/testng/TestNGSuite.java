@@ -20,6 +20,7 @@ import org.mockito.stubbing.Answer;
 import org.testng.IMethodInstance;
 import org.testng.ITestClass;
 import org.testng.ITestNGMethod;
+import org.testng.ITestResult;
 import org.testng.internal.ConstructorOrMethod;
 import org.testng.internal.annotations.IAnnotationFinder;
 import org.testng.xml.XmlTest;
@@ -39,13 +40,11 @@ public class TestNGSuite {
     private List<? extends Module> modules;
     private Map<? extends Module, TestClass> map;
     private Map<ITestNGMethod, TestClass> methodMap = Maps.newHashMap();
-    private Arquillian arquillian;
-    private IAnnotationFinder annotationFinder;
+    private ArquillianQUnit arquillian;
 
-    public TestNGSuite(TestInvocator invocator, List<? extends Module> modules, IAnnotationFinder annotationFinder) {
+    public TestNGSuite(TestInvocator invocator, List<? extends Module> modules, Class<? extends ArquillianQUnit> qunitClass) {
         this.invocator = invocator;
         this.modules = modules;
-        this.annotationFinder = annotationFinder;
         this.map = new MapMaker().makeComputingMap(new Function<Module, TestClass>() {
             public TestClass apply(Module module) {
                 TestClass testClass = new TestClass(module);
@@ -55,8 +54,7 @@ public class TestNGSuite {
                 return testClass;
             }
         });
-        this.arquillian = new Arquillian() {
-        };
+        this.arquillian = instantiateQUnitClass(qunitClass);
     }
 
     public List<IMethodInstance> getMethodInstances() {
@@ -69,15 +67,47 @@ public class TestNGSuite {
         return instances;
     }
 
-//    public TestClass getTestClass(ITestNGMethod method) {
-//        return methodMap.get(method);
-//    }
-    
-    public void checkIfLastAndInvokeAfterClass(ITestNGMethod method) {
+    public void checkAndInvokeBeforeClass(ITestResult testResult) {
+        ITestNGMethod method = testResult.getMethod();
         TestClass testClass = methodMap.get(method);
-        testClass.uncalledMethods.remove(method);
+        // call @BeforeClass when no tests were invoked
+        if (testClass.methodInstances.size() == testClass.uncalledMethods.size()) {
+            testClass.invokeMethod("arquillianBeforeClass", new Class<?>[] {}, new Object[] {});
+        }
+    }
+
+    public void checkAndInvokeAfterClass(ITestResult testResult) {
+        ITestNGMethod method = testResult.getMethod();
+        TestClass testClass = methodMap.get(method);
+        // call @AfterClass when all tests were invoked
         if (testClass.uncalledMethods.isEmpty()) {
             testClass.invokeMethod("arquillianAfterClass", new Class<?>[] {}, new Object[] {});
+        }
+    }
+
+    public void invokeBeforeTest(ITestResult testResult) {
+        ITestNGMethod method = testResult.getMethod();
+        TestClass testClass = methodMap.get(method);
+        // call @BeforeMethod
+        Method realMethod = method.getConstructorOrMethod().getMethod();
+        testClass.invokeMethod("arquillianBeforeTest", new Class<?>[] { Method.class }, new Object[] { realMethod });
+    }
+
+    public void invokeAfterTest(ITestResult testResult) {
+        ITestNGMethod method = testResult.getMethod();
+        TestClass testClass = methodMap.get(method);
+        // remove called method
+        testClass.uncalledMethods.remove(method);
+        // call @AfterMethod
+        Method realMethod = method.getConstructorOrMethod().getMethod();
+        testClass.invokeMethod("arquillianAfterTest", new Class<?>[] { Method.class }, new Object[] { realMethod });
+    }
+
+    private ArquillianQUnit instantiateQUnitClass(Class<? extends ArquillianQUnit> qunitClass) {
+        try {
+            return qunitClass.newInstance();
+        } catch (Exception e) {
+            throw new IllegalStateException(e);
         }
     }
 
@@ -118,33 +148,9 @@ public class TestNGSuite {
             when(testClass.getRealClass()).thenReturn(generatedClass);
             when(testClass.getName()).thenReturn(module.getName());
 
-            ITestNGMethod[] beforeClassMethods = getBeforeClassMethods();
-            ITestNGMethod[] beforeTestMethods = getBeforeTestMethods();
-            ITestNGMethod[] afterTestMethods = getAfterTestMethods();
-            // ITestNGMethod[] afterClassMethods = getAfterClassMethods();
-
-            when(testClass.getBeforeClassMethods()).thenReturn(beforeClassMethods);
-            when(testClass.getBeforeTestMethods()).thenReturn(beforeTestMethods);
-            when(testClass.getAfterTestMethods()).thenReturn(afterTestMethods);
-            when(testClass.getAfterClassMethods()).thenReturn(NO_METHODS);
+            when(testClass.getBeforeTestMethods()).thenReturn(NO_METHODS);
+            when(testClass.getAfterTestMethods()).thenReturn(NO_METHODS);
         }
-
-        private ITestNGMethod[] getBeforeClassMethods() {
-            return new ITestNGMethod[] { createMethod("arquillianBeforeClass") };
-        }
-
-        private ITestNGMethod[] getBeforeTestMethods() {
-            return new ITestNGMethod[] { createMethod("arquillianBeforeTest", Method.class) };
-        }
-
-        private ITestNGMethod[] getAfterTestMethods() {
-            return new ITestNGMethod[] { createMethod("arquillianAfterTest", Method.class) };
-        }
-
-        //
-        // private ITestNGMethod[] getAfterClassMethods() {
-        // return new ITestNGMethod[] { createMethod("arquillianAfterClass") };
-        // }
 
         public void invokeMethod(String methodName, Class<?>[] classes, Object[] args) {
             try {
