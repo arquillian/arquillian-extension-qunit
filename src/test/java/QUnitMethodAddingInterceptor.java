@@ -1,5 +1,6 @@
 
 
+import java.lang.reflect.Method;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -33,6 +34,7 @@ public class QUnitMethodAddingInterceptor implements IMethodInterceptor, ITestLi
     }
 
     public void onTestSuccess(ITestResult result) {
+        suite.checkIfLastAndInvokeAfterClass(result.getMethod());
         System.out.println("onTestSuccess");
     }
 
