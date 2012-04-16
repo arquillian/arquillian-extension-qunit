@@ -13,7 +13,6 @@ import org.jboss.arquillian.qunit.Module;
 import org.jboss.arquillian.qunit.Test;
 import org.jboss.arquillian.qunit.TestInvocator;
 import org.jboss.arquillian.qunit.generator.ClassCreator;
-import org.jboss.arquillian.testng.Arquillian;
 import org.mockito.Mockito;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
@@ -22,14 +21,11 @@ import org.testng.ITestClass;
 import org.testng.ITestNGMethod;
 import org.testng.ITestResult;
 import org.testng.internal.ConstructorOrMethod;
-import org.testng.internal.annotations.IAnnotationFinder;
 import org.testng.xml.XmlTest;
 
 import com.beust.jcommander.internal.Sets;
 import com.google.common.base.Function;
-import com.google.common.collect.BiMap;
 import com.google.common.collect.Collections2;
-import com.google.common.collect.HashBiMap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.MapMaker;
 import com.google.common.collect.Maps;
@@ -175,16 +171,18 @@ public class TestNGSuite {
                 Answer<Object> answer = new Answer<Object>() {
                     public Object answer(InvocationOnMock invocation) throws Throwable {
                         if (invocation.getMethod().getDeclaringClass() == generatedInterface) {
-                            System.out.println("skipping");
+                            System.out.println("invoking test method: " + invocation.getMethod().getName());
                             return null;
                         }
-                        System.out.println(invocation.getMethod());
                         return invocation.callRealMethod();
                     }
                 };
 
-                return mock(arquillian.getClass(), withSettings().extraInterfaces(generatedInterface).spiedInstance(arquillian)
-                        .defaultAnswer(answer));
+                Object mock = mock(arquillian.getClass(),
+                        withSettings().extraInterfaces(generatedInterface).spiedInstance(arquillian).defaultAnswer(answer)
+                                .name(module.getName()));
+                when(mock.toString()).thenReturn(module.getName());
+                return mock;
             } catch (Exception e) {
                 throw new IllegalStateException(e);
             }

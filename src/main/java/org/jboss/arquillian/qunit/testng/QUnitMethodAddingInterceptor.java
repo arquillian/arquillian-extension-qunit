@@ -21,8 +21,6 @@ public class QUnitMethodAddingInterceptor implements IMethodInterceptor, ITestLi
 
     public List<IMethodInstance> intercept(List<IMethodInstance> methods, ITestContext context) {
 
-        System.out.println("intercept");
-
         if (suite == null) {
             List<Class<? extends ArquillianQUnit>> qunitClasses = Lists.newLinkedList();
 
@@ -36,8 +34,6 @@ public class QUnitMethodAddingInterceptor implements IMethodInterceptor, ITestLi
                     }
                 }
             }
-
-            System.out.println(qunitClasses);
 
             suite = new TestNGSuite(null, modules, qunitClasses.get(0));
         }
