@@ -1,8 +1,8 @@
+package org.jboss.arquillian.qunit.testng;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
-import org.jboss.arquillian.qunit.testng.ClassGenerator;
 import org.testng.annotations.Factory;
 
 import com.google.common.base.Function;
