@@ -8,7 +8,10 @@
     <properties>
         <version.arquillian.core>1.0.0.Final</version.arquillian.core>
         <version.arquillian.drone>1.0.0.Final</version.arquillian.drone>
+        <version.arquillian.graphene>2.0.0-SNAPSHOT</version.arquillian.graphene>
+
         <version.junit>4.8.2</version.junit>
+        <version.testng>6.7</version.testng>
     </properties>
 
     <dependencyManagement>
@@ -33,12 +36,11 @@
     <dependencies>
     
 		<!-- test dependencies -->
-
         <dependency>
             <groupId>org.jboss.arquillian.testng</groupId>
             <artifactId>arquillian-testng-standalone</artifactId>
         </dependency>
-        
+
         <dependency>
             <groupId>org.jboss.arquillian.junit</groupId>
             <artifactId>arquillian-junit-standalone</artifactId>
@@ -48,7 +50,11 @@
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <version>${version.junit}</version>
-            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.testng</groupId>
+            <artifactId>testng</artifactId>
+            <version>${version.testng}</version>
         </dependency>
 
 		<!-- Support for Selenium Server in Arquillian Drone -->
@@ -56,32 +62,10 @@
             <groupId>org.jboss.arquillian.graphene</groupId>
             <artifactId>graphene-webdriver</artifactId>
             <type>pom</type>
-            <version>2.0.0-SNAPSHOT</version>
+            <version>${version.arquillian.graphene}</version>
             <scope>test</scope>
         </dependency>
 
-
-        <dependency>
-            <groupId>org.jboss.arquillian.core</groupId>
-            <artifactId>arquillian-core-impl-base</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.jboss.arquillian.test</groupId>
-            <artifactId>arquillian-test-impl-base</artifactId>
-        </dependency>
-
-
-		<!-- Resolution of JAR libraries into WAR archive -->
-        <dependency>
-            <groupId>org.jboss.shrinkwrap.resolver</groupId>
-            <artifactId>shrinkwrap-resolver-impl-maven</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.testng</groupId>
-            <artifactId>testng</artifactId>
-            <version>6.5.1</version>
-        </dependency>
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-all</artifactId>
@@ -96,11 +80,6 @@
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
             <version>11.0.2</version>
-        </dependency>
-        <dependency>
-            <groupId>org.seleniumhq.selenium</groupId>
-            <artifactId>selenium-firefox-driver</artifactId>
-            <scope>test</scope>
         </dependency>
     </dependencies>
 
@@ -123,4 +102,5 @@
             </dependencies>
         </profile>
     </profiles>
+
 </project>
