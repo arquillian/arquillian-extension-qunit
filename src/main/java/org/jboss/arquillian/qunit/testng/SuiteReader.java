@@ -1,5 +1,7 @@
 package org.jboss.arquillian.qunit.testng;
 
+import java.io.File;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Collection;
 import java.util.LinkedHashMap;
@@ -10,26 +12,23 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.htmlunit.HtmlUnitDriver;
 
+import com.gargoylesoftware.htmlunit.javascript.background.JavaScriptExecutor;
+
 public class SuiteReader {
     
-    public static Collection<TestModule> read() {
+    public static Collection<TestModule> read() throws MalformedURLException {
         
         Map<String, TestModule> modules = new LinkedHashMap<String, TestModule>();
         
         HtmlUnitDriver driver = new HtmlUnitDriver(true);
 
-        URL url = Thread.currentThread().getContextClassLoader().getResource("qunit-reader/suite-reader.html");
+        URL url = new File("target/qunit-temp/test.war/test/index.html").toURL();
 
-        String urlAsString = url.toExternalForm();
-        String urlWithParams = urlAsString + "?suite=test-suite.js";
-
-        driver.get(urlWithParams);
-
-        List<WebElement> elements = driver.findElements(By.cssSelector("ul li"));
+        driver.get(url.toExternalForm());
         
-        for (WebElement element : elements) {
-            
-            String text = element.getText();
+        List<String> texts = (List<String>) driver.executeScript("return window.tests");
+        
+        for (String text : texts) {
             
             int colon = text.indexOf(':');
             
