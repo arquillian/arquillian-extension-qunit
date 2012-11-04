@@ -6,9 +6,9 @@
     <version>1.0.0-SNAPSHOT</version>
 
     <properties>
-        <version.arquillian.core>1.0.0.Final</version.arquillian.core>
-        <version.arquillian.drone>1.0.0.Final</version.arquillian.drone>
-        <version.arquillian.graphene>2.0.0-SNAPSHOT</version.arquillian.graphene>
+        <version.arquillian.core>1.0.3.Final</version.arquillian.core>
+        <version.arquillian.drone>1.1.0.Final</version.arquillian.drone>
+        <version.arquillian.graphene>2.0.0.Alpha2</version.arquillian.graphene>
 
         <version.junit>4.8.2</version.junit>
         <version.testng>6.7</version.testng>
@@ -38,12 +38,12 @@
 		<!-- test dependencies -->
         <dependency>
             <groupId>org.jboss.arquillian.testng</groupId>
-            <artifactId>arquillian-testng-standalone</artifactId>
+            <artifactId>arquillian-testng-container</artifactId>
         </dependency>
 
         <dependency>
             <groupId>org.jboss.arquillian.junit</groupId>
-            <artifactId>arquillian-junit-standalone</artifactId>
+            <artifactId>arquillian-junit-container</artifactId>
         </dependency>
 
         <dependency>

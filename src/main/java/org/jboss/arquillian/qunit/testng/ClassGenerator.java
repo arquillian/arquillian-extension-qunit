@@ -1,13 +1,10 @@
 package org.jboss.arquillian.qunit.testng;
 
+import java.util.Collection;
+import java.util.LinkedList;
+import java.util.List;
+
 import javassist.ClassPool;
-import javassist.CtClass;
-import javassist.CtMethod;
-import javassist.CtNewMethod;
-import javassist.bytecode.AnnotationsAttribute;
-import javassist.bytecode.ClassFile;
-import javassist.bytecode.ConstPool;
-import javassist.bytecode.annotation.Annotation;
 
 public class ClassGenerator {
 
@@ -15,27 +12,28 @@ public class ClassGenerator {
 
         try {
             ClassPool pool = ClassPool.getDefault();
+            
+            Collection<TestModule> modules = SuiteReader.read();
+            List<Class<?>> classes = new LinkedList<Class<?>>();
+            
+            for (final TestModule module : modules) {
 
-            // create the class
-            CtClass clazz = pool.makeClass("GeneratedTestClass");
+                TestCaseGenerator generator = new TestCaseGenerator(module.getName(), pool);
+                      
+                for (final TestFunction function : module.getFunctions()) {
+                    
+                    generator.addTestMethod(function.getName(), new Callback() {
+                        public void call() {
+                            System.out.println(module.getName() + " - " + function.getName());
+                        }
+                    });
+                }
+    
+                Class<?> clazz = generator.toClass();
+                classes.add(clazz);
+            }
 
-            // create the method
-            CtMethod method = CtNewMethod.make("public void test () {};", clazz);
-            clazz.addMethod(method);
-
-            ClassFile classFile = clazz.getClassFile();
-            ConstPool constPool = classFile.getConstPool();
-
-            // create the annotation
-            AnnotationsAttribute attr = new AnnotationsAttribute(constPool, AnnotationsAttribute.visibleTag);
-            Annotation annotation = new Annotation("org.testng.annotations.Test", constPool);
-            attr.addAnnotation(annotation);
-
-            method.getMethodInfo().addAttribute(attr);
-
-            Class<?> generatedClass = clazz.toClass();
-
-            return new Class<?>[] { generatedClass };
+            return classes.toArray(new Class<?>[classes.size()]);
 
         } catch (Exception e) {
             e.printStackTrace();

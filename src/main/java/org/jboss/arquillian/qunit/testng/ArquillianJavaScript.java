@@ -4,13 +4,14 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
+import org.jboss.arquillian.testng.Arquillian;
 import org.testng.annotations.Factory;
 
 import com.google.common.base.Function;
 import com.google.common.collect.Collections2;
 
-public class TestNGRunner {
-
+public class ArquillianJavaScript extends Arquillian {
+    
     @Factory
     public Object[] factory() {
         List<Class<?>> classes = Arrays.asList(new ClassGenerator().getClasses());
