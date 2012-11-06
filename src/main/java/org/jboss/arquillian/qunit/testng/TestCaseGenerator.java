@@ -20,19 +20,23 @@ import javassist.bytecode.annotation.Annotation;
 
 public class TestCaseGenerator {
 
-    private static final String METHOD_SOURCE = "public void %s () { handler.call(\"%s\"); };";
+    private static final String METHOD_SOURCE = "public void %s () { handler.call(\"%s%s\"); };";
 
     private ClassPool classPool;
+    private CallbackHandler callbackHandler;
+    private String testCaseName;
 
     private CtClass ctClass;
     private ClassFile classFile;
     private ConstPool constPool;
     private Class<?> generatedClass;
 
-    private CallbackHandler callbackHandler = new CallbackHandler();
+    
 
-    public TestCaseGenerator(String testCaseName, ClassPool classPool) throws RuntimeException, NotFoundException {
+    public TestCaseGenerator(String testCaseName, ClassPool classPool, CallbackHandler callbackHandler) throws RuntimeException, NotFoundException {
         this.classPool = classPool;
+        this.callbackHandler = callbackHandler;
+        this.testCaseName = testCaseName;
 
         initialize(testCaseName);
     }
@@ -43,10 +47,10 @@ public class TestCaseGenerator {
         this.constPool = classFile.getConstPool();
     }
 
-    public void addTestMethod(String name, Callback callback) throws CannotCompileException {
-        callbackHandler.add(name, callback);
+    public void addTestMethod(String methodName, Callback callback) throws CannotCompileException {
+        callbackHandler.add(testCaseName + methodName, callback);
 
-        String source = String.format(METHOD_SOURCE, name, name);
+        String source = String.format(METHOD_SOURCE, methodName, testCaseName, methodName);
 
         CtMethod ctMethod = CtNewMethod.make(source, ctClass);
         ctClass.addMethod(ctMethod);

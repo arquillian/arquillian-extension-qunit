@@ -11,14 +11,16 @@ public class ClassGenerator {
     public Class<?>[] getClasses() {
 
         try {
-            ClassPool pool = ClassPool.getDefault();
+            ClassPool classPool = ClassPool.getDefault();
             
             Collection<TestModule> modules = SuiteReader.read();
             List<Class<?>> classes = new LinkedList<Class<?>>();
             
+            CallbackHandler callbackHandler = new CallbackHandler();
+            
             for (final TestModule module : modules) {
 
-                TestCaseGenerator generator = new TestCaseGenerator(module.getName(), pool);
+                TestCaseGenerator generator = new TestCaseGenerator(module.getName(), classPool, callbackHandler);
                       
                 for (final TestFunction function : module.getFunctions()) {
                     

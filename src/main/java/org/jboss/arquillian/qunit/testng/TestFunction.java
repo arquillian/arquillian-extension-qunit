@@ -3,13 +3,19 @@ package org.jboss.arquillian.qunit.testng;
 public class TestFunction {
 
     private String name;
+    private int testNumber;
 
-    public TestFunction(String name) {
+    public TestFunction(String name, int testNumber) {
         this.name = name;
+        this.testNumber = testNumber;
     }
 
     public String getName() {
         return name;
+    }
+
+    public int getTestNumber() {
+        return testNumber;
     }
 
     @Override
@@ -17,6 +23,7 @@ public class TestFunction {
         final int prime = 31;
         int result = 1;
         result = prime * result + ((name == null) ? 0 : name.hashCode());
+        result = prime * result + testNumber;
         return result;
     }
 
@@ -34,11 +41,13 @@ public class TestFunction {
                 return false;
         } else if (!name.equals(other.name))
             return false;
+        if (testNumber != other.testNumber)
+            return false;
         return true;
     }
 
     @Override
     public String toString() {
-        return "TestFunction [name=" + name + "]";
+        return "TestFunction [name=" + name + ", testNumber=" + testNumber + "]";
     }
 }

@@ -19,6 +19,11 @@
 		window.tests = window.tests || [];
 		window.tests.push(text);
 	}
+	
+	function ready(text) {
+        window.tests = window.tests || [];
+        window.tests.push(text);
+    }
 
 	var QUnit = {
 
@@ -77,5 +82,9 @@
 
 	extend(window, QUnit);
 	window.QUnit = QUnit;
+	
+	document.addEventListener('DOMContentLoaded',function(){
+	    
+	})
 
 })(this);
