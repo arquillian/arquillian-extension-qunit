@@ -2,14 +2,9 @@ package org.jboss.arquillian.qunit.testng;
 
 import java.lang.reflect.Field;
 
-import org.jboss.arquillian.drone.api.annotation.Drone;
-import org.openqa.selenium.WebDriver;
-import org.testng.annotations.Test;
-
 import javassist.CannotCompileException;
 import javassist.ClassPool;
 import javassist.CtClass;
-import javassist.CtField;
 import javassist.CtMethod;
 import javassist.CtNewMethod;
 import javassist.NotFoundException;
@@ -17,6 +12,8 @@ import javassist.bytecode.AnnotationsAttribute;
 import javassist.bytecode.ClassFile;
 import javassist.bytecode.ConstPool;
 import javassist.bytecode.annotation.Annotation;
+
+import org.testng.annotations.Test;
 
 public class TestCaseGenerator {
 
@@ -60,18 +57,6 @@ public class TestCaseGenerator {
         Annotation annotation = new Annotation(Test.class.getName(), constPool);
         attr.addAnnotation(annotation);
         ctMethod.getMethodInfo().addAttribute(attr);
-    }
-
-    public void addDrone() throws CannotCompileException, NotFoundException {
-        CtClass webdriverClass = classPool.get(WebDriver.class.getName());
-        CtField f = new CtField(webdriverClass, "browser", ctClass);
-        ctClass.addField(f);
-
-        // add @Drone annotation
-        AnnotationsAttribute attr = new AnnotationsAttribute(constPool, AnnotationsAttribute.visibleTag);
-        Annotation annotation = new Annotation(Drone.class.getName(), constPool);
-        attr.addAnnotation(annotation);
-        f.getFieldInfo().addAttribute(attr);
     }
 
     public Class<?> toClass() throws CannotCompileException {

@@ -37,18 +37,20 @@ public class TestPackager {
         Files.walkFileTree(path, visitor);
     }
     
-    public static void scan2() {
+    public static void scan2(boolean replace) {
         WebArchive war = ShrinkWrap.create(WebArchive.class, "test.war");
         war.merge(ShrinkWrap.create(GenericArchive.class).as(ExplodedImporter.class)
             .importDirectory("/home/lfryc/workspaces/arquillian/qunit").as(GenericArchive.class),
             "/", Filters.includeAll());
         
 //        System.out.println(war.toString(true));
-        File file = new File("src/test/resources/qunit-reader/suite-reader.js"); 
         
-        for (Entry<ArchivePath, Node> entry : war.getContent(Filters.include(".*\\/qunit.js")).entrySet()) {
-            war.delete(entry.getKey());
-            war.addAsWebResource(file, entry.getKey());
+        if (replace) {
+            File file = new File("src/test/resources/qunit-reader/suite-reader.js"); 
+            for (Entry<ArchivePath, Node> entry : war.getContent(Filters.include(".*\\/qunit.js")).entrySet()) {
+                war.delete(entry.getKey());
+                war.addAsWebResource(file, entry.getKey());
+            }
         }
         
 //        System.out.println(war.toString(true));

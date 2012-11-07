@@ -82,9 +82,5 @@
 
 	extend(window, QUnit);
 	window.QUnit = QUnit;
-	
-	document.addEventListener('DOMContentLoaded',function(){
-	    
-	})
 
 })(this);

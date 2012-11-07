@@ -8,6 +8,6 @@ public class TestTestPackager {
     
     @Test
     public void test() throws IOException {
-        TestPackager.scan2();
+        TestPackager.scan2(true);
     }
 }
