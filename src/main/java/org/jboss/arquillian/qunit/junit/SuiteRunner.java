@@ -1,8 +1,7 @@
-package org.jboss.arquillian.qunit.drone;
+package org.jboss.arquillian.qunit.junit;
 
 import java.util.LinkedList;
 
-import org.jboss.arquillian.qunit.junit.TestSuite;
 import org.junit.runner.Description;
 import org.junit.runner.JUnitCore;
 import org.junit.runner.Result;
@@ -12,19 +11,16 @@ import org.junit.runners.Suite;
 
 public class SuiteRunner extends Suite {
 
-    private Class<?> suiteClass;
     private TestSuite suite;
 
     public SuiteRunner(Class<?> suiteClass) throws Exception {
         super(suiteClass, new LinkedList<Runner>());
 
-        this.suite = new TestSuite(suiteClass);
+        this.suite = SuiteReader.read(suiteClass);
     }
 
     @Override
     public void run(RunNotifier notifier) {
-        // Maven doesn't necessarily call getDescription so we need to invoke it in here to ensure
-        // all descriptions are cached properly
         getDescription();
 
         ResultReader.notifier = notifier;

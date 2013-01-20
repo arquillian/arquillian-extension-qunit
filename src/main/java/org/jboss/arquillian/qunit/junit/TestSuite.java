@@ -1,8 +1,8 @@
 package org.jboss.arquillian.qunit.junit;
 
+import java.util.Collection;
 import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.LinkedHashMap;
 
 import org.junit.runner.Description;
 
@@ -12,26 +12,34 @@ public class TestSuite {
 
     private Description description;
 
-    private List<TestFile> files = new LinkedList<TestFile>();
+    private LinkedHashMap<String, TestFile> files = new LinkedHashMap<String, TestFile>();
 
     public TestSuite(Class<?> suiteClass) {
         this.suiteClass = suiteClass;
         this.description = Description.createSuiteDescription(suiteClass);
     }
 
-    public TestFile addFile(String name) {
-        TestFile file = new TestFile(suiteClass, name);
-        files.add(file);
-        description.addChild(file.getDescription());
+    public TestFile getOrAddFile(final String name) {
+        TestFile file = files.get(name);
+        if (file == null) {
+            file = new TestFile(suiteClass, name);
+            description.addChild(file.getDescription());
+            files.put(name, file);
+        }
+
         return file;
+    }
+
+    public TestFile getFile(final String name) {
+        return files.get(name);
     }
 
     public Description getDescription() {
         return description;
     }
 
-    public List<TestFile> getFiles() {
-        return Collections.unmodifiableList(files);
+    public Collection<TestFile> getFiles() {
+        return Collections.unmodifiableCollection(files.values());
     }
 
     public Class<?> getJavaClass() {

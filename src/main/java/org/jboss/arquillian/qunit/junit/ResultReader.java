@@ -1,22 +1,22 @@
-package org.jboss.arquillian.qunit.drone;
+package org.jboss.arquillian.qunit.junit;
 
 import static org.jboss.arquillian.graphene.Graphene.element;
 import static org.jboss.arquillian.graphene.Graphene.waitModel;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.logging.Logger;
 
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.drone.api.annotation.Drone;
 import org.jboss.arquillian.graphene.spi.annotations.Root;
 import org.jboss.arquillian.junit.Arquillian;
-import org.jboss.arquillian.qunit.junit.Packager;
-import org.jboss.arquillian.qunit.junit.TestSuite;
 import org.jboss.arquillian.test.api.ArquillianResource;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.junit.runner.Description;
 import org.junit.runner.RunWith;
 import org.junit.runner.notification.Failure;
 import org.junit.runner.notification.RunNotifier;
@@ -29,6 +29,8 @@ import org.openqa.selenium.support.FindBy;
 @RunWith(Arquillian.class)
 @RunAsClient
 public class ResultReader {
+
+    private Logger log = Logger.getLogger(ResultReader.class.getSimpleName());
 
     public static TestSuite suite;
     public static RunNotifier notifier;
@@ -52,48 +54,55 @@ public class ResultReader {
 
         driver.get(contextPath.toExternalForm() + "test/index.html");
 
+        TestFile testFile = suite.getFiles().iterator().next();
+
         waitModel().until(element(By.cssSelector("#qunit-testresult .failed")).isPresent());
 
-        String lastModule = null;
-        Description moduleDescription = null;
+        Set<TestModule> startedModules = new HashSet<TestModule>();
+
+        UniqueTestName uniqueTestName = new UniqueTestName();
 
         for (Test test : tests) {
 
+            String testName = test.getName();
+            String moduleName = test.getModule();
+            if (moduleName == null) {
+                moduleName = "null";
+            }
+            testName = uniqueTestName.getName(moduleName, testName);
 
-            String module = test.getModule();
+            System.out.println("running " + moduleName + ": " + testName);
 
-            if (moduleChanged(lastModule, module)) {
-                if (moduleDescription != null) {
-                    notifier.fireTestFinished(moduleDescription);
+            TestModule module = testFile.getOrAddModule(moduleName);
+
+            if (module != null) {
+                TestFunction function = module.getFunction(testName);
+
+                if (function != null) {
+
+                    if (startedModules.add(module)) {
+                        notifier.fireTestStarted(module.getDescription());
+                    }
+
+                    notifier.fireTestStarted(function.getDescription());
+                    if (test.isFailed()) {
+                        notifier.fireTestFailure(new Failure(function.getDescription(), new Exception("failed")));
+                    } else {
+                        notifier.fireTestFinished(function.getDescription());
+                    }
+                } else {
+                    // TODO
+                    System.err.println("function with name " + testName + " not found");
                 }
-                moduleDescription = Description.createTestDescription(suite.getJavaClass(), module);
-                notifier.fireTestStarted(moduleDescription);
-            }
-
-            Description testDescription = Description.createTestDescription(suite.getJavaClass(), test.getName());
-
-            if (moduleDescription != null) {
-                moduleDescription.addChild(testDescription);
             } else {
-                suite.getDescription().addChild(testDescription);
-            }
-
-            notifier.fireTestStarted(testDescription);
-
-            if (test.isFailed()) {
-                notifier.fireTestFailure(new Failure(testDescription, new IllegalStateException()));
-            } else {
-                notifier.fireTestFinished(testDescription);
+                // TODO
+                System.err.println("module with name " + moduleName + " not found");
             }
         }
 
-        if (moduleDescription != null) {
-            notifier.fireTestFinished(moduleDescription);
+        for (TestModule module : startedModules) {
+            notifier.fireTestFinished(module.getDescription());
         }
-    }
-
-    private boolean moduleChanged(String oldModule, String newModule) {
-        return oldModule == null ? (newModule != null) : (!oldModule.equals(newModule));
     }
 
     private class Test {

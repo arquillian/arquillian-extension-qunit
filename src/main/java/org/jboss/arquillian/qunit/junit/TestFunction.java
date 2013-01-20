@@ -8,6 +8,8 @@ public class TestFunction {
     private int testNumber;
     private Description description;
 
+    private boolean done = false;
+
     public TestFunction(Class<?> suiteClass, String name, int testNumber) {
         this.name = name;
         this.testNumber = testNumber;
@@ -24,6 +26,14 @@ public class TestFunction {
 
     public Description getDescription() {
         return description;
+    }
+
+    public boolean isDone() {
+        return done;
+    }
+
+    public void markDone() {
+        this.done = true;
     }
 
     @Override

@@ -1,8 +1,8 @@
 package org.jboss.arquillian.qunit.junit;
 
+import java.util.Collection;
 import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.LinkedHashMap;
 
 import org.junit.runner.Description;
 
@@ -11,18 +11,23 @@ public class TestModule {
     private String name;
     private Class<?> suiteClass;
     private Description description;
-    private List<TestFunction> functions = new LinkedList<TestFunction>();
+    private LinkedHashMap<String, TestFunction> functions = new LinkedHashMap<String, TestFunction>();
 
     public TestModule(Class<?> suiteClass, String name) {
+        this.suiteClass = suiteClass;
         this.name = name;
-        this.description = Description.createTestDescription(suiteClass, name);
+        this.description = Description.createSuiteDescription(name);
     }
 
     public TestFunction addFunction(String name, int testNumber) {
         TestFunction function = new TestFunction(suiteClass, name, testNumber);
-        functions.add(function);
+        functions.put(name, function);
         description.addChild(function.getDescription());
         return function;
+    }
+
+    public TestFunction getFunction(String name) {
+        return functions.get(name);
     }
 
     public String getName() {
@@ -33,8 +38,17 @@ public class TestModule {
         return description;
     }
 
-    public List<TestFunction> getFunctions() {
-        return Collections.unmodifiableList(functions);
+    public Collection<TestFunction> getFunctions() {
+        return Collections.unmodifiableCollection(functions.values());
+    }
+
+    public boolean isDone() {
+        for (TestFunction function : functions.values()) {
+            if (!function.isDone()) {
+                return false;
+            }
+        }
+        return true;
     }
 
     @Override
