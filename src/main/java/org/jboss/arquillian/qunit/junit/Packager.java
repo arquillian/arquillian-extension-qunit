@@ -1,4 +1,4 @@
-package org.jboss.arquillian.qunit.testng;
+package org.jboss.arquillian.qunit.junit;
 
 import java.io.File;
 import java.util.Map.Entry;
@@ -8,17 +8,17 @@ import org.jboss.shrinkwrap.api.Filters;
 import org.jboss.shrinkwrap.api.GenericArchive;
 import org.jboss.shrinkwrap.api.Node;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.shrinkwrap.api.exporter.ExplodedExporter;
 import org.jboss.shrinkwrap.api.importer.ExplodedImporter;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 
-public class TestPackager {
+public class Packager {
 
-    public static WebArchive scan2(boolean replace) {
+    public static WebArchive scan(boolean replace) {
         WebArchive war = ShrinkWrap.create(WebArchive.class, "test.war");
-        war.merge(ShrinkWrap.create(GenericArchive.class).as(ExplodedImporter.class)
-            .importDirectory("/home/lfryc/workspaces/arquillian/qunit").as(GenericArchive.class),
-            "/", Filters.includeAll());
+        war.merge(
+                ShrinkWrap.create(GenericArchive.class).as(ExplodedImporter.class)
+                        .importDirectory("/home/lfryc/workspaces/arquillian/qunit").as(GenericArchive.class), "/",
+                Filters.includeAll());
 
         if (replace) {
             File file = new File("src/test/resources/qunit-reader/suite-reader.js");
@@ -28,10 +28,7 @@ public class TestPackager {
             }
         }
 
-        File destinationDir = new File("target/qunit-temp");
-        destinationDir.mkdir();
-        war.as(ExplodedExporter.class).exportExploded(destinationDir);
-
         return war;
     }
+
 }

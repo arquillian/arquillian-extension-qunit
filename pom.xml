@@ -2,14 +2,14 @@
     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.jboss.arquillian.cheiron</groupId>
-    <artifactId>arquillian-cheiron</artifactId>
+    <artifactId>arquillian-qunit</artifactId>
     <version>1.0.0-SNAPSHOT</version>
 
     <properties>
-        <version.shrinkwrap>1.1.0</version.shrinkwrap>
+        <version.shrinkwrap></version.shrinkwrap>
         <version.arquillian.core>1.0.3.Final</version.arquillian.core>
-        <version.arquillian.drone>1.1.0.Final</version.arquillian.drone>
-        <version.arquillian.graphene>2.0.0.Alpha2</version.arquillian.graphene>
+        <version.arquillian.drone>1.2.0.Final-SNAPSHOT</version.arquillian.drone>
+        <version.arquillian.graphene>2.0.0.Alpha3-SNAPSHOT</version.arquillian.graphene>
 
         <version.junit>4.8.2</version.junit>
         <version.testng>6.7</version.testng>
@@ -17,13 +17,6 @@
 
     <dependencyManagement>
         <dependencies>
-            <dependency>
-                <groupId>org.jboss.shrinkwrap</groupId>
-                <artifactId>shrinkwrap-bom</artifactId>
-                <version>${version.shrinkwrap}</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
             <dependency>
                 <groupId>org.jboss.arquillian</groupId>
                 <artifactId>arquillian-bom</artifactId>
@@ -44,10 +37,10 @@
     <dependencies>
     
 		<!-- test dependencies -->
-        <dependency>
+        <!-- <dependency>
             <groupId>org.jboss.arquillian.testng</groupId>
             <artifactId>arquillian-testng-container</artifactId>
-        </dependency>
+        </dependency> -->
 
         <dependency>
             <groupId>org.jboss.arquillian.junit</groupId>
@@ -89,6 +82,19 @@
             <artifactId>guava</artifactId>
             <version>11.0.2</version>
         </dependency>
+        <dependency>
+            <groupId>org.jboss.arquillian.selenium</groupId>
+            <artifactId>selenium-phantomjs-driver</artifactId>
+            <version>1.0.1-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.shrinkwrap</groupId>
+            <artifactId>shrinkwrap-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.shrinkwrap</groupId>
+            <artifactId>shrinkwrap-spi</artifactId>
+        </dependency>
     </dependencies>
 
     <profiles>
@@ -105,7 +111,7 @@
                 <dependency>
                     <groupId>org.jboss.as</groupId>
                     <artifactId>jboss-as-arquillian-container-remote</artifactId>
-                    <version>${version.jbossas_7}</version>
+                    <version>7.1.1.Final</version>
                 </dependency>
             </dependencies>
         </profile>
