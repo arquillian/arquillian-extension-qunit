@@ -1,8 +1,12 @@
 package org.jboss.arquillian.qunit.junit;
 
+import static org.jboss.arquillian.graphene.Graphene.element;
+import static org.jboss.arquillian.graphene.Graphene.waitGui;
+
 import java.io.IOException;
 import java.net.URL;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 
 import org.jboss.arquillian.container.test.api.Deployment;
@@ -48,7 +52,13 @@ public class ResultReader {
     JavascriptExecutor executor;
 
     private By testLocator(int i) {
-        return By.cssSelector("#qunit-tests > li:nth-child(" + i + ") ~ li");
+        if (i == 0) {
+            return By.cssSelector("#qunit-tests > li[class~=pass], #qunit-tests > li[class~=fail]");
+        } else {
+            return By.cssSelector("#qunit-tests > li:nth-child(" + i + ") ~ li[class~=pass], #qunit-tests > li:nth-child(" + i
+                    + ") ~ li[class~=fail]");
+        }
+
     }
 
     private By byTestName = By.cssSelector("span.test-name");
@@ -87,6 +97,7 @@ public class ResultReader {
 
             while (!finished(testsFound)) {
 
+                waitGui().pollingEvery(10, TimeUnit.MILLISECONDS).until(element(testLocator(testsFound)).isPresent());
                 List<List<String>> result = (List<List<String>>) (executor.executeScript(script.getSourceCode(), testsFound));
 
                 for (List<String> testResult : result) {

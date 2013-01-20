@@ -1,6 +1,6 @@
 var testsFound = arguments[0];
 
-console.log('testsFound: ' + testsFound)
+// console.log('testsFound: ' + testsFound)
 
 var elements, element, item;
 
@@ -21,6 +21,6 @@ for (var i = 0; i < elements.length; i++) {
     result.push(item);
 }
 
-console.log(result);
+// console.log(result);
 
 return result;
