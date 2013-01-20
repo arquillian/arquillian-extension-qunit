@@ -7,12 +7,15 @@ public class TestFunction {
     private String name;
     private int testNumber;
     private Description description;
+    private TestModule parentModule;
 
     private boolean done = false;
+    private boolean failed;
 
-    public TestFunction(Class<?> suiteClass, String name, int testNumber) {
+    public TestFunction(Class<?> suiteClass, TestModule parentModule, String name, int testNumber) {
         this.name = name;
         this.testNumber = testNumber;
+        this.parentModule = parentModule;
         this.description = Description.createTestDescription(suiteClass, name);
     }
 
@@ -34,6 +37,18 @@ public class TestFunction {
 
     public void markDone() {
         this.done = true;
+    }
+
+    public void setFailed(boolean failed) {
+        this.failed = failed;
+    }
+
+    public boolean isFailed() {
+        return failed;
+    }
+
+    public TestModule getParentModule() {
+        return parentModule;
     }
 
     @Override

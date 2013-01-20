@@ -5,9 +5,7 @@ import static org.jboss.arquillian.graphene.Graphene.waitModel;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.logging.Logger;
 
 import org.jboss.arquillian.container.test.api.Deployment;
@@ -54,13 +52,13 @@ public class ResultReader {
 
         driver.get(contextPath.toExternalForm() + "test/index.html");
 
-        TestFile testFile = suite.getFiles().iterator().next();
+        final TestFile testFile = suite.getFiles().iterator().next();
 
         waitModel().until(element(By.cssSelector("#qunit-testresult .failed")).isPresent());
 
-        Set<TestModule> startedModules = new HashSet<TestModule>();
+        UniqueName uniqueTestName = new UniqueName();
 
-        UniqueTestName uniqueTestName = new UniqueTestName();
+        DoneFunctionIterator doneFunctionIterator = new DoneFunctionIterator(testFile);
 
         for (Test test : tests) {
 
@@ -71,25 +69,13 @@ public class ResultReader {
             }
             testName = uniqueTestName.getName(moduleName, testName);
 
-            System.out.println("running " + moduleName + ": " + testName);
-
             TestModule module = testFile.getOrAddModule(moduleName);
 
             if (module != null) {
                 TestFunction function = module.getFunction(testName);
-
                 if (function != null) {
-
-                    if (startedModules.add(module)) {
-                        notifier.fireTestStarted(module.getDescription());
-                    }
-
-                    notifier.fireTestStarted(function.getDescription());
-                    if (test.isFailed()) {
-                        notifier.fireTestFailure(new Failure(function.getDescription(), new Exception("failed")));
-                    } else {
-                        notifier.fireTestFinished(function.getDescription());
-                    }
+                    function.markDone();
+                    function.setFailed(test.isFailed());
                 } else {
                     // TODO
                     System.err.println("function with name " + testName + " not found");
@@ -98,10 +84,21 @@ public class ResultReader {
                 // TODO
                 System.err.println("module with name " + moduleName + " not found");
             }
-        }
 
-        for (TestModule module : startedModules) {
-            notifier.fireTestFinished(module.getDescription());
+            while (doneFunctionIterator.hasNext()) {
+
+                TestFunction reportFunction = doneFunctionIterator.next();
+
+                notifier.fireTestStarted(reportFunction.getDescription());
+
+                if (test.isFailed()) {
+                    notifier.fireTestFailure(new Failure(reportFunction.getDescription(), new Exception("failed")));
+                } else {
+                    notifier.fireTestFinished(reportFunction.getDescription());
+                }
+
+            }
+
         }
     }
 

@@ -27,7 +27,7 @@ public class SuiteReader {
         URL url = file.toURL();
 
         TestFile testFile = suite.getOrAddFile(file.getAbsolutePath());
-        UniqueTestName uniqueTestName = new UniqueTestName();
+        UniqueName uniqueTestName = new UniqueName();
 
         int testNumber = 0;
 

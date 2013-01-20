@@ -20,7 +20,7 @@ public class TestModule {
     }
 
     public TestFunction addFunction(String name, int testNumber) {
-        TestFunction function = new TestFunction(suiteClass, name, testNumber);
+        TestFunction function = new TestFunction(suiteClass, this, name, testNumber);
         functions.put(name, function);
         description.addChild(function.getDescription());
         return function;
