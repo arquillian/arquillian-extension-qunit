@@ -26,15 +26,19 @@ public class RunnerWithCustomNofitier extends Suite  {
 
     @Override
     public void run(RunNotifier notifier) {
-//        notifier.fireTestStarted(suite1Description);
+        notifier.fireTestStarted(description);
+
+        notifier.fireTestStarted(suite1Description);
         notifier.fireTestStarted(test1Description);
         notifier.fireTestFinished(test1Description);
-//        notifier.fireTestFinished(suite1Description);
+        notifier.fireTestFinished(suite1Description);
 
-//        notifier.fireTestStarted(suite2Description);
+        notifier.fireTestStarted(suite2Description);
         notifier.fireTestStarted(test2Description);
         notifier.fireTestFinished(test2Description);
-//        notifier.fireTestFinished(suite2Description);
+        notifier.fireTestFinished(suite2Description);
+
+        notifier.fireTestFinished(description);
     }
 
     @Override

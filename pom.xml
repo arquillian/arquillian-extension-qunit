@@ -8,8 +8,8 @@
     <properties>
         <version.shrinkwrap></version.shrinkwrap>
         <version.arquillian.core>1.0.3.Final</version.arquillian.core>
-        <version.arquillian.drone>1.2.0.Final-SNAPSHOT</version.arquillian.drone>
-        <version.arquillian.graphene>2.0.0.Alpha3-SNAPSHOT</version.arquillian.graphene>
+        <version.arquillian.drone>1.2.0.Alpha1</version.arquillian.drone>
+        <version.arquillian.graphene>2.0.0.Alpha3</version.arquillian.graphene>
 
         <version.junit>4.8.2</version.junit>
         <version.testng>6.7</version.testng>
@@ -52,11 +52,6 @@
             <artifactId>junit</artifactId>
             <version>${version.junit}</version>
         </dependency>
-        <dependency>
-            <groupId>org.testng</groupId>
-            <artifactId>testng</artifactId>
-            <version>${version.testng}</version>
-        </dependency>
 
 		<!-- Support for Selenium Server in Arquillian Drone -->
         <dependency>
@@ -64,7 +59,6 @@
             <artifactId>graphene-webdriver</artifactId>
             <type>pom</type>
             <version>${version.arquillian.graphene}</version>
-            <scope>test</scope>
         </dependency>
 
         <dependency>
