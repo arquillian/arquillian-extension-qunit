@@ -10,6 +10,7 @@
         <version.arquillian.core>1.0.3.Final</version.arquillian.core>
         <version.arquillian.drone>1.2.0.Alpha1</version.arquillian.drone>
         <version.arquillian.graphene>2.0.0.Alpha3</version.arquillian.graphene>
+        <version.arquillian.warp>2.0.0.Alpha2</version.arquillian.warp>
 
         <version.junit>4.8.2</version.junit>
         <version.testng>6.7</version.testng>
@@ -59,6 +60,14 @@
             <artifactId>graphene-webdriver</artifactId>
             <type>pom</type>
             <version>${version.arquillian.graphene}</version>
+        </dependency>
+        
+        
+        <dependency>
+            <groupId>org.jboss.arquillian.extension</groupId>
+            <artifactId>arquillian-warp</artifactId>
+            <version>1.0.0.Alpha2</version>
+            <type>pom</type>
         </dependency>
 
         <dependency>

@@ -35,7 +35,9 @@ public class SuiteReader {
 
         List<String> texts = (List<String>) driver.executeScript("return window.tests");
 
-        for (String text : texts) {
+        for (Object textObj : texts) {
+
+            String text = textObj.toString();
 
             int colon = text.indexOf(':');
 

@@ -16,6 +16,7 @@ import org.jboss.arquillian.graphene.spi.annotations.Root;
 import org.jboss.arquillian.graphene.spi.javascript.JavaScript;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.arquillian.test.api.ArquillianResource;
+import org.jboss.arquillian.warp.WarpTest;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.runner.RunWith;
 import org.junit.runner.notification.Failure;
@@ -29,6 +30,7 @@ import org.openqa.selenium.support.FindBy;
 
 @RunWith(Arquillian.class)
 @RunAsClient
+@WarpTest
 public class ResultReader {
 
     private Logger log = Logger.getLogger(ResultReader.class.getSimpleName());
@@ -37,7 +39,7 @@ public class ResultReader {
     public static RunNotifier notifier;
     private DoneFunctionIterator doneFunctionIterator;
 
-    @Deployment
+    @Deployment(testable=true)
     public static WebArchive deployment() {
         return Packager.scan(false);
     }
