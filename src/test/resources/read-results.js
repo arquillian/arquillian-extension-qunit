@@ -10,13 +10,21 @@ if (testsFound == 0) {
     elements = document.querySelectorAll("#qunit-tests > li:nth-child(" + testsFound + ") ~ li[class~=pass], #qunit-tests > li:nth-child(" + testsFound + ") ~ li[class~=fail]");
 }
 
+function innerText(element) {
+    if (!element) {
+        return null;
+    } else {
+        return element.innerText || element.textContent;
+    }
+}
+
 var result = [];
 
 for (var i = 0; i < elements.length; i++) {
     element = elements[i];
     item = [];
-    item.push((element.querySelector("span.test-name") || {}).innerText);
-    item.push((element.querySelector("span.module-name") || {}).innerText);
+    item.push(innerText(element.querySelector("span.test-name")));
+    item.push(innerText(element.querySelector("span.module-name")));
     item.push(element.getAttribute("class"));
     result.push(item);
 }
