@@ -46,4 +46,12 @@ public class TestSuite {
         return suiteClass;
     }
 
+    public String getWebRoot() {
+        return suiteClass.getAnnotation(WebRoot.class).value();
+    }
+
+    public String getQUnitTest() {
+        return suiteClass.getAnnotation(QUnitTest.class).value();
+    }
+
 }

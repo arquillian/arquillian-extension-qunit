@@ -88,7 +88,7 @@ public class ResultReader {
 
         try {
 
-            driver.get(contextPath.toExternalForm() + "test/index.html");
+            driver.get(contextPath.toExternalForm() + suite.getQUnitTest());
 
             final TestFile testFile = suite.getFiles().iterator().next();
 

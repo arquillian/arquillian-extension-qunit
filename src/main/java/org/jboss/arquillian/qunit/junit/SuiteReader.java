@@ -5,6 +5,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
 
+import org.apache.commons.io.FileUtils;
 import org.jboss.arquillian.qunit.testng.TestPackager;
 import org.jboss.shrinkwrap.api.exporter.ExplodedExporter;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -14,16 +15,17 @@ public class SuiteReader {
 
     public static TestSuite read(Class<?> suiteClass) throws MalformedURLException {
 
-        WebArchive war = TestPackager.scan2(true);
+        final TestSuite suite = new TestSuite(suiteClass);
+
+        WebArchive war = TestPackager.scan2(suite, true);
         File destinationDir = new File("target/qunit-temp");
+        FileUtils.deleteQuietly(destinationDir);
         destinationDir.mkdir();
         war.as(ExplodedExporter.class).exportExploded(destinationDir);
 
-        final TestSuite suite = new TestSuite(suiteClass);
-
         HtmlUnitDriver driver = new HtmlUnitDriver(true);
 
-        File file = new File("target/qunit-temp/test.war/test/index.html");
+        File file = new File("target/qunit-temp/test.war/" + suite.getQUnitTest());
         URL url = file.toURL();
 
         TestFile testFile = suite.getOrAddFile(file.getAbsolutePath());

@@ -9,11 +9,11 @@ import org.junit.runner.Runner;
 import org.junit.runner.notification.RunNotifier;
 import org.junit.runners.Suite;
 
-public class SuiteRunner extends Suite {
+public class QUnitRunner extends Suite {
 
     private TestSuite suite;
 
-    public SuiteRunner(Class<?> suiteClass) throws Exception {
+    public QUnitRunner(Class<?> suiteClass) throws Exception {
         super(suiteClass, new LinkedList<Runner>());
 
         this.suite = SuiteReader.read(suiteClass);

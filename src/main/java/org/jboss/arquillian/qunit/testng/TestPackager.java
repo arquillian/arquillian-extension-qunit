@@ -3,6 +3,7 @@ package org.jboss.arquillian.qunit.testng;
 import java.io.File;
 import java.util.Map.Entry;
 
+import org.jboss.arquillian.qunit.junit.TestSuite;
 import org.jboss.shrinkwrap.api.ArchivePath;
 import org.jboss.shrinkwrap.api.Filters;
 import org.jboss.shrinkwrap.api.GenericArchive;
@@ -14,10 +15,10 @@ import org.jboss.shrinkwrap.api.spec.WebArchive;
 
 public class TestPackager {
 
-    public static WebArchive scan2(boolean replace) {
+    public static WebArchive scan2(TestSuite suite, boolean replace) {
         WebArchive war = ShrinkWrap.create(WebArchive.class, "test.war");
         war.merge(ShrinkWrap.create(GenericArchive.class).as(ExplodedImporter.class)
-            .importDirectory("/home/lfryc/workspaces/arquillian/qunit").as(GenericArchive.class),
+            .importDirectory(suite.getWebRoot()).as(GenericArchive.class),
             "/", Filters.includeAll());
 
         if (replace) {
