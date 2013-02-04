@@ -13,11 +13,11 @@ import org.jboss.shrinkwrap.api.spec.WebArchive;
 
 public class Packager {
 
-    public static WebArchive scan(boolean replace) {
+    public static WebArchive scan(TestSuite suite, boolean replace) {
         WebArchive war = ShrinkWrap.create(WebArchive.class, "test.war");
         war.merge(
                 ShrinkWrap.create(GenericArchive.class).as(ExplodedImporter.class)
-                        .importDirectory("/home/lfryc/workspaces/arquillian/qunit").as(GenericArchive.class), "/",
+                        .importDirectory(suite.getWebRoot()).as(GenericArchive.class), "/",
                 Filters.includeAll());
 
         if (replace) {

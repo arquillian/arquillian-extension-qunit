@@ -41,7 +41,7 @@ public class ResultReader {
 
     @Deployment(testable=true)
     public static WebArchive deployment() {
-        return Packager.scan(false);
+        return Packager.scan(suite, false);
     }
 
     @ArquillianResource
