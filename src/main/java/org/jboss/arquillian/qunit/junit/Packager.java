@@ -25,7 +25,7 @@ public class Packager {
      * Creates the final {@link Archive} which will be deployed on the server. The Archive may be {@link EnterpriseArchive} or
      * {@link WebArchive} according the value of the Deployment annotation on the actual Test Case and will contain the QUnit
      * test cases and the application's content if any.
-     *
+     * 
      * @param suite The {@link TestSuite}
      * @return {@link Archive}
      */
@@ -34,18 +34,11 @@ public class Packager {
         final Method deploymentMethod = suite.getDeploymentMethod();
 
         final Archive<?> archive = deploymentMethod != null ? (Archive<?>) ReflectOperations.invokeMethod(deploymentMethod,
-                suite.getJavaClass())
-                : ShrinkWrap
-                        .create(WebArchive.class,
-                                TEST_ARCHIVE_FILE_NAME);
+            suite.getJavaClass()) : ShrinkWrap.create(WebArchive.class, TEST_ARCHIVE_FILE_NAME);
 
         // merge the tests and the required files to execute them
-        archive.merge(
-                ShrinkWrap.create(GenericArchive.class)
-                        .as(ExplodedImporter.class)
-                        .importDirectory(suite.getWebRoot())
-                        .as(GenericArchive.class), "/",
-                Filters.includeAll());
+        archive.merge(ShrinkWrap.create(GenericArchive.class).as(ExplodedImporter.class).importDirectory(suite.getWebRoot())
+            .as(GenericArchive.class), "/", Filters.includeAll());
 
         return archive;
 

@@ -46,8 +46,7 @@ public class SuiteReader {
 
                     @SuppressWarnings("unchecked")
                     List<String> texts = (List<String>) driver.executeScript("return window.tests");
-                    if (!CollectionUtils.isEmpty(texts))
-                    {
+                    if (!CollectionUtils.isEmpty(texts)) {
                         for (Object textObj : texts) {
                             final String text = textObj.toString();
                             final int colon = text.indexOf(':');

@@ -91,8 +91,7 @@ public class ResultReader {
 
         try {
             driver.get((new StringBuilder()).append(contextPath.toExternalForm()).append(qunitTestValue).toString());
-            waitModel().withTimeout(timeout, unit).until(
-                    element(TESTS_PER_QUNIT_TEST_CASE_COMPLETED).isPresent());
+            waitModel().withTimeout(timeout, unit).until(element(TESTS_PER_QUNIT_TEST_CASE_COMPLETED).isPresent());
             executor.executeScript("QUnit.config.reorder = false;");
             final TestFile testFile = (new ArrayList<TestFile>(suite.getFiles())).get(testFileIndex++);
             final UniqueName uniqueTestName = new UniqueName();
@@ -103,8 +102,8 @@ public class ResultReader {
             while (!testsPerQunitTestFinished(testIndex, TESTS_PER_QUNIT_TEST.size())) {
 
                 @SuppressWarnings("unchecked")
-                final List<List<String>> result = (List<List<String>>) (executor
-                        .executeScript(script.getSourceCode(), testIndex));
+                final List<List<String>> result = (List<List<String>>) (executor.executeScript(script.getSourceCode(),
+                    testIndex));
 
                 for (final List<String> testResult : result) {
 
@@ -121,11 +120,11 @@ public class ResultReader {
                             function.setFailed(failed);
                         } else {
                             LOG.warning((new StringBuilder()).append("## Function with name: '").append(testName)
-                                    .append("' was not found").toString());
+                                .append("' was not found").toString());
                         }
                     } else {
                         LOG.warning((new StringBuilder()).append("## Moddule with name: '").append(moduleName)
-                                .append("' was not found").toString());
+                            .append("' was not found").toString());
                     }
 
                     reportResults();
@@ -136,7 +135,7 @@ public class ResultReader {
             reportResults();
         } catch (Exception e) {
             LOG.log(Level.SEVERE, (new StringBuilder()).append(" executeQunitTest: qunitTestValue: '").append(qunitTestValue)
-                    .append("'").toString(), e);
+                .append("'").toString(), e);
         }
     }
 
@@ -146,7 +145,6 @@ public class ResultReader {
 
     private void updateTotalTestsSize() {
         totalTests += TESTS_PER_QUNIT_TEST.size();
-
     }
 
     private void reportResults() {
@@ -154,8 +152,7 @@ public class ResultReader {
             final TestFunction reportFunction = doneFunctionIterator.next();
             notifier.fireTestStarted(reportFunction.getDescription());
             if (reportFunction.isFailed()) {
-                notifier.fireTestFailure(new Failure(reportFunction
-                        .getDescription(), new Exception("failed")));
+                notifier.fireTestFailure(new Failure(reportFunction.getDescription(), new Exception("failed")));
             } else {
                 notifier.fireTestFinished(reportFunction.getDescription());
             }

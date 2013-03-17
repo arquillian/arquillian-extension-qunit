@@ -9,7 +9,6 @@ import org.apache.commons.lang3.ArrayUtils;
 public class ReflectOperations {
 
     public static final Method findFirstMethodWithAnnotation(Method[] m, Class<? extends Annotation> c) {
-
         if (!ArrayUtils.isEmpty(m) && c != null) {
             for (Method method : m) {
                 if (m != null && method.isAnnotationPresent(c)) {
@@ -17,7 +16,6 @@ public class ReflectOperations {
                 }
             }
         }
-
         return null;
     }
 

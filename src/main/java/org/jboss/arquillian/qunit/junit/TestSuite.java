@@ -67,14 +67,12 @@ public class TestSuite {
     public ArrayList<QUnitTestMethod> getSortedQunitMethods() {
         if (!ArrayUtils.isEmpty(suiteClass.getMethods())) {
             ArrayList<QUnitTestMethod> qunitMethodsAL = new ArrayList<QUnitTestMethod>();
-            for (Method m : suiteClass.getMethods())
-            {
+            for (Method m : suiteClass.getMethods()) {
                 final Annotation qunitTestAnnotation = ReflectOperations.getAnnotation(m, QUnitTest.class);
                 final Annotation sequenceAnnotation = ReflectOperations.getAnnotation(m, InSequence.class);
                 final QUnitTestMethod qm = new QUnitTestMethod(m,
-                        (sequenceAnnotation != null ? ((InSequence) sequenceAnnotation).value() : 0), m.getAnnotations());
-                if (qunitTestAnnotation != null && !StringUtils.isEmpty(((QUnitTest) qunitTestAnnotation).value()))
-                {
+                    (sequenceAnnotation != null ? ((InSequence) sequenceAnnotation).value() : 0), m.getAnnotations());
+                if (qunitTestAnnotation != null && !StringUtils.isEmpty(((QUnitTest) qunitTestAnnotation).value())) {
                     qunitMethodsAL.add(qm);
                 }
             }
@@ -96,7 +94,7 @@ public class TestSuite {
             final LinkedHashSet<String> qunitTestValuesHS = new LinkedHashSet<String>();
             for (QUnitTestMethod qm : sortedQunitMethods) {
                 final String qunitTestValue = ((QUnitTest) ReflectOperations.getAnnotation(qm.getMethod(), QUnitTest.class))
-                        .value();
+                    .value();
                 if (!StringUtils.isEmpty(qunitTestValue)) {
                     qunitTestValuesHS.add(qunitTestValue);
                 }
