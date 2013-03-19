@@ -1,21 +1,27 @@
+<?xml version="1.0"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.jboss.arquillian.cheiron</groupId>
     <artifactId>arquillian-qunit</artifactId>
     <version>1.0.0-SNAPSHOT</version>
+    <name>Driving QUnit tests with Selenium/Drone </name>
 
     <properties>
-        <version.selenium>2.29.0</version.selenium>
         <version.arquillian.core>1.0.3.Final</version.arquillian.core>
-        <version.arquillian.drone>1.2.0.Final-SNAPSHOT</version.arquillian.drone>
+        <version.selenium>2.30.0</version.selenium>
+        <version.mockito.all>1.9.5</version.mockito.all>
+        <version.javax.inject.tck>1</version.javax.inject.tck>
+        <version.javax.servlet.api>2.5</version.javax.servlet.api>
+        <version.javassist>3.12.1.GA</version.javassist>
+        <version.com.google.guava>14.0</version.com.google.guava>
         <version.arquillian.graphene>2.0.0.Alpha3</version.arquillian.graphene>
-        <version.arquillian.warp>2.0.0.Alpha2</version.arquillian.warp>
-
-        <version.junit>4.8.2</version.junit>
-        <version.testng>6.7</version.testng>
-
-        <arquillian.drone.browser>phantomjs</arquillian.drone.browser>
+        <version.junit>4.11</version.junit>
+        <version.shrinkwrap.api>1.1.2</version.shrinkwrap.api>
+        <version.shrinkwrap.spi>1.1.2</version.shrinkwrap.spi>
+        <version.arquillian.junit>1.0.3.Final</version.arquillian.junit>
+        <version.arquillian.drone>1.2.0.Alpha1</version.arquillian.drone>
         <arquillian.drone.reusable>false</arquillian.drone.reusable>
     </properties>
 
@@ -28,6 +34,7 @@
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
+
             <dependency>
                 <groupId>org.jboss.arquillian.selenium</groupId>
                 <artifactId>selenium-bom</artifactId>
@@ -35,6 +42,7 @@
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
+
             <dependency>
                 <groupId>org.jboss.arquillian.extension</groupId>
                 <artifactId>arquillian-drone-bom</artifactId>
@@ -42,20 +50,23 @@
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
+
         </dependencies>
+
     </dependencyManagement>
 
     <dependencies>
-    
-		<!-- test dependencies -->
-        <!-- <dependency>
-            <groupId>org.jboss.arquillian.testng</groupId>
-            <artifactId>arquillian-testng-container</artifactId>
-        </dependency> -->
 
         <dependency>
-            <groupId>org.jboss.arquillian.junit</groupId>
-            <artifactId>arquillian-junit-container</artifactId>
+            <groupId>org.jboss.arquillian.graphene</groupId>
+            <artifactId>graphene-webdriver</artifactId>
+            <type>pom</type>
+            <version>${version.arquillian.graphene}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jboss.arquillian.extension</groupId>
+            <artifactId>arquillian-drone-webdriver</artifactId>
         </dependency>
 
         <dependency>
@@ -64,98 +75,66 @@
             <version>${version.junit}</version>
         </dependency>
 
-		<!-- Support for Selenium Server in Arquillian Drone -->
         <dependency>
-            <groupId>org.jboss.arquillian.graphene</groupId>
-            <artifactId>graphene-webdriver</artifactId>
-            <type>pom</type>
-            <version>${version.arquillian.graphene}</version>
-        </dependency>
-
-
-        <dependency>
-            <groupId>org.jboss.arquillian.extension</groupId>
-            <artifactId>arquillian-warp</artifactId>
-            <version>1.0.0.Alpha2</version>
-            <type>pom</type>
+            <groupId>org.jboss.arquillian.junit</groupId>
+            <artifactId>arquillian-junit-container</artifactId>
         </dependency>
 
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-all</artifactId>
-            <version>1.9.0</version>
+            <version>${version.mockito.all}</version>
         </dependency>
+
+        <dependency>
+            <groupId>javax.inject</groupId>
+            <artifactId>javax.inject-tck</artifactId>
+            <version>${version.javax.inject.tck}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>servlet-api</artifactId>
+            <version>${version.javax.servlet.api}</version>
+        </dependency>
+
         <dependency>
             <groupId>javassist</groupId>
             <artifactId>javassist</artifactId>
-            <version>3.12.1.GA</version>
+            <version>${version.javassist}</version>
         </dependency>
+
         <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
-            <version>11.0.2</version>
+            <version>${version.com.google.guava}</version>
         </dependency>
-        <dependency>
-            <groupId>org.jboss.arquillian.selenium</groupId>
-            <artifactId>selenium-phantomjs-driver</artifactId>
-            <version>1.0.1-SNAPSHOT</version>
-        </dependency>
+
         <dependency>
             <groupId>org.jboss.shrinkwrap</groupId>
             <artifactId>shrinkwrap-api</artifactId>
         </dependency>
+
         <dependency>
             <groupId>org.jboss.shrinkwrap</groupId>
             <artifactId>shrinkwrap-spi</artifactId>
         </dependency>
+
     </dependencies>
 
     <build>
-        <testResources>
-            <testResource>
-                <directory>src/test/resources</directory>
-                <filtering>true</filtering>
-            </testResource>
-        </testResources>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>2.3.2</version>
+                <configuration>
+                    <encoding>UTF-8</encoding>
+                    <source>1.5</source>
+                    <target>1.5</target>
+                </configuration>
+            </plugin>
+        </plugins>
     </build>
-
-    <profiles>
-        <profile>
-            <id>jbossas-remote-7</id>
-            <dependencies>
-                <dependency>
-                    <groupId>org.jboss.spec</groupId>
-                    <artifactId>jboss-javaee-6.0</artifactId>
-                    <version>1.0.0.Final</version>
-                    <type>pom</type>
-                    <scope>provided</scope>
-                </dependency>
-                <dependency>
-                    <groupId>org.jboss.as</groupId>
-                    <artifactId>jboss-as-arquillian-container-remote</artifactId>
-                    <version>7.1.1.Final</version>
-                </dependency>
-            </dependencies>
-        </profile>
-
-        <profile>
-            <id>browser-chrome</id>
-            <properties>
-                <arquillian.drone.browser>chrome</arquillian.drone.browser>
-            </properties>
-        </profile>
-        <profile>
-            <id>browser-firefox</id>
-            <properties>
-                <arquillian.drone.browser>firefox</arquillian.drone.browser>
-            </properties>
-        </profile>
-        <profile>
-            <id>browser-remote-reusable</id>
-            <properties>
-                <arquillian.drone.reusable>true</arquillian.drone.reusable>
-            </properties>
-        </profile>
-    </profiles>
 
 </project>
