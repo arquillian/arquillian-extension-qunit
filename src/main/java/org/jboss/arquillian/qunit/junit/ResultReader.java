@@ -91,8 +91,9 @@ public class ResultReader {
 
         try {
             driver.get((new StringBuilder()).append(contextPath.toExternalForm()).append(qunitTestValue).toString());
-            waitModel().withTimeout(timeout, unit).until(element(TESTS_PER_QUNIT_TEST_CASE_COMPLETED).isPresent());
+            // execute the test cases in the given order
             executor.executeScript("QUnit.config.reorder = false;");
+            waitModel().withTimeout(timeout, unit).until(element(TESTS_PER_QUNIT_TEST_CASE_COMPLETED).isPresent());
             final TestFile testFile = (new ArrayList<TestFile>(suite.getFiles())).get(testFileIndex++);
             final UniqueName uniqueTestName = new UniqueName();
             doneFunctionIterator = new DoneFunctionIterator(testFile);
