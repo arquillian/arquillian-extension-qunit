@@ -4,5 +4,5 @@ The [Arquillian QUnit](https://github.com/tolis-e/arquillian-qunit) is an [Arqui
 ## Arquillian QUnit Functional Test
 This project contains the functional and acceptance tests for the Arquillian-QUnit project.
 
-For detailed information check the README files inside each project.
+For detailed information check the README file inside each project.
 
