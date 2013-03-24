@@ -44,15 +44,16 @@ The execution of the functional test is done through maven:
     * `@RunWith(QUnitRunner.class)` — Instructs JUnit to use the QUnitRunner as test controller
     * `@QUnitResources("src/test/resources")` — Points to your resources folder where the QUnit HTML Test Files, QUnit JS, JQuery JS reside.
 * In the case where the QUnit tests have to be executed on a Web Page:
-    * Add a method with the `@Deployment()` annotation inside the test case. This method should create the Archive which will be deployed on the container. For more information you may check the [Arquillian Create Deployable Archives with ShrinkWrap guide](http://arquillian.org/guides/shrinkwrap_introduction/).
-	* Insert the frameloader JavaScript file to the `<head>` section of the QUnit HTML test file by adding
+    * Add a method with the `@Deployment()` annotation inside the test case. This method should create the Archive which will be deployed on the container. For more information you may check the [Arquillian Create Deployable Archives with ShrinkWrap](http://arquillian.org/guides/shrinkwrap_introduction/) guide.
+	* Insert the frameloader JavaScript file to the `<head>` section of the QUnit HTML test file by adding:
 
             <script type="text/javascript" src="../../frameloader/frameloader.js"></script>
     * Insert an `iframe` tag inside the `body` tag of your QUnit HTML Test file. The iframe will be used to load your actual test page inside the QUnit Test page.
     		
     		<iframe height="600" width="1000" id="frame"></iframe>
     * In order to avoid hardcoding the host/port on your JavaScript QUnit test Files you can retrieve them from the Window Object `window.location.host`. For more info check the Sample QUnit JS File below.  
-* Create as many methods inside the test case as the Qunit Test files you want to execute. Each method must have the `@QUnitTest()` annotation which points to a QUnit HTML Test file.   
+* Create as many methods inside the test case as the Qunit Test files you want to execute. Each method must have the `@QUnitTest()` annotation which points to a QUnit HTML Test file.
+* In method level you can use the `@InSequence()` annotation to define the execution order.
 
 ### Sample QUnit HTML Test File
 
