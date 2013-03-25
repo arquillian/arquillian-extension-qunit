@@ -1,5 +1,5 @@
 # Arquillian QUnit Functional Test
-This project contains the functional and acceptance tests for the Arquillian-QUnit project.
+This project contains the functional tests for the Arquillian-QUnit project.
 
 ## Functional Test Content
 The Arquillian QUnit Functional Test defines the three core aspects needed for the execution of an [Arquillian](http://arquillian.org/) test case:
