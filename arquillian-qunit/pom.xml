@@ -50,7 +50,6 @@
         <version.org.jboss.as>7.1.1.Final</version.org.jboss.as>
         <version.org.jboss.spec>1.0.0.Final</version.org.jboss.spec>
         <version.junit>4.11</version.junit>
-        <version.com.google.guava>14.0</version.com.google.guava>
     </properties>
 
     <build>
