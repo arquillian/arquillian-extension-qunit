@@ -31,8 +31,8 @@ The execution of the functional test is done through maven:
 
 ## Instructions to setup a new test case
 
-* Install the Arquillian-QUnit in the Maven repository
-* Add the Arquillian-QUnit dependency in the POM:
+* Install the Arquillian-QUnit to the local Maven repository
+* Add the Arquillian-QUnit dependency to the POM file:
     
         <dependency>
             <groupId>org.jboss.arquillian.cheiron</groupId>
@@ -40,9 +40,9 @@ The execution of the functional test is done through maven:
             <version>${version.org.jboss.arquillian.qunit}</version>
         </dependency>
 
-* Create a new Java Class which will be the test case and configure the below annotations in TYPE level:
-    * `@RunWith(QUnitRunner.class)` — Instructs JUnit to use the QUnitRunner as test controller
-    * `@QUnitResources("src/test/resources")` — Points to your resources folder where the QUnit HTML Test Files, QUnit JS, JQuery JS reside.
+* Create a new Java Class which will be the test case and configure the below annotations in TYPE/Class level:
+    * `@RunWith(QUnitRunner.class)` — Instructs JUnit to use the QUnitRunner as test controller.
+    * `@QUnitResources("src/test/resources")` — Points to the resources folder where the QUnit HTML Test Files, QUnit JS, JQuery JS reside.
 * In the case where the QUnit tests have to be executed on a Web Page:
     * Add a method with the `@Deployment()` annotation inside the test case. This method should create the Archive which will be deployed on the container. For more information you may check the [Arquillian Create Deployable Archives with ShrinkWrap](http://arquillian.org/guides/shrinkwrap_introduction/) guide.
 	* Insert the frameloader JavaScript file to the `<head>` section of the QUnit HTML test file by adding:
