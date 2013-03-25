@@ -25,7 +25,7 @@ import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.qunit.junit.annotations.QUnitResources;
-import org.jboss.arquillian.qunit.junit.comparators.QUnitTestMethodComparator;
+import org.jboss.arquillian.qunit.junit.comparators.TestMethodComparator;
 import org.jboss.arquillian.qunit.junit.exceptions.ArquillianQunitException;
 import org.jboss.arquillian.qunit.reflection.ReflectOperations;
 
@@ -99,7 +99,7 @@ public class TestSuite {
             for (Method method : methods) {
                 this.setTestMethod((new TestMethod(method)).build(), index++);
             }
-            Arrays.sort(this.getTestMethods(), QUnitTestMethodComparator.getInstance());
+            Arrays.sort(this.getTestMethods(), TestMethodComparator.getInstance());
         }
         final Method deployMethod = ReflectOperations.findFirstMethodWithAnnotation(getSuiteClass().getMethods(),
                 Deployment.class);

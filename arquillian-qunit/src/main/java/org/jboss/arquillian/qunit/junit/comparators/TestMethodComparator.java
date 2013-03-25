@@ -27,18 +27,18 @@ import org.jboss.arquillian.qunit.junit.model.TestMethod;
  * @author Tolis Emmanouilidis
  * 
  */
-public class QUnitTestMethodComparator implements Comparator<TestMethod> {
+public class TestMethodComparator implements Comparator<TestMethod> {
 
-    private static final QUnitTestMethodComparator instance = new QUnitTestMethodComparator();
+    private static final TestMethodComparator instance = new TestMethodComparator();
 
-    private QUnitTestMethodComparator() {
+    private TestMethodComparator() {
     }
 
     public int compare(TestMethod q1, TestMethod q2) {
         return q1.getSequence() < q2.getSequence() ? -1 : 1;
     }
 
-    public static QUnitTestMethodComparator getInstance() {
-        return QUnitTestMethodComparator.instance;
+    public static TestMethodComparator getInstance() {
+        return TestMethodComparator.instance;
     }
 }
