@@ -20,6 +20,8 @@ package org.jboss.arquillian.qunit.reflection;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.apache.commons.lang3.ArrayUtils;
 
@@ -30,6 +32,8 @@ import org.apache.commons.lang3.ArrayUtils;
  * 
  */
 public class ReflectOperations {
+	
+	private static final Logger logger = Logger.getLogger(ReflectOperations.class.getSimpleName());
 
     public static final Method findFirstMethodWithAnnotation(Method[] m, Class<? extends Annotation> c) {
         if (!ArrayUtils.isEmpty(m) && c != null) {
@@ -46,7 +50,7 @@ public class ReflectOperations {
         try {
             return m != null ? m.invoke(caller, args) : null;
         } catch (Exception e) {
-            e.printStackTrace();
+        	logger.log(Level.SEVERE, "Exception", e);
         }
         return null;
     }
