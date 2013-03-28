@@ -36,8 +36,8 @@ The execution of the functional test is done through maven:
     
         <dependency>
             <groupId>org.jboss.arquillian.cheiron</groupId>
-            <artifactId>arquillian-qunit</artifactId>
-            <version>${version.org.jboss.arquillian.qunit}</version>
+            <artifactId>arquillian-qunit-impl</artifactId>
+            <version>${version.org.jboss.arquillian.qunit.impl}</version>
         </dependency>
 
 * Create a new Java Class which will be the test case and configure the below annotations in TYPE/Class level:
