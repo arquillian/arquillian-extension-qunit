@@ -49,9 +49,6 @@ import org.openqa.selenium.WebDriver;
 @RunAsClient
 public class QUnitTestCase {
 
-    public QUnitTestCase() {
-    }
-
     @ArquillianResource
     private URL contextPath;
 
