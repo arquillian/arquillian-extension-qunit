@@ -33,6 +33,7 @@ import org.junit.runner.RunWith;
 /**
  * Junit uses the QunitRunner controller as a test controller.
  *
+ * @author Lukas Fryc
  * @author Tolis Emmanouilidis
  *
  */
