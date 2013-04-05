@@ -19,21 +19,17 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
+    <parent>
+        <groupId>org.jboss.arquillian.qunit</groupId>
+        <artifactId>arquillian-qunit-parent</artifactId>
+        <version>1.0.0.Alpha1-SNAPSHOT</version>
+        <relativePath>../pom.xml</relativePath>
+    </parent>
+
     <modelVersion>4.0.0</modelVersion>
-    <groupId>org.jboss.arquillian.cheiron</groupId>
     <artifactId>arquillian-qunit-impl</artifactId>
-    <version>1.0.0-Alpha1</version>
-
-    <developers>
-        <developer>
-            <name>Tolis Emmanouilidis</name>
-        </developer>
-        <developer>
-            <name>Lukas Fryc</name>
-        </developer>
-    </developers>
-
     <url>http://jboss.org/jbossas</url>
+
     <licenses>
         <license>
             <name>Apache License, Version 2.0</name>
@@ -42,16 +38,16 @@
         </license>
     </licenses>
 
-    <properties>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <version.org.jboss.arquillian.graphene>2.0.0.Alpha3</version.org.jboss.arquillian.graphene>
-        <version.org.jboss.arquillian>1.0.3.Final</version.org.jboss.arquillian>
-        <version.selenium>2.31.0</version.selenium>
-        <version.org.jboss.as>7.1.1.Final</version.org.jboss.as>
-        <version.org.jboss.spec>1.0.0.Final</version.org.jboss.spec>
-        <version.org.jboss.arquillian.qunit.api>1.0.0-Alpha1</version.org.jboss.arquillian.qunit.api>
-        <version.junit>4.11</version.junit>
-    </properties>
+    <developers>
+        <developer>
+            <name>Lukas Fryc</name>
+            <email>lfryc@redhat.com</email>
+        </developer>
+        <developer>
+            <name>Tolis Emmanouilidis</name>
+            <email>aemmanou@redhat.com</email>
+        </developer>
+    </developers>
 
     <build>
         <pluginManagement>
@@ -67,6 +63,27 @@
                 <plugin>
                     <artifactId>maven-surefire-plugin</artifactId>
                     <version>2.12</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-install-plugin</artifactId>
+                    <version>${version.maven.install.plugin}</version>
+                    <executions>
+                        <execution>
+                            <id>install-${project.artifactId}</id>
+                            <phase>install</phase>
+                            <goals>
+                                <goal>install</goal>
+                            </goals>
+                            <configuration>
+                                <file>${basedir}/target/${project.artifactId}-${project.version}.jar</file>
+                                <groupId>${project.groupId}</groupId>
+                                <artifactId>${project.artifactId}</artifactId>
+                                <version>${project.version}</version>
+                                <packaging>jar</packaging>
+                            </configuration>
+                        </execution>
+                    </executions>
                 </plugin>
             </plugins>
         </pluginManagement>
@@ -101,13 +118,6 @@
                 <type>pom</type>
             </dependency>
 
-            <!-- JUnit regression testing framework. -->
-            <dependency>
-                <groupId>junit</groupId>
-                <artifactId>junit</artifactId>
-                <version>${version.junit}</version>
-            </dependency>
-
         </dependencies>
     </dependencyManagement>
 
@@ -115,9 +125,10 @@
         
         <!-- Arquillian QUnit API -->
         <dependency>
-            <groupId>org.jboss.arquillian.cheiron</groupId>
+            <groupId>org.jboss.arquillian.qunit</groupId>
             <artifactId>arquillian-qunit-api</artifactId>
-            <version>${version.org.jboss.arquillian.qunit.api}</version>
+            <version>${project.version}</version>
+            <scope>compile</scope>
         </dependency>
         
         <!-- Starting point for integration Graphene test suites. -->
@@ -139,6 +150,7 @@
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
+            <version>${version.junit}</version>
         </dependency>
         
         <!-- JUnit Container Implementation for the Arquillian Project -->

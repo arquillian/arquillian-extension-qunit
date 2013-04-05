@@ -19,6 +19,8 @@ package org.jboss.arquillian.qunit.api.model;
 
 import java.lang.annotation.Annotation;
 
+import org.junit.runner.Description;
+
 /**
  * An abstraction to describe the test suite.
  * 
@@ -62,4 +64,11 @@ public interface TestSuite {
      * @return QUnit Resources path
      */
     public String getQUnitResources();
+    
+    /**
+     * Returns the JUnit Decsription.
+     * 
+     * @return JUnit Description
+     */
+    public Description getDescription();
 }

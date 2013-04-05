@@ -29,14 +29,16 @@ import org.junit.runner.notification.RunNotifier;
 import org.junit.runners.Suite;
 
 /**
- *
+ * 
  * @author Lukas Fryc
  * @author Tolis Emmanouilidis
- *
+ * 
  */
 public class QUnitRunner extends Suite {
 
     private TestSuite suite;
+
+    private Description desc;
 
     public QUnitRunner(Class<?> suiteClass) throws Exception {
         super(suiteClass, new LinkedList<Runner>());
@@ -53,6 +55,9 @@ public class QUnitRunner extends Suite {
 
     @Override
     public Description getDescription() {
-        return Description.createSuiteDescription(suite.getSuiteClass());
+        if (this.desc == null) {
+            this.desc = Description.createSuiteDescription(suite.getSuiteClass().getName(), suite.getSuiteClass().getAnnotations());
+        }
+        return this.desc;
     }
 }

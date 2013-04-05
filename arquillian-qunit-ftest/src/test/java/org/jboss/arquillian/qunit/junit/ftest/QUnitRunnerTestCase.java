@@ -1,6 +1,6 @@
 /*
  * JBoss, Home of Professional Open Source
- * Copyright 2012, Red Hat, Inc., and individual contributors
+ * Copyright 2013, Red Hat, Inc., and individual contributors
  * by the @authors tag. See the copyright.txt in the distribution for a
  * full listing of individual contributors.
  *
@@ -37,7 +37,7 @@ import org.junit.runner.RunWith;
  *
  */
 @RunWith(QUnitRunner.class)
-@QUnitResources("src/test/resources")
+@QUnitResources("src/test/resources/assets")
 @RunAsClient
 public class QUnitRunnerTestCase {
 
@@ -56,8 +56,8 @@ public class QUnitRunnerTestCase {
     /**
      * Test the qunit-tests-dom.html file.
      */
-    @QUnitTest("assets/tests/ticketmonster/qunit-tests-dom.html")
-    @InSequence(2)
+    @QUnitTest("tests/ticketmonster/qunit-tests-dom.html")
+    @InSequence(1)
     public void qunitDomTest() {
         // empty body - only the annotations are used
     }
@@ -65,8 +65,8 @@ public class QUnitRunnerTestCase {
     /**
      * Test the qunit-tests-ajax.html file.
      */
-    @QUnitTest("assets/tests/ticketmonster/qunit-tests-ajax.html")
-    @InSequence(1)
+    @QUnitTest("tests/ticketmonster/qunit-tests-ajax.html")
+    @InSequence(2)
     public void qunitAjaxTest() {
         // empty body - only the annotations are used
     }
@@ -74,7 +74,7 @@ public class QUnitRunnerTestCase {
     /**
      * Test the qunit-tests.html file.
      */
-    @QUnitTest("assets/tests/generic/qunitTest.html")
+    @QUnitTest("tests/generic/qunitTest.html")
     @InSequence(3)
     public void qunitAssertionsTest() {
         // empty body - only the annotations are used

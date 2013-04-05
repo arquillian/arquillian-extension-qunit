@@ -40,16 +40,17 @@ import org.junit.runner.notification.RunNotifier;
 import org.openqa.selenium.WebDriver;
 
 /**
- * 
+ *
  * @author Lukas Fryc
  * @author Tolis Emmanouilidis
- * 
+ *
  */
 @RunWith(Arquillian.class)
 @RunAsClient
 public class QUnitTestCase {
-    
-    public QUnitTestCase(){}
+
+    public QUnitTestCase() {
+    }
 
     @ArquillianResource
     private URL contextPath;
@@ -75,30 +76,34 @@ public class QUnitTestCase {
         if (!ArrayUtils.isEmpty(qunitTestMethods)) {
             for (TestMethod method : qunitTestMethods) {
                 if (!StringUtils.isEmpty(method.getQunitTestFile())) {
-                    executeQunitTestFile(method.getQunitTestFile());
+                    executeQunitTestFile(method);
                 }
             }
         }
     }
 
-    private void executeQunitTestFile(String qunitTestFile) {
-        driver.get((new StringBuilder()).append(contextPath.toExternalForm()).append(qunitTestFile).toString());
+    private void executeQunitTestFile(TestMethod testMethod) {
+        driver.get((new StringBuilder()).append(contextPath.toExternalForm()).append(testMethod.getQunitTestFile()).toString());
 
         qunitPage.waitUntilTestsExecutionIsCompleted();
         final QUnitTestImpl[] qunitTests = qunitPage.getTests();
 
         if (!ArrayUtils.isEmpty(qunitTests)) {
+            final Description suiteDescription = Description.createSuiteDescription(testMethod.getMethod().getDeclaringClass()
+                    .getName(), testMethod.getMethod().getAnnotations());
             for (QUnitTestImpl qunitTestResult : qunitTests) {
-                final Description description = Description.createTestDescription(suite.getSuiteClass(),
-                        qunitTestResult.getDescriptionName());
-                notifier.fireTestStarted(description);
+                final Description testDescription = Description.createTestDescription(testMethod.getMethod()
+                        .getDeclaringClass(), qunitTestResult.getDescriptionName());
+                suiteDescription.addChild(testDescription);
+                notifier.fireTestStarted(testDescription);
                 if (qunitTestResult.isFailed()) {
-                    notifier.fireTestFailure(new Failure(description, new Exception(generateFailedMessage(qunitTestResult
+                    notifier.fireTestFailure(new Failure(testDescription, new Exception(generateFailedMessage(qunitTestResult
                             .getAssertions()))));
                 } else {
-                    notifier.fireTestFinished(description);
+                    notifier.fireTestFinished(testDescription);
                 }
             }
+            suite.getDescription().addChild(suiteDescription);
         }
     }
 

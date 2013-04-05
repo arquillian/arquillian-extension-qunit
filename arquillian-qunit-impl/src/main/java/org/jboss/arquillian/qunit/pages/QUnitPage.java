@@ -63,7 +63,7 @@ public class QUnitPage implements QUnitTestPage {
     private static final String assertionSourceJquerySelector = ".test-source td pre";
 
     public void waitUntilTestsExecutionIsCompleted() {
-        waitModel().withTimeout(30, TimeUnit.MINUTES).until(element(qunitTestResults).isVisible());
+        waitModel().withTimeout(5, TimeUnit.MINUTES).until(element(qunitTestResults).isVisible());
     }
 
     public int getTestsSize() {

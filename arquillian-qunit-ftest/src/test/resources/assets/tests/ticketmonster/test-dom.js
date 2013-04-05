@@ -1,5 +1,7 @@
-//QUnit.config.reorder = false;
+QUnit.config.reorder = false;
+
 var url = [ "http://", window.location.host, "/ticket-monster" ].join("");
+
 var jQ = function() {
 };
 

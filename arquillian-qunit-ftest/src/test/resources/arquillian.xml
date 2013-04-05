@@ -23,8 +23,8 @@
     <!-- Sets the protocol which is how Arquillian talks and executes the tests inside the container. -->
     <defaultProtocol type="Servlet 3.0" />
 
-	<!-- Configuration to be used when the arq-jbossas-remote profile is active -->
-    <container qualifier="jbossas-remote-7">
+	<!-- Configuration to be used when the JBoss remote profile is active -->
+    <container qualifier="jboss-remote">
         <configuration>
             <property name="managementAddress">192.168.0.1</property>
             <property name="managementPort">9999</property>
@@ -33,8 +33,8 @@
         </configuration>
     </container>
 
-    <!-- Configuration to be used when the arq-jbossas-managed-7 profile is active -->
-    <container qualifier="jboss-managed-7" default="true">
+    <!-- Configuration to be used when the JBoss managed profile is active -->
+    <container qualifier="jboss-managed" default="true">
         <configuration>
             <property name="jbossHome">${basedir}/target/jboss-as-7.1.1.Final</property>
         </configuration>

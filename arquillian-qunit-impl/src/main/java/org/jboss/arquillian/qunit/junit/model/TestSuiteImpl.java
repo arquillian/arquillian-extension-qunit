@@ -31,6 +31,7 @@ import org.jboss.arquillian.qunit.api.model.TestSuite;
 import org.jboss.arquillian.qunit.junit.annotations.QUnitResources;
 import org.jboss.arquillian.qunit.junit.comparators.TestMethodComparator;
 import org.jboss.arquillian.qunit.reflection.ReflectOperations;
+import org.junit.runner.Description;
 
 /**
  *
@@ -49,6 +50,8 @@ public class TestSuiteImpl implements TestSuite {
     private Class<?> suiteClass;
 
     private String qunitReqources;
+    
+    private Description description;
 
     public TestSuiteImpl(Class<?> suite) throws ArquillianQunitException {
         this.suiteClass = suite;
@@ -97,9 +100,15 @@ public class TestSuiteImpl implements TestSuite {
         }
         return;
     }
-
+    
+    @Override
+    public Description getDescription() {
+        return this.description;
+    }
+    
     private void build() {
-        final Method[] methods = suiteClass.getMethods();
+        this.description = Description.createSuiteDescription(this.suiteClass);
+        final Method[] methods = this.suiteClass.getMethods();
         if (!ArrayUtils.isEmpty(methods)) {
             this.testMethod = new TestMethod[methods.length];
             int index = 0;
@@ -108,11 +117,12 @@ public class TestSuiteImpl implements TestSuite {
             }
             Arrays.sort(this.getTestMethods(), TestMethodComparator.getInstance());
         }
-        this.annotations = suiteClass.getAnnotations();
-        this.qunitReqources = suiteClass.getAnnotation(QUnitResources.class).value();
+        this.annotations = this.suiteClass.getAnnotations();
+        this.qunitReqources = this.suiteClass.getAnnotation(QUnitResources.class).value();
         final Method deployMethod = ReflectOperations.findFirstMethodWithAnnotation(getSuiteClass().getMethods(),
                 Deployment.class);
         this.deploymentMethod = (deployMethod != null) ? new DeploymentMethodImpl(deployMethod) : null;
         return;
     }
+
 }
