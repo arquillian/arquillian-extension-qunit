@@ -1,5 +1,5 @@
 # Arquillian QUnit
-The [Arquillian QUnit](https://github.com/tolis-e/arquillian-qunit) is an [Arquillian](http://arquillian.org/) extension which automates the QUnit JavaScript testing on Web Applications. [Arquillian](http://arquillian.org/) integrates with the testing framework which is JUnit in this case.
+The [Arquillian QUnit](https://github.com/arquillian/arquillian-extension-qunit) is an [Arquillian](http://arquillian.org/) extension which automates the QUnit JavaScript testing on Web Applications. [Arquillian](http://arquillian.org/) integrates with the testing framework which is JUnit in this case.
 
 ## Installation
 To install it navigate to the arquillian-qunit-parent project and execute:
@@ -7,10 +7,10 @@ To install it navigate to the arquillian-qunit-parent project and execute:
     mvn install
 
 ## Arquillian QUnit API
-The [Arquillian QUnit API](https://github.com/tolis-e/arquillian-qunit/tree/master/arquillian-qunit-api) is the API which abstracts the [Arquillian QUnit](https://github.com/tolis-e/arquillian-qunit/tree/master/arquillian-qunit-impl) implementation.
+The [Arquillian QUnit API](https://github.com/arquillian/arquillian-extension-qunit/tree/master/arquillian-qunit-api) is the API which abstracts the [Arquillian QUnit](https://github.com/arquillian/arquillian-extension-qunit/tree/master/arquillian-qunit-impl) implementation.
 
 ## Arquillian QUnit Impl
-The [Arquillian QUnit Impl](https://github.com/tolis-e/arquillian-qunit/tree/master/arquillian-qunit-impl) is an implementation of the [Arquillian QUnit API](https://github.com/tolis-e/arquillian-qunit/tree/master/arquillian-qunit-api).
+The [Arquillian QUnit Impl](https://github.com/arquillian/arquillian-extension-qunit/tree/master/arquillian-qunit-impl) is an implementation of the [Arquillian QUnit API](https://github.com/arquillian/arquillian-extension-qunit/tree/master/arquillian-qunit-api).
 
 ## Arquillian QUnit Functional Test
 This project contains the functional tests for the Arquillian-QUnit project.
@@ -22,11 +22,11 @@ The Arquillian QUnit Functional Test defines the three core aspects needed for t
 - deployment — the process of dispatching an artifact to a container
 - archive — a packaged assembly of code, configuration and resources
 
-The container's configuration resides in the [Arquillian XML](https://github.com/tolis-e/arquillian-qunit/blob/master/arquillian-qunit-ftest/src/test/resources/arquillian.xml) configuration file while the deployment and the archive are defined inside the [QUnitRunnerTestCase](https://github.com/tolis-e/arquillian-qunit/blob/master/arquillian-qunit-ftest/src/test/java/org/jboss/arquillian/qunit/junit/ftest/QUnitRunnerTestCase.java) file.
+The container's configuration resides in the [Arquillian XML](https://github.com/arquillian/arquillian-extension-qunit/blob/master/arquillian-qunit-ftest/src/test/resources/arquillian.xml) configuration file while the deployment and the archive are defined inside the [QUnitRunnerTestCase](https://github.com/arquillian/arquillian-extension-qunit/blob/master/arquillian-qunit-ftest/src/test/java/org/jboss/arquillian/qunit/junit/ftest/QUnitRunnerTestCase.java) file.
 
 The test case is dispatched to the container's environment through coordination with ShrinkWrap, which is used to declaratively define a custom Java EE archive that encapsulates the test class and its dependent resources. Arquillian packages the ShrinkWrap defined archive at runtime and deploys it to the target container. It then negotiates the execution of the test methods and captures the test results using remote communication with the server. Finally, Arquillian undeploys the test archive.
 
-The [POM](https://github.com/tolis-e/arquillian-qunit/blob/master/arquillian-qunit-ftest/pom.xml) configuration file contains two profiles:
+The [POM](https://github.com/arquillian/arquillian-extension-qunit/blob/master/arquillian-qunit-ftest/pom.xml) configuration file contains two profiles:
 
 * arq-jboss-managed — managed container 
 * arq-jboss-remote — remote container
@@ -175,7 +175,6 @@ The execution of the functional test is done through maven:
       */
      @RunWith(QUnitRunner.class)
      @QUnitResources("src/test/resources/assets")
-     @RunAsClient
      public class QUnitRunnerTestCase {
      
          private static final String DEPLOYMENT = "src/test/resources/archives/ticket-monster.war";
