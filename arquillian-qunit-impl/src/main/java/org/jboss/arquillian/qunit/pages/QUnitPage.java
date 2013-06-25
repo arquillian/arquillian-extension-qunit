@@ -17,7 +17,6 @@
 
 package org.jboss.arquillian.qunit.pages;
 
-import static org.jboss.arquillian.graphene.Graphene.element;
 import static org.jboss.arquillian.graphene.Graphene.waitModel;
 
 import java.util.List;
@@ -35,108 +34,129 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 
 /**
- *
+ * 
  * @author Lukas Fryc
  * @author Tolis Emmanouilidis
- *
+ * 
  */
 public class QUnitPage implements QUnitTestPage {
 
-    @FindBy(jquery = "#qunit-testresult .total")
-    WebElement qunitTestResults;
+	@FindBy(jquery = "#qunit-testresult .total")
+	WebElement qunitTestResults;
 
-    @FindBy(jquery = "#qunit-tests > li")
-    List<WebElement> qunitTestsList;
+	@FindBy(jquery = "#qunit-tests > li")
+	List<WebElement> qunitTestsList;
 
-    private static final String moduleNameClassSelector = "module-name";
+	private static final String moduleNameClassSelector = "module-name";
 
-    private static final String qunitTestNameClassSelector = "test-name";
+	private static final String qunitTestNameClassSelector = "test-name";
 
-    private static final String qunitTestRunTimeClassSelector = "runtime";
+	private static final String qunitTestRunTimeClassSelector = "runtime";
 
-    private static final String qunitTestFailedCssSelector = "failed";
+	private static final String qunitTestFailedCssSelector = "failed";
 
-    private static String qunitTestPassedCssSelector = "passed";
+	private static String qunitTestPassedCssSelector = "passed";
 
-    private static final String qunitTestAssertionListJquerySelector = ".qunit-assert-list > li";
+	private static final String qunitTestAssertionListJquerySelector = ".qunit-assert-list > li";
 
-    private static final String assertionSourceJquerySelector = ".test-source td pre";
+	private static final String assertionSourceJquerySelector = ".test-source td pre";
 
-    public void waitUntilTestsExecutionIsCompleted() {
-        waitModel().withTimeout(5, TimeUnit.MINUTES).until(element(qunitTestResults).isVisible());
-    }
+	public void waitUntilTestsExecutionIsCompleted() {
+		waitModel().withTimeout(5, TimeUnit.MINUTES).until()
+				.element(qunitTestResults).is().present();
+	}
 
-    public int getTestsSize() {
-        return qunitTestsList.size();
-    }
+	public int getTestsSize() {
+		return qunitTestsList.size();
+	}
 
-    public QUnitTestImpl[] getTests() {
-        if (!CollectionUtils.isEmpty(qunitTestsList)) {
-            final QUnitTestImpl[] results = new QUnitTestImpl[qunitTestsList.size()];
-            int qunitTestIndex = 0;
-            for (WebElement qunitTest : qunitTestsList) {
-                // workaround to avoid no such element exceptions
-                final List<WebElement> modules = qunitTest.findElements(By.className(moduleNameClassSelector));
-                final String moduleName = (!CollectionUtils.isEmpty(modules)) ? getTrimmedText(modules.get(0)) : null;
+	public QUnitTestImpl[] getTests() {
+		if (!CollectionUtils.isEmpty(qunitTestsList)) {
+			final QUnitTestImpl[] results = new QUnitTestImpl[qunitTestsList
+					.size()];
+			int qunitTestIndex = 0;
+			for (WebElement qunitTest : qunitTestsList) {
+				// workaround to avoid no such element exceptions
+				final List<WebElement> modules = qunitTest.findElements(By
+						.className(moduleNameClassSelector));
+				final String moduleName = (!CollectionUtils.isEmpty(modules)) ? getTrimmedText(modules
+						.get(0)) : null;
 
-                // workaround to avoid no such element exceptions
-                final List<WebElement> names = qunitTest.findElements(By.className(qunitTestNameClassSelector));
-                final String qunitTestName = (!CollectionUtils.isEmpty(names)) ? getTrimmedText(names.get(0)) : null;
+				// workaround to avoid no such element exceptions
+				final List<WebElement> names = qunitTest.findElements(By
+						.className(qunitTestNameClassSelector));
+				final String qunitTestName = (!CollectionUtils.isEmpty(names)) ? getTrimmedText(names
+						.get(0)) : null;
 
-                // workaround to avoid no such element exceptions
-                final List<WebElement> runTimes = qunitTest.findElements(By.className(qunitTestRunTimeClassSelector));
-                final String runTime = (!CollectionUtils.isEmpty(runTimes)) ? getTrimmedText(runTimes.get(0)) : null;
+				// workaround to avoid no such element exceptions
+				final List<WebElement> runTimes = qunitTest.findElements(By
+						.className(qunitTestRunTimeClassSelector));
+				final String runTime = (!CollectionUtils.isEmpty(runTimes)) ? getTrimmedText(runTimes
+						.get(0)) : null;
 
-                final int passed = Integer.valueOf(getTrimmedText(qunitTest.findElement(By
-                        .className(qunitTestPassedCssSelector))));
-                final int failed = Integer.valueOf(getTrimmedText(qunitTest.findElement(By
-                        .className(qunitTestFailedCssSelector))));
+				final int passed = Integer
+						.valueOf(getTrimmedText(qunitTest.findElement(By
+								.className(qunitTestPassedCssSelector))));
+				final int failed = Integer
+						.valueOf(getTrimmedText(qunitTest.findElement(By
+								.className(qunitTestFailedCssSelector))));
 
-                final List<WebElement> assertions = qunitTest.findElements(ByJQuery
-                        .jquerySelector(qunitTestAssertionListJquerySelector));
+				final List<WebElement> assertions = qunitTest
+						.findElements(ByJQuery
+								.jquerySelector(qunitTestAssertionListJquerySelector));
 
-                final QUnitTestImpl qunitTestResult = (new QUnitTestImpl()).setModuleName(moduleName)
-                        .setName(qunitTestName).setPassed(passed).setFailed(failed).setRunTime(runTime)
-                        .setFailed(isQunitTestFailed(failed)).setIndex(qunitTestIndex);
+				final QUnitTestImpl qunitTestResult = (new QUnitTestImpl())
+						.setModuleName(moduleName).setName(qunitTestName)
+						.setPassed(passed).setFailed(failed)
+						.setRunTime(runTime)
+						.setFailed(isQunitTestFailed(failed))
+						.setIndex(qunitTestIndex);
 
-                if (!CollectionUtils.isEmpty(assertions)) {
-                    QUnitAssertionImpl[] qunitAssertions = new QUnitAssertionImpl[assertions.size()];
-                    int assertionIndex = 0;
-                    for (WebElement assertion : assertions) {
-                        final boolean pass = assertion.getAttribute("className").equalsIgnoreCase("pass");
-                        final QUnitAssertionImpl assertionDTO = (new QUnitAssertionImpl()).setFailed(!pass).setMessage(
-                                !pass ? getTrimmedText(assertion.findElement(ByJQuery
-                                        .jquerySelector(assertionSourceJquerySelector))) : null);
-                        qunitAssertions[assertionIndex++] = assertionDTO;
-                    }
-                    qunitTestResult.setAssertions(qunitAssertions);
-                }
+				if (!CollectionUtils.isEmpty(assertions)) {
+					QUnitAssertionImpl[] qunitAssertions = new QUnitAssertionImpl[assertions
+							.size()];
+					int assertionIndex = 0;
+					for (WebElement assertion : assertions) {
+						final boolean pass = assertion
+								.getAttribute("className").equalsIgnoreCase(
+										"pass");
+						final QUnitAssertionImpl assertionDTO = (new QUnitAssertionImpl())
+								.setFailed(!pass)
+								.setMessage(
+										!pass ? getTrimmedText(assertion.findElement(ByJQuery
+												.jquerySelector(assertionSourceJquerySelector)))
+												: null);
+						qunitAssertions[assertionIndex++] = assertionDTO;
+					}
+					qunitTestResult.setAssertions(qunitAssertions);
+				}
 
-                results[qunitTestIndex++] = qunitTestResult;
-            }
-            return results;
-        }
-        return null;
-    }
+				results[qunitTestIndex++] = qunitTestResult;
+			}
+			return results;
+		}
+		return null;
+	}
 
-    public String getFailedAssertionMessages(QUnitAssertionImpl[] assertions) {
-        if (!ArrayUtils.isEmpty(assertions)) {
-            StringBuilder sources = new StringBuilder();
-            for (QUnitAssertionImpl assertion : assertions) {
-                if (assertion.isFailed() && !StringUtils.isEmpty(assertion.getMessage())) {
-                    sources.append(assertion.getMessage()).append(" ");
-                }
-            }
-            return sources.toString();
-        }
-        return "";
-    }
+	public String getFailedAssertionMessages(QUnitAssertionImpl[] assertions) {
+		if (!ArrayUtils.isEmpty(assertions)) {
+			StringBuilder sources = new StringBuilder();
+			for (QUnitAssertionImpl assertion : assertions) {
+				if (assertion.isFailed()
+						&& !StringUtils.isEmpty(assertion.getMessage())) {
+					sources.append(assertion.getMessage()).append(" ");
+				}
+			}
+			return sources.toString();
+		}
+		return "";
+	}
 
-    private String getTrimmedText(WebElement w) {
-        return w != null && w.getText() != null ? w.getText().trim() : null;
-    }
+	private String getTrimmedText(WebElement w) {
+		return w != null && w.getText() != null ? w.getText().trim() : null;
+	}
 
-    private boolean isQunitTestFailed(int failed) {
-        return failed > 0;
-    }
+	private boolean isQunitTestFailed(int failed) {
+		return failed > 0;
+	}
 }

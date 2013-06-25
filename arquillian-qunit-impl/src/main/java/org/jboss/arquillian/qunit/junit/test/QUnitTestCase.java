@@ -62,7 +62,7 @@ public class QUnitTestCase {
 
     public static RunNotifier notifier;
 
-    @Deployment(testable = true)
+    @Deployment(testable = false)
     public static Archive<?> deployment() {
         return DeploymentPackager.createPackage(suite);
     }
