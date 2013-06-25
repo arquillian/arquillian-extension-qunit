@@ -60,7 +60,7 @@
     <modules>
         <module>arquillian-qunit-api</module>
         <module>arquillian-qunit-impl</module>
-        <module>arquillian-qunit-ftest</module>
+        <!--module>arquillian-qunit-ftest</module-->
     </modules>
 
 </project>
