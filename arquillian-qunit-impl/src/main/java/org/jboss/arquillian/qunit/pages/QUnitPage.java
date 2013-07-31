@@ -41,10 +41,10 @@ import org.openqa.selenium.WebElement;
  */
 public class QUnitPage implements QUnitTestPage {
 
-	@FindBy(jquery = "#qunit-testresult .total")
+	@FindBy(css = "#qunit-testresult .total")
 	WebElement qunitTestResults;
 
-	@FindBy(jquery = "#qunit-tests > li")
+	@FindBy(css = "#qunit-tests > li")
 	List<WebElement> qunitTestsList;
 
 	private static final String moduleNameClassSelector = "module-name";
@@ -118,7 +118,7 @@ public class QUnitPage implements QUnitTestPage {
 					int assertionIndex = 0;
 					for (WebElement assertion : assertions) {
 						final boolean pass = assertion
-								.getAttribute("className").equalsIgnoreCase(
+								.getAttribute("class").equalsIgnoreCase(
 										"pass");
 						final QUnitAssertionImpl assertionDTO = (new QUnitAssertionImpl())
 								.setFailed(!pass)
