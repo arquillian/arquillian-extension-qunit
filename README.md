@@ -1,21 +1,28 @@
 # Arquillian QUnit
-The [Arquillian QUnit](https://github.com/arquillian/arquillian-extension-qunit) is an [Arquillian](http://arquillian.org/) extension which automates the QUnit JavaScript testing on Web Applications. [Arquillian](http://arquillian.org/) integrates with the testing framework which is JUnit in this case.
+[Arquillian QUnit](https://github.com/arquillian/arquillian-extension-qunit) is an [Arquillian](http://arquillian.org/) extension which automates the QUnit JavaScript testing on Web Applications. [Arquillian](http://arquillian.org/) integrates with the testing framework which is JUnit in this case.
+
+Arquillian-Qunit knows how many QUnit tests have to be executed before the actual QUnit tests execution. In the case where a Qunit Test Suite is stuck because of a stuck QUnit test, Arquillian-QUnit marks the stuck test and the rest of QUnit tests which are not executed/reached as failed.
+
+For example if you're executing some QUnit tests which perform Ajax requests and the endpoint URL is wrong, you will realize that the QUnit Test Suite will stuck as shown in the below image. Arquillian-QUnit knows that these tests did not finish and marks them as failed.
+
+![Stuck QUnit Test Suite](https://raw.github.com/tolis-e/readme-images/master/qunit-stuck-test.png)
+
+In order to verify this kind of QUnit Test Suite validation, uncomment the corresponding [showcase test](https://github.com/arquillian/arquillian-extension-qunit/blob/master/arquillian-qunit-ftest/src/test/java/org/jboss/arquillian/qunit/junit/ftest/QUnitRunnerTestCase.java#85) and execute the functional test.
+
+The execution results will be:
+
+![Results](https://raw.github.com/tolis-e/readme-images/master/arquillian-qunit-stuck-tests-report.png)
 
 ## Installation
-To install it navigate to the arquillian-qunit-parent project and execute:
+To install it navigate to the arquillian-qunit-qunit folder and execute:
 
     mvn install
 
-## Arquillian QUnit API
-[Arquillian QUnit API](https://github.com/arquillian/arquillian-extension-qunit/tree/master/arquillian-qunit-api)
+## Arquillian QUnit Functional Test / Showcase
+This project contains the functional test / showcase for the Arquillian-QUnit project. Navigate to the arquillian-qunit-ftest project and execute:
 
-## Arquillian QUnit Impl
-The [Arquillian QUnit Impl](https://github.com/arquillian/arquillian-extension-qunit/tree/master/arquillian-qunit-impl) is an implementation of the [Arquillian QUnit API](https://github.com/arquillian/arquillian-extension-qunit/tree/master/arquillian-qunit-api).
-
-## Arquillian QUnit Functional Test
-This project contains the functional tests for the Arquillian-QUnit project.
-
-### Functional Test 
+    mvn test
+ 
 The Arquillian QUnit Functional Test defines the three core aspects needed for the execution of an [Arquillian](http://arquillian.org/) test case:
 
 - container — the runtime environment
@@ -32,11 +39,6 @@ The [POM](https://github.com/arquillian/arquillian-extension-qunit/blob/master/a
 * arq-jboss-remote — remote container
 
 By default the arq-jboss-managed (managed container) profile is active. An Arquillian managed container is a remote container whose lifecycle is managed by Arquillian. The specific profile is also configured to download and unpack the JBoss Application Server 7.1.1.Final distribution zip from the Maven Central repository.
-
-### Functional Test Execution
-The execution of the functional test is done through maven:
-
-    mvn test
 
 ### Instructions to setup a new test case
 
@@ -60,97 +62,12 @@ The execution of the functional test is done through maven:
     * Insert an `iframe` tag inside the `body` tag of your QUnit HTML Test file. The iframe will be used to load your actual test page inside the QUnit Test page.
     
             <iframe height="600" width="1000" id="frame"></iframe>
-    * There are several ways to access the iframe's content. One of them is by using jQuery: `$('#iframeId').contents().find('#menu')`.
-    * In order to avoid hardcoding the host/port on your JavaScript QUnit test Files you can retrieve them from the Window Object `window.location.host`. For more info check the Sample QUnit JS File below.  
+    * In order to avoid hardcoding the host/port on your JavaScript QUnit test Files you can retrieve them from the Window Object `window.location.host`. For more information check the[qunit-tests-dom.js](https://github.com/arquillian/arquillian-extension-qunit/blob/master/arquillian-qunit-ftest/src/test/resources/assets/tests/ticketmonster/test-dom.js) example.
 * Create as many methods inside the test case as the Qunit Test files you want to execute. Each method must have the `@QUnitTest()` annotation which points to a QUnit HTML Test file.
 * In method level you can use the `@InSequence()` annotation to define the execution order.
 
-### Sample QUnit HTML Test File
-
-    <!DOCTYPE html>
-    <!--~
-        ~ JBoss, Home of Professional Open Source
-        ~ Copyright Red Hat, Inc., and individual contributors
-        ~ by the @authors tag. See the copyright.txt in the distribution for a
-        ~ full listing of individual contributors.
-        ~
-        ~ Licensed under the Apache License, Version 2.0 (the "License");
-        ~ you may not use this file except in compliance with the License.
-        ~ You may obtain a copy of the License at
-        ~ http://www.apache.org/licenses/LICENSE-2.0
-        ~ Unless required by applicable law or agreed to in writing, software
-        ~ distributed under the License is distributed on an "AS IS" BASIS,
-        ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-        ~ See the License for the specific language governing permissions and
-        ~ limitations under the License.
-    -->
-    <html>
-        <head>
-            <meta charset="UTF-8" />
-            <title>HTML5 Test Suite</title>
-            <link rel="stylesheet" href="../../qunit/qunit.css" type="text/css" media="screen">
-            <script src="../../jquery/jquery-1.8.2.min.js"></script>
-            <script type="text/javascript" src="../../qunit/qunit.js"></script>
-            <script type="text/javascript" src="../../frameloader/frameloader.js"></script>
-            <script type="text/javascript" src="./test-dom.js"></script>
-        </head>
-        <body>
-            <h1 id="qunit-header">HTML5 Test Suite</h1>
-            <h2 id="qunit-banner"></h2>
-            <div id="qunit-testrunner-toolbar"></div>
-            <h2 id="qunit-userAgent"></h2>
-            <ol id="qunit-tests"></ol>
-            <div id="qunit-fixture">test markup</div>
-            <iframe height="600" width="1000" id="frame"></iframe>
-        </body>
-    </html>
-
-
-### Sample QUnit JS File
-
-    QUnit.config.reorder = false;
-    base = [ "http://", window.location.host, "/ticket-monster/" ].join("");
-    
-    module('Ajax calls');
-    
-    test('Read events', function() {
-        expect(7);
-        stop();
-        $.ajax({
-            url : (base + "rest/events")
-        }).done(function(data) {
-            console.debug(data);
-            equal(data.length, 19, "Received 19 events");
-            event = data[7];
-            notEqual(event.id, undefined, "Event is properly formed");
-            notEqual(event.name, undefined, "Event is properly formed");
-            notEqual(event.description, undefined, "Event is properly formed");
-            notEqual(event.category, undefined, "Event is properly formed");
-            notEqual(event.description, undefined, "Event is properly formed");
-            notEqual(event.mediaItem, undefined, "Event is properly formed");
-            start();
-        })
-    });
-
 ### Sample Test Case
 
-     /*
-      * JBoss, Home of Professional Open Source
-      * Copyright 2013, Red Hat, Inc., and individual contributors
-      * by the @authors tag. See the copyright.txt in the distribution for a
-      * full listing of individual contributors.
-      *
-      * Licensed under the Apache License, Version 2.0 (the "License");
-      * you may not use this file except in compliance with the License.
-      * You may obtain a copy of the License at
-      * http://www.apache.org/licenses/LICENSE-2.0
-      * Unless required by applicable law or agreed to in writing, software
-      * distributed under the License is distributed on an "AS IS" BASIS,
-      * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-      * See the License for the specific language governing permissions and
-      * limitations under the License.
-      */
-     
      package org.jboss.arquillian.qunit.junit.ftest;
      
      import java.io.File;

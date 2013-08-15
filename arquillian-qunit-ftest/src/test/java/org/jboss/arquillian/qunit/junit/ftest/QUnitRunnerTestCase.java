@@ -1,20 +1,19 @@
-/*
+/**
  * JBoss, Home of Professional Open Source
- * Copyright 2013, Red Hat, Inc., and individual contributors
- * by the @authors tag. See the copyright.txt in the distribution for a
- * full listing of individual contributors.
+ * Copyright Red Hat, Inc., and individual contributors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.jboss.arquillian.qunit.junit.ftest;
 
 import java.io.File;
@@ -32,10 +31,10 @@ import org.junit.runner.RunWith;
 
 /**
  * Junit uses the QunitRunner controller as a test controller.
- *
+ * 
  * @author Lukas Fryc
  * @author Tolis Emmanouilidis
- *
+ * 
  */
 @RunWith(QUnitRunner.class)
 @QUnitResources("src/test/resources/assets")
@@ -46,8 +45,7 @@ public class QUnitRunnerTestCase {
 
     /**
      * Creates the Archive which will be finally deployed on the AS.
-     *
-     * @return
+     * 
      */
     @Deployment()
     public static Archive<?> createDeployment() {
@@ -73,12 +71,21 @@ public class QUnitRunnerTestCase {
     }
 
     /**
-     * Test the qunit-tests.html file.
+     * Test the qunitTest.html file.
      */
     @QUnitTest("tests/generic/qunitTest.html")
     @InSequence(3)
     public void qunitAssertionsTest() {
         // empty body - only the annotations are used
     }
+
+    /**
+     * Test the qunitTest.html file.
+     */
+    // @QUnitTest("tests/ticketmonster/qunit-tests-stuck.html")
+    // @InSequence(4)
+    // public void qunitStuckTest() {
+    // // empty body - only the annotations are used
+    // }
 
 }

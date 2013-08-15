@@ -1,5 +1,3 @@
-QUnit.config.reorder = false;
-
 base = [ "http://", window.location.host, "/ticket-monster/" ].join("");
 
 module('Ajax calls');
