@@ -3,7 +3,7 @@
 
 Arquillian-Qunit knows how many QUnit tests have to be executed before the actual QUnit tests execution. In the case where a Qunit Test Suite gets stuck because of a stuck QUnit test, Arquillian-QUnit marks the stuck test and the rest of QUnit tests which are not executed/reached as failed.
 
-For example if you're executing some QUnit tests which perform Ajax requests and the endpoint URL is wrong, you will realize that the QUnit Test Suite will get stuck as shown in the below image. Arquillian-QUnit knows that these tests did not finish and marks them as failed.
+For example when executing these [QUnit tests](https://github.com/arquillian/arquillian-extension-qunit/blob/master/arquillian-qunit-ftest/src/test/resources/assets/tests/ticketmonster/test-stuck.js) you will realize that the QUnit Test Suite gets stuck as shown in the below image. Arquillian-QUnit knows that these tests did not finish and marks them as failed.
 
 ![Stuck QUnit Test Suite](https://raw.github.com/tolis-e/readme-images/master/qunit-stuck-test.png)
 
