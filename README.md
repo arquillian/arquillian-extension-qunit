@@ -13,8 +13,8 @@ The execution results will be:
 
 ![Results](https://raw.github.com/tolis-e/readme-images/master/arquillian-qunit-stuck-tests-report.png)
 
-## Installation
-To install it navigate to the arquillian-qunit-qunit folder and execute:
+## Arquillian-QUnit Installation
+To install it navigate to the arquillian-extension-qunit folder and execute:
 
     mvn install
 
