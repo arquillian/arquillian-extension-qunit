@@ -49,7 +49,14 @@ import org.openqa.selenium.htmlunit.HtmlUnitDriver;
  */
 public class SuiteReader {
 
-    private static final String qunitReaderJS = "(function(a){if(a.QUnit!==undefined){a.qunitTestArr=a.qunitTestArr||[];if(!String.prototype.trim){String.prototype.trim=function(){return this.replace(/^\\s+|\\s+$/g,\"\")}}a.test=function(b,d,e,c){a.qunitTestArr.push(((QUnit.config.currentModule&&String(QUnit.config.currentModule).trim()!==\"\")?QUnit.config.currentModule:\"\")+\":\"+((b&&b.trim()!==\"\")?b:\"\"))};a.asyncTest=function(b,c,d){a.qunitTestArr.push(((QUnit.config.currentModule&&String(QUnit.config.currentModule).trim()!==\"\")?QUnit.config.currentModule:\"\")+\":\"+((b&&b.trim()!==\"\")?b:\"\"))};a.QUnit.test=function(b,d,e,c){a.qunitTestArr.push(((QUnit.config.currentModule&&String(QUnit.config.currentModule).trim()!==\"\")?QUnit.config.currentModule:\"\")+\":\"+((b&&b.trim()!==\"\")?b:\"\"))};a.QUnit.asyncTest=function(b,c,d){a.qunitTestArr.push(((QUnit.config.currentModule&&String(QUnit.config.currentModule).trim()!==\"\")?QUnit.config.currentModule:\"\")+\":\"+((b&&b.trim()!==\"\")?b:\"\"))}}})(this); \n \n";
+    private static final String qunitReaderJS = "(function(a){if(a.QUnit!==undefined){a.qunitTestArr=a.qunitTestArr||[];if(!String.prototype.trim){String.prototype.trim=function(){return this.replace(/^\\s+|\\s+$/g,\"\")}}a.test=function(b,d,e,c){a.qunitTestArr.push(((QUnit.config.currentModule&&String(QUnit.config.currentModule).trim()!==\"\")?QUnit.config.currentModule:\"\")+\""
+            + QUnitConstants.DELIMITER
+            + "\"+((b&&b.trim()!==\"\")?b:\"\"))};a.asyncTest=function(b,c,d){a.qunitTestArr.push(((QUnit.config.currentModule&&String(QUnit.config.currentModule).trim()!==\"\")?QUnit.config.currentModule:\"\")+\""
+            + QUnitConstants.DELIMITER
+            + "\"+((b&&b.trim()!==\"\")?b:\"\"))};a.QUnit.test=function(b,d,e,c){a.qunitTestArr.push(((QUnit.config.currentModule&&String(QUnit.config.currentModule).trim()!==\"\")?QUnit.config.currentModule:\"\")+\""
+            + QUnitConstants.DELIMITER
+            + "\"+((b&&b.trim()!==\"\")?b:\"\"))};a.QUnit.asyncTest=function(b,c,d){a.qunitTestArr.push(((QUnit.config.currentModule&&String(QUnit.config.currentModule).trim()!==\"\")?QUnit.config.currentModule:\"\")+\""
+            + QUnitConstants.DELIMITER + "\"+((b&&b.trim()!==\"\")?b:\"\"))}}})(this); \n \n";
 
     private static final String tmpFolder = "target/qunit-temp";
 
@@ -68,7 +75,7 @@ public class SuiteReader {
 
                 HtmlUnitDriver driver = new HtmlUnitDriver(true);
 
-                //int testIndex = 0;
+                // int testIndex = 0;
                 for (TestMethod method : qunitTestMethods) {
                     if (!StringUtils.isEmpty(method.getQunitTestFile())) {
 
@@ -88,10 +95,15 @@ public class SuiteReader {
 
                             for (ConsString moduleConsString : qunitTestList) {
 
-                                final String[] parts = moduleConsString.toString().split(":");
+                                String moduleTestNameStr = moduleConsString.toString();
 
-                                QUnitTestImpl test = new QUnitTestImpl().setModuleName(parts[0]).setName(parts[1]);
-                                //test.setIndex(testIndex++);
+                                int delimiterIndex = moduleTestNameStr.indexOf(QUnitConstants.DELIMITER);
+
+                                String moduleName = moduleTestNameStr.substring(0, delimiterIndex);
+                                String testName = moduleTestNameStr.substring(delimiterIndex + QUnitConstants.DELIMITER.length());
+
+                                QUnitTestImpl test = new QUnitTestImpl().setModuleName(moduleName).setName(testName);
+                                // test.setIndex(testIndex++);
 
                                 qunitFileName_TestsHM.get(method.getQunitTestFile()).add(test.getDescriptionName());
                             }

@@ -18,6 +18,7 @@ package org.jboss.arquillian.qunit.junit.model;
 
 import org.apache.commons.lang3.StringUtils;
 import org.jboss.arquillian.qunit.api.model.QUnitTest;
+import org.jboss.arquillian.qunit.junit.utils.QUnitConstants;
 
 /**
  * 
@@ -115,7 +116,7 @@ public class QUnitTestImpl implements QUnitTest {
     }
 
     public String getDescriptionName() {
-        return (new StringBuilder()).append(StringUtils.trimToEmpty(this.moduleName)).append(":")
+        return (new StringBuilder()).append(StringUtils.trimToEmpty(this.moduleName)).append(QUnitConstants.DELIMITER)
                 .append(StringUtils.trimToEmpty(this.name)).toString();
     }
 

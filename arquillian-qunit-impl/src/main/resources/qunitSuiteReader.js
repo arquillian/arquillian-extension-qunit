@@ -30,7 +30,7 @@
                     .push(((QUnit.config.currentModule && String(
                             QUnit.config.currentModule).trim() !== "") ? QUnit.config.currentModule
                             : "")
-                            + ":"
+                            + "!_ARQ_!"
                             + ((testName && testName.trim() !== "") ? testName
                                     : ""));
         };
@@ -40,7 +40,7 @@
                     .push(((QUnit.config.currentModule && String(
                             QUnit.config.currentModule).trim() !== "") ? QUnit.config.currentModule
                             : "")
-                            + ":"
+                            + "!_ARQ_!"
                             + ((testName && testName.trim() !== "") ? testName
                                     : ""));
         };
@@ -50,7 +50,7 @@
                     .push(((QUnit.config.currentModule && String(
                             QUnit.config.currentModule).trim() !== "") ? QUnit.config.currentModule
                             : "")
-                            + ":"
+                            + "!_ARQ_!"
                             + ((testName && testName.trim() !== "") ? testName
                                     : ""));
         };
@@ -60,7 +60,7 @@
                     .push(((QUnit.config.currentModule && String(
                             QUnit.config.currentModule).trim() !== "") ? QUnit.config.currentModule
                             : "")
-                            + ":"
+                            + "!_ARQ_!"
                             + ((testName && testName.trim() !== "") ? testName
                                     : ""));
         };

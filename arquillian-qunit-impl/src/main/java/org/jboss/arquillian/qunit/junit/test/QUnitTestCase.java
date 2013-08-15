@@ -31,6 +31,7 @@ import org.jboss.arquillian.qunit.api.model.QUnitAssertion;
 import org.jboss.arquillian.qunit.api.model.QUnitTest;
 import org.jboss.arquillian.qunit.api.model.TestMethod;
 import org.jboss.arquillian.qunit.api.model.TestSuite;
+import org.jboss.arquillian.qunit.junit.utils.QUnitConstants;
 import org.jboss.arquillian.qunit.pages.QUnitPage;
 import org.jboss.arquillian.test.api.ArquillianResource;
 import org.jboss.shrinkwrap.api.Archive;
@@ -93,7 +94,8 @@ public class QUnitTestCase {
                             final Description desc = Description.createTestDescription(testMethod.getMethod()
                                     .getDeclaringClass(), getTestNameForNotifier(notFinishedTest));
 
-                            notifier.fireTestFailure(new Failure(desc, new Exception("QUnit test was not executed or stuck and did not finish within time")));
+                            notifier.fireTestFailure(new Failure(desc, new Exception(
+                                    "QUnit test was not executed or stuck and did not finish within time")));
 
                             addNotifiedTest(notFinishedTest);
                         }
@@ -157,8 +159,10 @@ public class QUnitTestCase {
     private String getTestNameForNotifier(String testName) {
         final int testIndex = getIndexForTest(testName);
 
-        return (testIndex > 1) ? new StringBuilder().append(testName).append(" (").append(testIndex).append(")").toString()
-                : testName;
+        return (testIndex > 1) ? new StringBuilder().append("module_name: ")
+                .append(testName.replace(QUnitConstants.DELIMITER, " test_name: ")).append(" (").append(testIndex).append(")")
+                .toString() : new StringBuilder().append("module_name: ")
+                .append(testName.replace(QUnitConstants.DELIMITER, " test_name: ")).toString();
     }
 
     private void addNotifiedTest(String testName) {
