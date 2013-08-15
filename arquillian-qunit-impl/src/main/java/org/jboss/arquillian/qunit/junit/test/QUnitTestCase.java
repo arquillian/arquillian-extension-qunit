@@ -93,7 +93,7 @@ public class QUnitTestCase {
                             final Description desc = Description.createTestDescription(testMethod.getMethod()
                                     .getDeclaringClass(), getTestNameForNotifier(notFinishedTest));
 
-                            notifier.fireTestFailure(new Failure(desc, new Exception("QUnitTest was not executed after 2 minutes")));
+                            notifier.fireTestFailure(new Failure(desc, new Exception("QUnit test stuck and did not finish within time")));
 
                             addNotifiedTest(notFinishedTest);
                         }
