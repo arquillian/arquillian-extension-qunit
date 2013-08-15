@@ -1,13 +1,13 @@
 # Arquillian QUnit
 [Arquillian QUnit](https://github.com/arquillian/arquillian-extension-qunit) is an [Arquillian](http://arquillian.org/) extension which automates the QUnit JavaScript testing on Web Applications. [Arquillian](http://arquillian.org/) integrates with the testing framework which is JUnit in this case.
 
-Arquillian-Qunit knows how many QUnit tests have to be executed before the actual QUnit tests execution. In the case where a Qunit Test Suite is stuck because of a stuck QUnit test, Arquillian-QUnit marks the stuck test and the rest of QUnit tests which are not executed/reached as failed.
+Arquillian-Qunit knows how many QUnit tests have to be executed before the actual QUnit tests execution. In the case where a Qunit Test Suite gets stuck because of a stuck QUnit test, Arquillian-QUnit marks the stuck test and the rest of QUnit tests which are not executed/reached as failed.
 
-For example if you're executing some QUnit tests which perform Ajax requests and the endpoint URL is wrong, you will realize that the QUnit Test Suite will stuck as shown in the below image. Arquillian-QUnit knows that these tests did not finish and marks them as failed.
+For example if you're executing some QUnit tests which perform Ajax requests and the endpoint URL is wrong, you will realize that the QUnit Test Suite will get stuck as shown in the below image. Arquillian-QUnit knows that these tests did not finish and marks them as failed.
 
 ![Stuck QUnit Test Suite](https://raw.github.com/tolis-e/readme-images/master/qunit-stuck-test.png)
 
-In order to verify this kind of QUnit Test Suite validation, uncomment the corresponding [showcase test](https://github.com/arquillian/arquillian-extension-qunit/blob/master/arquillian-qunit-ftest/src/test/java/org/jboss/arquillian/qunit/junit/ftest/QUnitRunnerTestCase.java#85) and execute the functional test.
+In order to verify this kind of QUnit Test Suite validation, uncomment the corresponding [showcase test](https://github.com/arquillian/arquillian-extension-qunit/blob/master/arquillian-qunit-ftest/src/test/java/org/jboss/arquillian/qunit/junit/ftest/QUnitRunnerTestCase.java#L85) and execute the functional test.
 
 The execution results will be:
 
