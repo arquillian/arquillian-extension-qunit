@@ -218,7 +218,7 @@ The execution of the functional test is done through maven:
      
      }
      
-## Known Limitations / Future Extensions
+## Known Limitations
 The run/execution time printed in the report  is not accurate.
 
 ## Documentation
