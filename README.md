@@ -54,7 +54,7 @@ By default the arq-jboss-managed (managed container) profile is active. An Arqui
 * Create a new Java Class which will be the test case and configure the below annotations in TYPE/Class level:
     * `@RunWith(QUnitRunner.class)` — Instructs JUnit to use the QUnitRunner as test controller.
     * `@QUnitResources("src/test/resources/assets")` — Points to the assets folder where the QUnit HTML Test Files, QUnit JS, JQuery JS reside.
-* In some cases we want our QUnit Tests to test a Web Application. In such cases you can setup your test case as following:
+* In some cases you might want your QUnit Tests to test pages of a Web Application. In such cases you can setup your test case as following:
     * Add a method with the `@Deployment()` annotation inside the test case. This method should create the Archive which will be deployed on the container. For more information you may check the [Arquillian Create Deployable Archives with ShrinkWrap](http://arquillian.org/guides/shrinkwrap_introduction/) guide.
     * Insert the frameloader JavaScript file to the `<head>` section of the QUnit HTML test file by adding:
 
@@ -62,7 +62,7 @@ By default the arq-jboss-managed (managed container) profile is active. An Arqui
     * Insert an `iframe` tag inside the `body` tag of your QUnit HTML Test file. The iframe will be used to load your actual test page inside the QUnit Test page.
     
             <iframe height="600" width="1000" id="frame"></iframe>
-    * In order to avoid hardcoding the host/port on your JavaScript QUnit test Files you can retrieve them from the Window Object `window.location.host`. For more information check the[qunit-tests-dom.js](https://github.com/arquillian/arquillian-extension-qunit/blob/master/arquillian-qunit-ftest/src/test/resources/assets/tests/ticketmonster/test-dom.js) example.
+    * In order to avoid hardcoding the host/port on your JavaScript QUnit test Files you can retrieve them from the Window Object `window.location.host`. For more information check the [qunit-tests-dom.js](https://github.com/arquillian/arquillian-extension-qunit/blob/master/arquillian-qunit-ftest/src/test/resources/assets/tests/ticketmonster/test-dom.js) example.
 * Create as many methods inside the test case as the Qunit Test files you want to execute. Each method must have the `@QUnitTest()` annotation which points to a QUnit HTML Test file.
 * In method level you can use the `@InSequence()` annotation to define the execution order.
 
