@@ -1,5 +1,5 @@
 # Arquillian QUnit
-[Arquillian QUnit](https://github.com/arquillian/arquillian-extension-qunit) is an [Arquillian](http://arquillian.org/) extension which automates the QUnit JavaScript testing on Web Applications. [Arquillian](http://arquillian.org/) integrates with the testing framework which is JUnit in this case.
+[Arquillian QUnit](https://github.com/arquillian/arquillian-extension-qunit) is an [Arquillian](http://arquillian.org/) extension which automates QUnit JavaScript unit testing. It integrates transparently with the JUnit testing framework and therefore can be easily used in continuous integration environments.
 
 Arquillian-Qunit knows how many QUnit tests have to be executed before the actual QUnit tests execution. In the case where a Qunit Test Suite gets stuck because of a stuck QUnit test, Arquillian-QUnit marks the stuck test and the rest of QUnit tests which are not executed/reached as failed.
 
