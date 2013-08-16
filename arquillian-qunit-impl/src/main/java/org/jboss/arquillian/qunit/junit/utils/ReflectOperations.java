@@ -19,6 +19,7 @@ package org.jboss.arquillian.qunit.junit.utils;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -30,11 +31,14 @@ import org.apache.commons.lang3.ArrayUtils;
  * @author Tolis Emmanouilidis
  * 
  */
-public class ReflectOperations {
+public final class ReflectOperations {
 
-    private static final Logger logger = Logger.getLogger(ReflectOperations.class.getSimpleName());
+    private ReflectOperations() {
+    }
 
-    public static final Method findFirstMethodWithAnnotation(Method[] m, Class<? extends Annotation> c) {
+    private static final Logger LOGGER = Logger.getLogger(ReflectOperations.class.getName());
+
+    public static Method findFirstMethodWithAnnotation(Method[] m, Class<? extends Annotation> c) {
         if (!ArrayUtils.isEmpty(m) && c != null) {
             for (Method method : m) {
                 if (m != null && method.isAnnotationPresent(c)) {
@@ -45,22 +49,22 @@ public class ReflectOperations {
         return null;
     }
 
-    public static final Object invokeMethod(Method m, Object caller, Object... args) {
+    public static Object invokeMethod(Method m, Object caller, Object... args) {
         try {
             return m != null ? m.invoke(caller, args) : null;
         } catch (Exception e) {
-            logger.log(Level.SEVERE, "Exception", e);
+            LOGGER.log(Level.SEVERE, "invokeMethod Error", e);
         }
         return null;
     }
 
-    public static final Annotation getAnnotation(Method m, Class<? extends Annotation> annotationClass) {
+    public static Annotation getAnnotation(Method m, Class<? extends Annotation> annotationClass) {
         return m != null ? m.getAnnotation(annotationClass) : null;
     }
 
-    public static final ArrayList<Annotation> getAnnotations(Method[] m, Class<? extends Annotation> annotationClass) {
+    public static List<Annotation> getAnnotations(Method[] m, Class<? extends Annotation> annotationClass) {
         if (!ArrayUtils.isEmpty(m)) {
-            final ArrayList<Annotation> al = new ArrayList<Annotation>();
+            final List<Annotation> al = new ArrayList<Annotation>();
             for (Method method : m) {
                 final Annotation annotation = getAnnotation(method, annotationClass);
                 if (annotation != null) {

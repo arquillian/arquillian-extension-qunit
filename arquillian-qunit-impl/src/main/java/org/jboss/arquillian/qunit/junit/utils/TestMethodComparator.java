@@ -26,11 +26,13 @@ import org.jboss.arquillian.qunit.api.model.TestMethod;
  * @author Tolis Emmanouilidis
  * 
  */
-public class TestMethodComparator implements Comparator<TestMethod> {
-
-    private static final TestMethodComparator instance = new TestMethodComparator();
+public final class TestMethodComparator implements Comparator<TestMethod> {
 
     private TestMethodComparator() {
+    }
+
+    private static class SingletonHolder {
+        public static final TestMethodComparator INSTANCE = new TestMethodComparator();
     }
 
     public int compare(TestMethod q1, TestMethod q2) {
@@ -38,6 +40,6 @@ public class TestMethodComparator implements Comparator<TestMethod> {
     }
 
     public static TestMethodComparator getInstance() {
-        return TestMethodComparator.instance;
+        return SingletonHolder.INSTANCE;
     }
 }

@@ -34,40 +34,40 @@ public interface TestSuite {
      * 
      * @return Suite Class
      */
-    public Class<?> getSuiteClass();
+    Class<?> getSuiteClass();
 
     /**
      * Returns the Type/Class annotations.
      * 
      * @return {@link Annotation}
      */
-    public Annotation[] getTypeAnnotations();
+    Annotation[] getTypeAnnotations();
 
     /**
      * Returns the {@link TestMethod} included inside the suite.
      * 
      * @return {@link TestMethod} array
      */
-    public TestMethod[] getTestMethods();
+    TestMethod[] getTestMethods();
 
     /**
      * Returns the {@link DeploymentMethod} included inside the suite.
      * 
      * @return {@link DeploymentMethod}
      */
-    public DeploymentMethod getDeploymentMethod();
+    DeploymentMethod getDeploymentMethod();
 
     /**
      * Returns the QUnit resources path.
      * 
      * @return QUnit Resources path
      */
-    public String getQUnitResources();
+    String getQUnitResourcesPath();
 
     /**
      * Returns the JUnit Decsription.
      * 
      * @return JUnit Description
      */
-    public Description getDescription();
+    Description getDescription();
 }

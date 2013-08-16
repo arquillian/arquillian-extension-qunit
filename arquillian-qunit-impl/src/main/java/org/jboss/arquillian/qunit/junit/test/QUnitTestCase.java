@@ -16,9 +16,13 @@
  */
 package org.jboss.arquillian.qunit.junit.test;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -52,26 +56,28 @@ import org.openqa.selenium.WebDriver;
 @RunAsClient
 public class QUnitTestCase {
 
+    private static final Logger LOGGER = Logger.getLogger(QUnitTestCase.class.getName());
+
     @ArquillianResource
     private URL contextPath;
 
     @Drone
-    WebDriver driver;
+    private WebDriver driver;
 
     @Page
-    QUnitPage qunitPage;
+    private QUnitPage qunitPage;
 
-    public static HashMap<String, Integer> testName_OccurencesHM = new HashMap<String, Integer>();
+    private static Map<String, Integer> testOccurencesHM = new HashMap<String, Integer>();
 
-    public static TestSuite suite;
+    private static TestSuite suite;
 
-    public static RunNotifier notifier;
+    private static RunNotifier notifier;
 
-    public static HashMap<String, List<String>> qunitFileName_TestsHM = null;
+    private static Map<String, List<String>> qunitSuiteNameTestsHM = null;
 
     @Deployment(testable = false)
-    public static Archive<?> deployment() {
-        return DeploymentPackager.createPackage(suite);
+    public static Archive<?> deployment() throws IOException {
+        return DeploymentPackager.getInstance().createPackage(suite);
     }
 
     @Test
@@ -79,17 +85,13 @@ public class QUnitTestCase {
         final TestMethod[] qunitTestMethods = suite.getTestMethods();
         if (!ArrayUtils.isEmpty(qunitTestMethods)) {
             for (TestMethod testMethod : qunitTestMethods) {
-                if (!StringUtils.isEmpty(testMethod.getQunitTestFile())) {
+                if (!StringUtils.isEmpty(testMethod.getQUnitTestSuiteFilePath())) {
 
-                    try {
-                        executeQunitTestFile(testMethod);
-                    } catch (Exception ex) {
-                        ex.printStackTrace();
-                    }
+                    executeQunitTestSuite(testMethod);
 
-                    if (qunitFileName_TestsHM.get(testMethod.getQunitTestFile()) != null
-                            && !qunitFileName_TestsHM.get(testMethod.getQunitTestFile()).isEmpty()) {
-                        for (String notFinishedTest : qunitFileName_TestsHM.get(testMethod.getQunitTestFile())) {
+                    if (qunitSuiteNameTestsHM.get(testMethod.getQUnitTestSuiteFilePath()) != null
+                            && !qunitSuiteNameTestsHM.get(testMethod.getQUnitTestSuiteFilePath()).isEmpty()) {
+                        for (String notFinishedTest : qunitSuiteNameTestsHM.get(testMethod.getQUnitTestSuiteFilePath())) {
 
                             final Description desc = Description.createTestDescription(testMethod.getMethod()
                                     .getDeclaringClass(), getTestNameForNotifier(notFinishedTest));
@@ -106,49 +108,52 @@ public class QUnitTestCase {
         }
     }
 
-    private void executeQunitTestFile(TestMethod testMethod) {
-        driver.get((new StringBuilder()).append(contextPath.toExternalForm()).append(testMethod.getQunitTestFile()).toString());
+    private void executeQunitTestSuite(TestMethod testMethod) {
 
         try {
+
+            driver.get((new StringBuilder()).append(contextPath.toExternalForm())
+                    .append(testMethod.getQUnitTestSuiteFilePath()).toString());
+
             qunitPage.waitUntilTestsExecutionIsCompleted();
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
 
-        final QUnitTest[] qunitTests = qunitPage.getTests();
-        if (!ArrayUtils.isEmpty(qunitTests)) {
-            final Description suiteDescription = Description.createSuiteDescription(testMethod.getMethod().getDeclaringClass()
-                    .getName(), testMethod.getMethod().getAnnotations());
-            for (QUnitTest qunitTestResult : qunitTests) {
+            final QUnitTest[] qunitTests = qunitPage.getTests();
+            if (!ArrayUtils.isEmpty(qunitTests)) {
+                final Description suiteDescription = Description.createSuiteDescription(testMethod.getMethod()
+                        .getDeclaringClass().getName(), testMethod.getMethod().getAnnotations());
+                for (QUnitTest qunitTestResult : qunitTests) {
 
-                final String descriptionName = qunitTestResult.getDescriptionName();
+                    final String descriptionName = qunitTestResult.getDescriptionName();
 
-                final Description testDescription = Description.createTestDescription(testMethod.getMethod()
-                        .getDeclaringClass(), getTestNameForNotifier(descriptionName));
+                    if (qunitSuiteNameTestsHM != null
+                            && qunitSuiteNameTestsHM.containsKey(testMethod.getQUnitTestSuiteFilePath())
+                            && qunitSuiteNameTestsHM.get(testMethod.getQUnitTestSuiteFilePath()) != null
+                            && qunitSuiteNameTestsHM.get(testMethod.getQUnitTestSuiteFilePath()).contains(descriptionName)) {
 
-                if (qunitFileName_TestsHM != null && qunitFileName_TestsHM.containsKey(testMethod.getQunitTestFile())) {
+                        qunitSuiteNameTestsHM.get(testMethod.getQUnitTestSuiteFilePath()).remove(
+                                qunitSuiteNameTestsHM.get(testMethod.getQUnitTestSuiteFilePath()).indexOf(descriptionName));
 
-                    if (qunitFileName_TestsHM.get(testMethod.getQunitTestFile()) != null
-                            && qunitFileName_TestsHM.get(testMethod.getQunitTestFile()).contains(
-                                    qunitTestResult.getDescriptionName())) {
-                        qunitFileName_TestsHM.get(testMethod.getQunitTestFile()).remove(
-                                qunitFileName_TestsHM.get(testMethod.getQunitTestFile()).indexOf(descriptionName));
                     }
+
+                    final Description notifierDescription = Description.createTestDescription(testMethod.getMethod()
+                            .getDeclaringClass(), getTestNameForNotifier(descriptionName));
+
+                    suiteDescription.addChild(notifierDescription);
+                    notifier.fireTestStarted(notifierDescription);
+                    if (qunitTestResult.isFailed()) {
+                        notifier.fireTestFailure(new Failure(notifierDescription, new Exception(
+                                generateFailedMessage(qunitTestResult.getAssertions()))));
+                    } else {
+                        notifier.fireTestFinished(notifierDescription);
+                    }
+
+                    addNotifiedTest(descriptionName);
                 }
 
-                suiteDescription.addChild(testDescription);
-                notifier.fireTestStarted(testDescription);
-                if (qunitTestResult.isFailed()) {
-                    notifier.fireTestFailure(new Failure(testDescription, new Exception(generateFailedMessage(qunitTestResult
-                            .getAssertions()))));
-                } else {
-                    notifier.fireTestFinished(testDescription);
-                }
-
-                addNotifiedTest(descriptionName);
+                suite.getDescription().addChild(suiteDescription);
             }
-
-            suite.getDescription().addChild(suiteDescription);
+        } catch (Exception ex) {
+            LOGGER.log(Level.SEVERE, "Error: executeQunitTestSuite: ", ex);
         }
     }
 
@@ -166,11 +171,43 @@ public class QUnitTestCase {
     }
 
     private void addNotifiedTest(String testName) {
-        testName_OccurencesHM.put(testName,
-                testName_OccurencesHM.containsKey(testName) ? (testName_OccurencesHM.get(testName) + 1) : 1);
+        testOccurencesHM.put(testName, testOccurencesHM.containsKey(testName) ? (testOccurencesHM.get(testName) + 1) : 1);
     }
 
     private int getIndexForTest(String testName) {
-        return testName_OccurencesHM.containsKey(testName) ? (testName_OccurencesHM.get(testName) + 1) : 1;
+        return testOccurencesHM.containsKey(testName) ? (testOccurencesHM.get(testName) + 1) : 1;
     }
+
+    public static TestSuite getSuite() {
+        return suite;
+    }
+
+    public static void setSuite(TestSuite suite) {
+        QUnitTestCase.suite = suite;
+    }
+
+    public static RunNotifier getNotifier() {
+        return notifier;
+    }
+
+    public static void setNotifier(RunNotifier notifier) {
+        QUnitTestCase.notifier = notifier;
+    }
+
+    public static Map<String, List<String>> getQunitSuiteNameTestsHM() {
+        return qunitSuiteNameTestsHM;
+    }
+
+    public static void setQunitSuiteNameTestsHM(Map<String, List<String>> qunitSuiteNameTestsHM) {
+        QUnitTestCase.qunitSuiteNameTestsHM = qunitSuiteNameTestsHM;
+    }
+
+    public static Map<String, Integer> getTestOccurencesHM() {
+        return testOccurencesHM;
+    }
+
+    public static void setTestOccurencesHM(Map<String, Integer> testOccurencesHM) {
+        QUnitTestCase.testOccurencesHM = testOccurencesHM;
+    }
+
 }

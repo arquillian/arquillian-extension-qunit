@@ -17,9 +17,13 @@
 package org.jboss.arquillian.qunit.pages;
 
 import static org.jboss.arquillian.graphene.Graphene.waitModel;
+import static org.jboss.arquillian.qunit.junit.utils.WebElementUtils.getTextForElement;
+import static org.jboss.arquillian.qunit.junit.utils.WebElementUtils.getTrimmedText;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.ArrayUtils;
@@ -42,28 +46,34 @@ import org.openqa.selenium.WebElement;
  */
 public class QUnitPage implements QUnitTestPage {
 
+    private static final Logger LOGGER = Logger.getLogger(QUnitPage.class.getName());
+
     @FindBy(jquery = "#qunit-testresult .total")
-    WebElement qunitTestResults;
+    private WebElement qunitTestResults;
 
     @FindBy(jquery = "#qunit-tests > li")
-    List<WebElement> qunitTestsList;
+    private List<WebElement> qunitTestsList;
 
-    private static final String moduleNameClassSelector = "module-name";
+    private static final String MODULE_NAME_CLASS = "module-name";
 
-    private static final String qunitTestNameClassSelector = "test-name";
+    private static final String QUNIT_TEST_NAME_CLASS = "test-name";
 
-    private static final String qunitTestRunTimeClassSelector = "runtime";
+    private static final String QUNIT_TEST_RUNTIME_CLASS = "runtime";
 
-    private static final String qunitTestFailedCssSelector = "failed";
+    private static final String QUNIT_ASSERTIONS_FAILED_CLASS = "failed";
 
-    private static String qunitTestPassedCssSelector = "passed";
+    private static final String QUNIT_ASSERTIONS_PASSED_CLASS = "passed";
 
-    private static final String qunitTestAssertionListJquerySelector = ".qunit-assert-list > li";
+    private static final String QUNIT_ASSERTIONS_SELECTOR = ".qunit-assert-list > li";
 
-    private static final String assertionSourceJquerySelector = ".test-source td pre";
+    private static final String ASSERTIONS_SOURCE_SELECTOR = ".test-source td pre";
 
     public void waitUntilTestsExecutionIsCompleted() {
-        waitModel().withTimeout(2, TimeUnit.MINUTES).until().element(qunitTestResults).is().present();
+        try {
+            waitModel().withTimeout(2, TimeUnit.MINUTES).until().element(qunitTestResults).is().present();
+        } catch (Exception ex) {
+            LOGGER.log(Level.SEVERE, "Error: waitUntilTestsExecutionIsCompleted: Possible stuck suite: ", ex);
+        }
     }
 
     public int getTestsSize() {
@@ -76,38 +86,34 @@ public class QUnitPage implements QUnitTestPage {
             int qunitTestIndex = 0;
             for (WebElement qunitTest : qunitTestsList) {
                 try {
-                    // workaround to avoid no such element exceptions
-                    final List<WebElement> modules = qunitTest.findElements(By.className(moduleNameClassSelector));
-                    final String moduleName = (!CollectionUtils.isEmpty(modules)) ? getTrimmedText(modules.get(0)) : null;
 
-                    // workaround to avoid no such element exceptions
-                    final List<WebElement> names = qunitTest.findElements(By.className(qunitTestNameClassSelector));
-                    final String qunitTestName = (!CollectionUtils.isEmpty(names)) ? getTrimmedText(names.get(0)) : null;
+                    final String moduleName = getTextForElement(qunitTest.findElements(By.className(MODULE_NAME_CLASS)), 0);
 
-                    // workaround to avoid no such element exceptions
-                    final List<WebElement> runTimes = qunitTest.findElements(By.className(qunitTestRunTimeClassSelector));
-                    final String runTime = (!CollectionUtils.isEmpty(runTimes)) ? getTrimmedText(runTimes.get(0)) : null;
+                    final String qunitTestName = getTextForElement(qunitTest.findElements(By.className(QUNIT_TEST_NAME_CLASS)),
+                            0);
+
+                    final String runTime = getTextForElement(qunitTest.findElements(By.className(QUNIT_TEST_RUNTIME_CLASS)), 0);
 
                     final int passed = Integer.valueOf(getTrimmedText(qunitTest.findElement(By
-                            .className(qunitTestPassedCssSelector))));
+                            .className(QUNIT_ASSERTIONS_PASSED_CLASS))));
                     final int failed = Integer.valueOf(getTrimmedText(qunitTest.findElement(By
-                            .className(qunitTestFailedCssSelector))));
+                            .className(QUNIT_ASSERTIONS_FAILED_CLASS))));
 
                     final List<WebElement> assertions = qunitTest.findElements(ByJQuery
-                            .jquerySelector(qunitTestAssertionListJquerySelector));
+                            .jquerySelector(QUNIT_ASSERTIONS_SELECTOR));
 
-                    final QUnitTestImpl qunitTestResult = (new QUnitTestImpl()).setModuleName(moduleName)
-                            .setName(qunitTestName).setPassed(passed).setFailed(failed).setRunTime(runTime)
+                    final QUnitTest qunitTestResult = (new QUnitTestImpl()).setModuleName(moduleName).setName(qunitTestName)
+                            .setPassedAssertions(passed).setFailedAssertions(failed).setRunTime(runTime)
                             .setFailed(isQunitTestFailed(failed));
 
                     if (!CollectionUtils.isEmpty(assertions)) {
-                        QUnitAssertionImpl[] qunitAssertions = new QUnitAssertionImpl[assertions.size()];
+                        QUnitAssertion[] qunitAssertions = new QUnitAssertionImpl[assertions.size()];
                         int assertionIndex = 0;
                         for (WebElement assertion : assertions) {
                             final boolean pass = assertion.getAttribute("className").equalsIgnoreCase("pass");
-                            final QUnitAssertionImpl assertionDTO = (new QUnitAssertionImpl()).setFailed(!pass).setMessage(
+                            final QUnitAssertion assertionDTO = (new QUnitAssertionImpl()).setFailed(!pass).setMessage(
                                     !pass ? getTrimmedText(assertion.findElement(ByJQuery
-                                            .jquerySelector(assertionSourceJquerySelector))) : null);
+                                            .jquerySelector(ASSERTIONS_SOURCE_SELECTOR))) : null);
                             qunitAssertions[assertionIndex++] = assertionDTO;
                         }
                         qunitTestResult.setAssertions(qunitAssertions);
@@ -115,7 +121,7 @@ public class QUnitPage implements QUnitTestPage {
 
                     results[qunitTestIndex++] = qunitTestResult;
                 } catch (Exception ignore) {
-                    ignore.printStackTrace();
+                    LOGGER.log(Level.WARNING, "QUnitPage: getTests: Possible stuck suite: Error", ignore);
                 }
             }
             return results;
@@ -134,10 +140,6 @@ public class QUnitPage implements QUnitTestPage {
             return sources.toString();
         }
         return "";
-    }
-
-    private String getTrimmedText(WebElement w) {
-        return w != null && w.getText() != null ? w.getText().trim() : null;
     }
 
     private boolean isQunitTestFailed(int failed) {

@@ -30,60 +30,66 @@ public interface QUnitTest {
      * 
      * @return true or false
      */
-    public boolean isFailed();
+    boolean isFailed();
 
     /**
      * Returns the {@link QUnitAssertion} contained inside a QUnit test.
      * 
      * @return {@link QUnitAssertion} array
      */
-    public QUnitAssertion[] getAssertions();
-
-    
-    /**
-     * Sets the assertion's index position.
-     */
-    public void setIndex(int index);
+    QUnitAssertion[] getAssertions();
 
     /**
      * Returns the QUnit test's name.
      * 
      * @return Name
      */
-    public String getName();
+    String getName();
 
     /**
      * Returns the QUnit test's module name.
      * 
      * @return true or false.
      */
-    public String getModuleName();
+    String getModuleName();
 
     /**
      * Returns the QUnit test's run time execution.
      * 
      * @return RunTime
      */
-    public String getRunTime();
+    String getRunTime();
 
     /**
      * Returns the number of passed assertions.
      * 
      * @return Passed
      */
-    public int getPassed();
+    int getPassedAssertions();
 
     /**
      * Returns the number of failed assertions.
      * 
      * @return Failed
      */
-    public int getFailed();
+    int getFailedAssertions();
 
     /**
      * Returns the unique description name of the QUnit test.
      * 
      * @return Description Name
      */
-    public String getDescriptionName();
+    String getDescriptionName();
+
+    QUnitTest setAssertions(QUnitAssertion[] qunitAssertions);
+
+    QUnitTest setName(String qunitTestName);
+
+    QUnitTest setPassedAssertions(int passed);
+
+    QUnitTest setFailedAssertions(int failed);
+
+    QUnitTest setRunTime(String runTime);
+
+    QUnitTest setFailed(boolean failed);
 }

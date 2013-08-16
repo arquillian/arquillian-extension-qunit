@@ -18,6 +18,7 @@ package org.jboss.arquillian.qunit.junit;
 
 import java.util.LinkedList;
 
+import org.jboss.arquillian.qunit.api.exceptions.ArquillianQunitException;
 import org.jboss.arquillian.qunit.api.model.TestSuite;
 import org.jboss.arquillian.qunit.junit.model.TestSuiteImpl;
 import org.jboss.arquillian.qunit.junit.test.QUnitTestCase;
@@ -26,6 +27,7 @@ import org.junit.runner.JUnitCore;
 import org.junit.runner.Runner;
 import org.junit.runner.notification.RunNotifier;
 import org.junit.runners.Suite;
+import org.junit.runners.model.InitializationError;
 
 /**
  * 
@@ -39,16 +41,16 @@ public class QUnitRunner extends Suite {
 
     private Description desc;
 
-    public QUnitRunner(Class<?> suiteClass) throws Exception {
+    public QUnitRunner(Class<?> suiteClass) throws InitializationError, ArquillianQunitException {
         super(suiteClass, new LinkedList<Runner>());
-        this.suite = new TestSuiteImpl(suiteClass);
+        this.suite = new TestSuiteImpl(suiteClass).build();
     }
 
     @Override
     public void run(RunNotifier notifier) {
         JUnitCore core = new JUnitCore();
-        QUnitTestCase.notifier = notifier;
-        QUnitTestCase.suite = suite;
+        QUnitTestCase.setNotifier(notifier);
+        QUnitTestCase.setSuite(suite);
         core.run(QUnitTestCase.class);
     }
 

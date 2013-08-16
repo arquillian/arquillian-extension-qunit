@@ -16,7 +16,10 @@
  */
 package org.jboss.arquillian.qunit.junit.model;
 
+import java.util.Arrays;
+
 import org.apache.commons.lang3.StringUtils;
+import org.jboss.arquillian.qunit.api.model.QUnitAssertion;
 import org.jboss.arquillian.qunit.api.model.QUnitTest;
 import org.jboss.arquillian.qunit.junit.utils.QUnitConstants;
 
@@ -36,37 +39,29 @@ public class QUnitTestImpl implements QUnitTest {
 
     private boolean isFailed;
 
-    private int passed;
+    private int passedAssertions;
 
-    private int failed;
+    private int failedAssertions;
 
-    private int index;
-
-    private QUnitAssertionImpl[] assertions;
+    private QUnitAssertion[] assertions;
 
     public boolean isFailed() {
         return isFailed;
     }
 
-    public QUnitTestImpl setFailed(boolean isFailed) {
+    public QUnitTest setFailed(boolean isFailed) {
         this.isFailed = isFailed;
         return this;
     }
 
-    public QUnitAssertionImpl[] getAssertions() {
+    public QUnitAssertion[] getAssertions() {
         return assertions;
     }
 
-    public int getIndex() {
-        return index;
-    }
-
-    public void setIndex(int index) {
-        this.index = index;
-    }
-
-    public QUnitTestImpl setAssertions(QUnitAssertionImpl[] assertions) {
-        this.assertions = assertions;
+    public QUnitTest setAssertions(QUnitAssertion[] assertions) {
+        if (assertions != null) {
+            this.assertions = Arrays.copyOf(assertions, assertions.length);
+        }
         return this;
     }
 
@@ -74,7 +69,7 @@ public class QUnitTestImpl implements QUnitTest {
         return name;
     }
 
-    public QUnitTestImpl setName(String name) {
+    public QUnitTest setName(String name) {
         this.name = name;
         return this;
     }
@@ -83,7 +78,7 @@ public class QUnitTestImpl implements QUnitTest {
         return moduleName;
     }
 
-    public QUnitTestImpl setModuleName(String moduleName) {
+    public QUnitTest setModuleName(String moduleName) {
         this.moduleName = moduleName;
         return this;
     }
@@ -92,26 +87,26 @@ public class QUnitTestImpl implements QUnitTest {
         return runTime;
     }
 
-    public QUnitTestImpl setRunTime(String runTime) {
+    public QUnitTest setRunTime(String runTime) {
         this.runTime = runTime;
         return this;
     }
 
-    public int getPassed() {
-        return passed;
+    public int getPassedAssertions() {
+        return passedAssertions;
     }
 
-    public QUnitTestImpl setPassed(int passed) {
-        this.passed = passed;
+    public QUnitTest setPassedAssertions(int passed) {
+        this.passedAssertions = passed;
         return this;
     }
 
-    public int getFailed() {
-        return failed;
+    public int getFailedAssertions() {
+        return failedAssertions;
     }
 
-    public QUnitTestImpl setFailed(int failed) {
-        this.failed = failed;
+    public QUnitTest setFailedAssertions(int failed) {
+        this.failedAssertions = failed;
         return this;
     }
 
@@ -124,7 +119,7 @@ public class QUnitTestImpl implements QUnitTest {
     public String toString() {
         return (new StringBuilder()).append(super.toString()).append(" [moduleName=").append(this.moduleName).append(", name=")
                 .append(this.name).append(", isFailed=").append(this.isFailed).append(", runTime=").append(this.runTime)
-                .append(", passed=").append(this.passed).append(", failed=").append(this.failed).append(", asssertions=")
-                .append(assertions).append("]").toString();
+                .append(", passed=").append(this.passedAssertions).append(", failed=").append(this.failedAssertions)
+                .append(", asssertions=").append(assertions).append("]").toString();
     }
 }

@@ -16,9 +16,10 @@
  */
 package org.jboss.arquillian.qunit.junit.test;
 
+import java.io.IOException;
+
 import org.jboss.arquillian.qunit.api.model.DeploymentMethod;
 import org.jboss.arquillian.qunit.api.model.TestSuite;
-import org.jboss.arquillian.qunit.junit.utils.SuiteReader;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.Filters;
 import org.jboss.shrinkwrap.api.GenericArchive;
@@ -32,22 +33,32 @@ import org.jboss.shrinkwrap.api.spec.WebArchive;
  * @author Tolis Emmanouilidis
  * 
  */
-public class DeploymentPackager {
+public final class DeploymentPackager {
 
-    private static final String TEST_ARCHIVE_FILE_NAME = "test.war";
+    private static final String TEST_ARCHIVE = "test.war";
 
-    public static final Archive<?> createPackage(TestSuite suite) {
+    private DeploymentPackager() {
+    }
+
+    private static class SingletonHolder {
+        public static final DeploymentPackager INSTANCE = new DeploymentPackager();
+    }
+
+    public static DeploymentPackager getInstance() {
+        return SingletonHolder.INSTANCE;
+    }
+
+    public Archive<?> createPackage(TestSuite suite) throws IOException {
         final DeploymentMethod deploymentMethod = suite.getDeploymentMethod();
         final Archive<?> archive = deploymentMethod != null ? deploymentMethod.getArchive() : ShrinkWrap.create(
-                WebArchive.class, TEST_ARCHIVE_FILE_NAME);
+                WebArchive.class, TEST_ARCHIVE);
 
         archive.merge(
-                ShrinkWrap.create(GenericArchive.class).as(ExplodedImporter.class).importDirectory(suite.getQUnitResources())
-                        .as(GenericArchive.class), "/", Filters.includeAll());
+                ShrinkWrap.create(GenericArchive.class).as(ExplodedImporter.class)
+                        .importDirectory(suite.getQUnitResourcesPath()).as(GenericArchive.class), "/", Filters.includeAll());
 
-        QUnitTestCase.qunitFileName_TestsHM = SuiteReader.readQUnitTests(archive, suite);
+        QUnitTestCase.setQunitSuiteNameTestsHM(SuiteReader.getInstance().readQUnitTests(archive, suite));
 
         return archive;
     }
-
 }

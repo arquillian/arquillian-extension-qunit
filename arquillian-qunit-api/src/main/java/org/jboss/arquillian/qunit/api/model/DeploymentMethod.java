@@ -34,12 +34,12 @@ public interface DeploymentMethod {
      * 
      * @return Method
      */
-    public Method getMethod();
+    Method getMethod();
 
     /**
      * Returns the Archive which will be deployed on the container.
      * 
      * @return Archive
      */
-    public Archive<?> getArchive();
+    Archive<?> getArchive();
 }

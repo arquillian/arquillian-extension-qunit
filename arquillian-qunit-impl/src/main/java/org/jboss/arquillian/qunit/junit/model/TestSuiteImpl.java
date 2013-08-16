@@ -33,10 +33,10 @@ import org.jboss.arquillian.qunit.junit.utils.TestMethodComparator;
 import org.junit.runner.Description;
 
 /**
- *
+ * 
  * @author Lukas Fryc
  * @author Tolis Emmanouilidis
- *
+ * 
  */
 public class TestSuiteImpl implements TestSuite {
 
@@ -48,14 +48,13 @@ public class TestSuiteImpl implements TestSuite {
 
     private Class<?> suiteClass;
 
-    private String qunitReqources;
-    
+    private String qunitReqourcesPath;
+
     private Description description;
 
     public TestSuiteImpl(Class<?> suite) throws ArquillianQunitException {
         this.suiteClass = suite;
         this.validateSuite();
-        this.build();
     }
 
     @Override
@@ -79,8 +78,8 @@ public class TestSuiteImpl implements TestSuite {
     }
 
     @Override
-    public String getQUnitResources() {
-        return this.qunitReqources;
+    public String getQUnitResourcesPath() {
+        return this.qunitReqourcesPath;
     }
 
     private void addTestMethod(TestMethod m, int index) {
@@ -99,13 +98,13 @@ public class TestSuiteImpl implements TestSuite {
         }
         return;
     }
-    
+
     @Override
     public Description getDescription() {
         return this.description;
     }
-    
-    private void build() {
+
+    public TestSuite build() {
         this.description = Description.createSuiteDescription(this.suiteClass);
         final Method[] methods = this.suiteClass.getMethods();
         if (!ArrayUtils.isEmpty(methods)) {
@@ -117,11 +116,11 @@ public class TestSuiteImpl implements TestSuite {
             Arrays.sort(this.getTestMethods(), TestMethodComparator.getInstance());
         }
         this.annotations = this.suiteClass.getAnnotations();
-        this.qunitReqources = this.suiteClass.getAnnotation(QUnitResources.class).value();
+        this.qunitReqourcesPath = this.suiteClass.getAnnotation(QUnitResources.class).value();
         final Method deployMethod = ReflectOperations.findFirstMethodWithAnnotation(getSuiteClass().getMethods(),
                 Deployment.class);
         this.deploymentMethod = (deployMethod != null) ? new DeploymentMethodImpl(deployMethod) : null;
-        return;
+        return this;
     }
 
 }

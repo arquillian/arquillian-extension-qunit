@@ -21,8 +21,15 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
-public class FileOperations {
+public final class FileOperations {
+
+    private static final Logger LOGGER = Logger.getLogger(FileOperations.class.getName());
+
+    private FileOperations() {
+    }
 
     public static String readFile(String fileNamePath) {
 
@@ -36,12 +43,12 @@ public class FileOperations {
                 sb.append("\n");
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            LOGGER.log(Level.SEVERE, "readFile Error", e);
         } finally {
             try {
                 br.close();
             } catch (Exception ignore) {
-                ignore.printStackTrace();
+                LOGGER.log(Level.WARNING, "readFile: resourse not closed", ignore);
             }
         }
         return sb.toString();
@@ -55,12 +62,12 @@ public class FileOperations {
             bw = new BufferedWriter(fw);
             bw.write(str);
         } catch (Exception e) {
-            e.printStackTrace();
+            LOGGER.log(Level.SEVERE, "writeToFile Error", e);
         } finally {
             try {
                 bw.close();
             } catch (Exception ignore) {
-                ignore.printStackTrace();
+                LOGGER.log(Level.WARNING, "writeToFile: resourse not closed", ignore);
             }
         }
     }

@@ -32,19 +32,19 @@ public interface TestMethod {
      * 
      * @return {@link Method}
      */
-    public Method getMethod();
+    Method getMethod();
 
     /**
      * The method's sequence.
      * 
      * @return Sequence
      */
-    public int getSequence();
+    int getSequence();
 
     /**
      * The Qunit Test File which corresponds to this method.
      * 
-     * @return QUnit Test File
+     * @return QUnit TestSuite File path
      */
-    public String getQunitTestFile();
+    String getQUnitTestSuiteFilePath();
 }

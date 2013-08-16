@@ -30,12 +30,12 @@ public interface QUnitAssertion {
      * 
      * @return true or false
      */
-    public boolean isFailed();
+    boolean isFailed();
 
     /**
      * Returns the assertion's message.
      * 
      * @return Message
      */
-    public String getMessage();
+    String getMessage();
 }

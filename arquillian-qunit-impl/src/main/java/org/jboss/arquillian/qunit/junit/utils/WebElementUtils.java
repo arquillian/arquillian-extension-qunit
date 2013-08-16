@@ -16,10 +16,21 @@
  */
 package org.jboss.arquillian.qunit.junit.utils;
 
-public final class QUnitConstants {
+import java.util.List;
 
-    private QUnitConstants() {
+import org.apache.commons.collections.CollectionUtils;
+import org.openqa.selenium.WebElement;
+
+public final class WebElementUtils {
+
+    private WebElementUtils() {
     }
 
-    public static final String DELIMITER = "!__ARQ-QUnit__!";
+    public static String getTrimmedText(WebElement w) {
+        return w != null && w.getText() != null ? w.getText().trim() : null;
+    }
+
+    public static String getTextForElement(List<WebElement> list, int index) {
+        return !CollectionUtils.isEmpty(list) && list.size() >= index ? getTrimmedText(list.get(index)) : null;
+    }
 }

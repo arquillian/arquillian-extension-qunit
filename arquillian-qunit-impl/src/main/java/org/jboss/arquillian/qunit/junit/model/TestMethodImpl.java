@@ -54,7 +54,7 @@ public class TestMethodImpl implements TestMethod {
     }
 
     @Override
-    public String getQunitTestFile() {
+    public String getQUnitTestSuiteFilePath() {
         return this.qunitTestFile;
     }
 

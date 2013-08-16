@@ -30,19 +30,19 @@ public interface QUnitTestPage {
     /**
      * Waits until the tests execution is completed.
      */
-    public void waitUntilTestsExecutionIsCompleted();
+    void waitUntilTestsExecutionIsCompleted();
 
     /**
      * Finds how many tests exist inside the QUnit page.
      * 
      * @return Tests size
      */
-    public int getTestsSize();
+    int getTestsSize();
 
     /**
      * Returns the QUnit tests.
      * 
      * @return {@link QUnitTest}
      */
-    public QUnitTest[] getTests();
+    QUnitTest[] getTests();
 }
