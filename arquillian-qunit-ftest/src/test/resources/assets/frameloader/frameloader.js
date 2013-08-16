@@ -1,3 +1,6 @@
+
+//http://amalkov.blogspot.cz/2011/02/testing-your-web-application-with-qunit.html
+
 var frame = {
 
     go : function(url) {
