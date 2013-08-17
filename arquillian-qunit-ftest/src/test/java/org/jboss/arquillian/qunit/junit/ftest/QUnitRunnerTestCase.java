@@ -47,7 +47,7 @@ public class QUnitRunnerTestCase {
      * Creates the Archive which will be finally deployed on the AS.
      * 
      */
-    @Deployment()
+    @Deployment
     public static Archive<?> createDeployment() {
         return ShrinkWrap.createFromZipFile(WebArchive.class, new File(DEPLOYMENT));
     }
