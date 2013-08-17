@@ -20,7 +20,6 @@ import java.lang.reflect.Method;
 
 import org.jboss.arquillian.qunit.api.model.DeploymentMethod;
 import org.jboss.arquillian.qunit.junit.utils.ReflectOperations;
-import org.jboss.shrinkwrap.api.Archive;
 
 /**
  * 
@@ -40,8 +39,8 @@ public class DeploymentMethodImpl implements DeploymentMethod {
         return method;
     }
 
-    public Archive<?> getArchive() {
-        return this.getMethod() != null ? (Archive<?>) ReflectOperations.invokeMethod(this.getMethod(), this.getMethod()
-                .getDeclaringClass()) : null;
+    public Object getArchive() {
+        return this.getMethod() != null ? ReflectOperations
+                .invokeMethod(this.getMethod(), this.getMethod().getDeclaringClass()) : null;
     }
 }

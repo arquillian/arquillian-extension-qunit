@@ -25,6 +25,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import net.sourceforge.htmlunit.corejs.javascript.ConsString;
 
@@ -52,6 +54,8 @@ import org.openqa.selenium.htmlunit.HtmlUnitDriver;
  */
 public final class SuiteReader {
 
+    private static final Logger LOGGER = Logger.getLogger(SuiteReader.class.getName());
+
     private SuiteReader() {
     }
 
@@ -72,8 +76,6 @@ public final class SuiteReader {
             .append(QUnitConstants.DELIMITER)
             .append("\"+((b&&b.trim()!==\"\")?b:\"\"))};a.QUnit.asyncTest=function(b,c,d){a.qunitTestArr.push(((QUnit.config.currentModule&&String(QUnit.config.currentModule).trim()!==\"\")?QUnit.config.currentModule:\"\")+\"")
             .append(QUnitConstants.DELIMITER).append("\"+((b&&b.trim()!==\"\")?b:\"\"))}}})(this); \n \n").toString();
-
-    private static final String TMP_FOLDER = "target/qunit-temp";
 
     private static final String JS_PATTERN = "([^\\s]+(\\.(js))$)";
 
@@ -96,8 +98,8 @@ public final class SuiteReader {
 
                     qunitSuiteNameTestsHM.put(method.getQUnitTestSuiteFilePath(), new ArrayList<String>());
 
-                    final String qunitTestFilePath = TMP_FOLDER + "/" + archive.getName() + "/"
-                            + method.getQUnitTestSuiteFilePath();
+                    final String qunitTestFilePath = (new StringBuilder()).append(QUnitConstants.TMP_FOLDER).append("/")
+                            .append(archive.getName()).append("/").append(method.getQUnitTestSuiteFilePath()).toString();
 
                     URL url = new File(qunitTestFilePath).toURI().toURL();
 
@@ -124,17 +126,22 @@ public final class SuiteReader {
             }
         }
 
+        try {
+            FileOperations.deleteDirectory(QUnitConstants.TMP_FOLDER);
+        } catch (IOException ignore) {
+            LOGGER.log(Level.WARNING, "deleteDirectory Error", ignore);
+        }
+
         return qunitSuiteNameTestsHM;
     }
 
-    private static void injectQUnitSuiteReader(Archive<?> archive) throws IOException {
-        final File destinationDir = new File(TMP_FOLDER);
-        destinationDir.mkdir();
-        archive.as(ExplodedExporter.class).exportExploded(destinationDir);
+    private void injectQUnitSuiteReader(Archive<?> archive) throws IOException {
+        final File tempFolder = FileOperations.createDirectory(QUnitConstants.TMP_FOLDER);
+        archive.as(ExplodedExporter.class).exportExploded(tempFolder);
 
         for (Entry<ArchivePath, Node> entry : archive.getContent(Filters.include(JS_PATTERN)).entrySet()) {
-            final String jsFilePath = (new StringBuilder()).append(TMP_FOLDER).append("/").append(archive.getName())
-                    .append(entry.getValue()).toString();
+            final String jsFilePath = (new StringBuilder()).append(QUnitConstants.TMP_FOLDER).append("/")
+                    .append(archive.getName()).append(entry.getValue()).toString();
             final File jsFile = new File(jsFilePath);
             final String initialJsContent = FileOperations.readFile(jsFilePath);
             jsFile.delete();

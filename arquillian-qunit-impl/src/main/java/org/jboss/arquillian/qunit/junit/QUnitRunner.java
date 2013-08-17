@@ -22,6 +22,7 @@ import org.jboss.arquillian.qunit.api.exceptions.ArquillianQunitException;
 import org.jboss.arquillian.qunit.api.model.TestSuite;
 import org.jboss.arquillian.qunit.junit.model.TestSuiteImpl;
 import org.jboss.arquillian.qunit.junit.test.QUnitTestCase;
+import org.jboss.arquillian.qunit.junit.test.QUnitTestCaseSimple;
 import org.junit.runner.Description;
 import org.junit.runner.JUnitCore;
 import org.junit.runner.Runner;
@@ -49,9 +50,7 @@ public class QUnitRunner extends Suite {
     @Override
     public void run(RunNotifier notifier) {
         JUnitCore core = new JUnitCore();
-        QUnitTestCase.setNotifier(notifier);
-        QUnitTestCase.setSuite(suite);
-        core.run(QUnitTestCase.class);
+        executeTests(core, suite, notifier);
     }
 
     @Override
@@ -61,5 +60,17 @@ public class QUnitRunner extends Suite {
                     .getAnnotations());
         }
         return this.desc;
+    }
+
+    private void executeTests(JUnitCore core, TestSuite suite, RunNotifier notifier) {
+        if (suite.getDeploymentMethod() != null) {
+            QUnitTestCase.setNotifier(notifier);
+            QUnitTestCase.setSuite(suite);
+            core.run(QUnitTestCase.class);
+        } else {
+            QUnitTestCaseSimple.setNotifier(notifier);
+            QUnitTestCaseSimple.setSuite(suite);
+            core.run(QUnitTestCaseSimple.class);
+        }
     }
 }

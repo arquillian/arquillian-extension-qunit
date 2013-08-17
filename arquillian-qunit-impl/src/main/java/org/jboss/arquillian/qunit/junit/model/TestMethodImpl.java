@@ -34,7 +34,7 @@ public class TestMethodImpl implements TestMethod {
 
     private int sequence;
 
-    private String qunitTestFile;
+    private String qunitTestFilePath;
 
     private Method method;
 
@@ -55,14 +55,14 @@ public class TestMethodImpl implements TestMethod {
 
     @Override
     public String getQUnitTestSuiteFilePath() {
-        return this.qunitTestFile;
+        return this.qunitTestFilePath;
     }
 
     private void build() {
         final Annotation inSequence = ReflectOperations.getAnnotation(this.method, InSequence.class);
         this.sequence = inSequence != null ? ((InSequence) inSequence).value() : 0;
         final Annotation qunitTest = ReflectOperations.getAnnotation(this.method, QUnitTest.class);
-        this.qunitTestFile = qunitTest != null ? ((QUnitTest) qunitTest).value() : null;
+        this.qunitTestFilePath = qunitTest != null ? ((QUnitTest) qunitTest).value() : null;
     }
 
 }

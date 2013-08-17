@@ -16,6 +16,7 @@
  */
 package org.jboss.arquillian.qunit.junit.test;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.HashMap;
@@ -26,7 +27,6 @@ import java.util.logging.Logger;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.drone.api.annotation.Drone;
 import org.jboss.arquillian.graphene.spi.annotations.Page;
@@ -35,10 +35,11 @@ import org.jboss.arquillian.qunit.api.model.QUnitAssertion;
 import org.jboss.arquillian.qunit.api.model.QUnitTest;
 import org.jboss.arquillian.qunit.api.model.TestMethod;
 import org.jboss.arquillian.qunit.api.model.TestSuite;
+import org.jboss.arquillian.qunit.junit.utils.FileOperations;
 import org.jboss.arquillian.qunit.junit.utils.QUnitConstants;
 import org.jboss.arquillian.qunit.pages.QUnitPage;
-import org.jboss.arquillian.test.api.ArquillianResource;
 import org.jboss.shrinkwrap.api.Archive;
+import org.jboss.shrinkwrap.api.exporter.ExplodedExporter;
 import org.junit.Test;
 import org.junit.runner.Description;
 import org.junit.runner.RunWith;
@@ -54,12 +55,9 @@ import org.openqa.selenium.WebDriver;
  */
 @RunWith(Arquillian.class)
 @RunAsClient
-public class QUnitTestCase {
+public class QUnitTestCaseSimple {
 
-    private static final Logger LOGGER = Logger.getLogger(QUnitTestCase.class.getName());
-
-    @ArquillianResource
-    private URL contextPath;
+    private static final Logger LOGGER = Logger.getLogger(QUnitTestCaseSimple.class.getName());
 
     @Drone
     private WebDriver driver;
@@ -75,25 +73,20 @@ public class QUnitTestCase {
 
     private static Map<String, List<String>> qunitSuiteNameTestsHM = null;
 
-    private static Archive<?> archive = null;
-
-    @Deployment(testable = false)
-    public static Archive<?> deployment() throws IOException {
-        QUnitTestCase.setArchive(DeploymentPackager.getInstance().createPackage(suite));
-        return QUnitTestCase.getArchive();
-    }
-
     @Test
     public void executeQUnitTestSuites() throws IOException {
-        QUnitTestCase.setQunitSuiteNameTestsHM(SuiteReader.getInstance().readQUnitTests(archive, suite));
-        QUnitTestCase.setArchive(null);
+
+        final Archive<?> archive = DeploymentPackager.getInstance().createPackage(suite);
+        QUnitTestCaseSimple.setQunitSuiteNameTestsHM(SuiteReader.getInstance().readQUnitTests(archive, suite));
+        final File tempFolder = FileOperations.createDirectory(QUnitConstants.TMP_FOLDER);
+        archive.as(ExplodedExporter.class).exportExploded(tempFolder);
 
         final TestMethod[] qunitTestMethods = suite.getTestMethods();
         if (!ArrayUtils.isEmpty(qunitTestMethods)) {
             for (TestMethod testMethod : qunitTestMethods) {
                 if (!StringUtils.isEmpty(testMethod.getQUnitTestSuiteFilePath())) {
 
-                    executeQunitTestSuite(testMethod);
+                    executeQunitTestSuite(testMethod, archive);
 
                     if (qunitSuiteNameTestsHM.get(testMethod.getQUnitTestSuiteFilePath()) != null
                             && !qunitSuiteNameTestsHM.get(testMethod.getQUnitTestSuiteFilePath()).isEmpty()) {
@@ -112,12 +105,23 @@ public class QUnitTestCase {
                 }
             }
         }
+
+        try {
+            FileOperations.deleteDirectory(QUnitConstants.TMP_FOLDER);
+        } catch (IOException ignore) {
+            LOGGER.log(Level.WARNING, "deleteDirectory Error", ignore);
+        }
     }
 
-    private void executeQunitTestSuite(TestMethod testMethod) {
+    private void executeQunitTestSuite(TestMethod testMethod, Archive<?> archive) {
+
         try {
-            driver.get((new StringBuilder()).append(contextPath.toExternalForm())
-                    .append(testMethod.getQUnitTestSuiteFilePath()).toString());
+
+            final String qunitTestFilePath = (new StringBuilder()).append(QUnitConstants.TMP_FOLDER).append("/")
+                    .append(archive.getName()).append("/").append(testMethod.getQUnitTestSuiteFilePath()).toString();
+
+            URL url = new File(qunitTestFilePath).toURI().toURL();
+            driver.get(url.toExternalForm());
 
             qunitPage.waitUntilTestsExecutionIsCompleted();
 
@@ -167,7 +171,6 @@ public class QUnitTestCase {
 
     private String getTestNameForNotifier(String testName) {
         final int testIndex = notifiedTestCounterHM.containsKey(testName) ? (notifiedTestCounterHM.get(testName) + 1) : 1;
-
         return new StringBuilder().append("module: ").append(testName.replace(QUnitConstants.DELIMITER, " test: "))
                 .append(testIndex > 1 ? " " + testIndex : "").toString();
     }
@@ -182,7 +185,7 @@ public class QUnitTestCase {
     }
 
     public static void setSuite(TestSuite suite) {
-        QUnitTestCase.suite = suite;
+        QUnitTestCaseSimple.suite = suite;
     }
 
     public static RunNotifier getNotifier() {
@@ -190,7 +193,7 @@ public class QUnitTestCase {
     }
 
     public static void setNotifier(RunNotifier notifier) {
-        QUnitTestCase.notifier = notifier;
+        QUnitTestCaseSimple.notifier = notifier;
     }
 
     public static Map<String, List<String>> getQunitSuiteNameTestsHM() {
@@ -198,14 +201,7 @@ public class QUnitTestCase {
     }
 
     public static void setQunitSuiteNameTestsHM(Map<String, List<String>> qunitSuiteNameTestsHM) {
-        QUnitTestCase.qunitSuiteNameTestsHM = qunitSuiteNameTestsHM;
+        QUnitTestCaseSimple.qunitSuiteNameTestsHM = qunitSuiteNameTestsHM;
     }
 
-    public static Archive<?> getArchive() {
-        return archive;
-    }
-
-    public static void setArchive(Archive<?> archive) {
-        QUnitTestCase.archive = archive;
-    }
 }

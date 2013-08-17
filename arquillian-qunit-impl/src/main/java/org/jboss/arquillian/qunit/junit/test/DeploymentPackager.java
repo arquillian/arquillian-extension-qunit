@@ -50,14 +50,13 @@ public final class DeploymentPackager {
 
     public Archive<?> createPackage(TestSuite suite) throws IOException {
         final DeploymentMethod deploymentMethod = suite.getDeploymentMethod();
-        final Archive<?> archive = deploymentMethod != null ? deploymentMethod.getArchive() : ShrinkWrap.create(
+        final Object invocationResult = deploymentMethod != null ? deploymentMethod.getArchive() : null;
+        final Archive<?> archive = invocationResult != null ? (Archive<?>) invocationResult : ShrinkWrap.create(
                 WebArchive.class, TEST_ARCHIVE);
 
         archive.merge(
                 ShrinkWrap.create(GenericArchive.class).as(ExplodedImporter.class)
                         .importDirectory(suite.getQUnitResourcesPath()).as(GenericArchive.class), "/", Filters.includeAll());
-
-        QUnitTestCase.setQunitSuiteNameTestsHM(SuiteReader.getInstance().readQUnitTests(archive, suite));
 
         return archive;
     }

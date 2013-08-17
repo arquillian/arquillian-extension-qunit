@@ -1,7 +1,7 @@
 # Arquillian QUnit
 [Arquillian QUnit](https://github.com/arquillian/arquillian-extension-qunit) is an [Arquillian](http://arquillian.org/) extension which automates QUnit JavaScript unit testing. It integrates transparently with the JUnit testing framework and therefore can be easily used in continuous integration environments.
 
-Arquillian-Qunit knows how many QUnit tests have to be executed before the actual QUnit tests execution. In the case where a Qunit Test Suite gets stuck because of a stuck QUnit test, Arquillian-QUnit marks the stuck test and the rest of QUnit tests which are not executed/reached as failed.
+Arquillian-Qunit knows the number of QUnit tests that have to be executed before the actual QUnit tests execution. In the case where a Qunit Test Suite gets stuck because of a stuck QUnit test, Arquillian-QUnit marks the stuck test and the rest of QUnit tests which are not executed/reached as failed.
 
 For example when executing these [QUnit tests](https://github.com/arquillian/arquillian-extension-qunit/blob/master/arquillian-qunit-ftest/src/test/resources/assets/tests/ticketmonster/test-stuck.js) you will realize that the QUnit Test Suite gets stuck as shown in the below image. Arquillian-QUnit knows that these tests did not finish and marks them as failed.
 
@@ -55,7 +55,7 @@ By default the arq-jboss-managed (managed container) profile is active. An Arqui
     * `@RunWith(QUnitRunner.class)` — Instructs JUnit to use the QUnitRunner as test controller.
     * `@QUnitResources("src/test/resources/assets")` — Points to the assets folder where the QUnit HTML Test Files, QUnit JS, JQuery JS reside.
 * In some cases you might want your QUnit Tests to test pages of a Web Application. In such cases you can setup your test case as following:
-    * Add a method with the `@Deployment()` annotation inside the test case. This method should create the Archive which will be deployed on the container. For more information you may check the [Arquillian Create Deployable Archives with ShrinkWrap](http://arquillian.org/guides/shrinkwrap_introduction/) guide.
+    * Add a method with the `@Deployment` annotation inside the test case. This method should create the Archive which will be deployed on the container. For more information you may check the [Arquillian Create Deployable Archives with ShrinkWrap](http://arquillian.org/guides/shrinkwrap_introduction/) guide.
     * Insert the frameloader JavaScript file to the `<head>` section of the QUnit HTML test file by adding:
 
             <script type="text/javascript" src="../../frameloader/frameloader.js"></script>
@@ -63,7 +63,9 @@ By default the arq-jboss-managed (managed container) profile is active. An Arqui
     
             <iframe height="600" width="1000" id="frame"></iframe>
     * In order to avoid hardcoding the host/port on your JavaScript QUnit test Files you can retrieve them from the Window Object `window.location.host`. For more information check the [qunit-tests-dom.js](https://github.com/arquillian/arquillian-extension-qunit/blob/master/arquillian-qunit-ftest/src/test/resources/assets/tests/ticketmonster/test-dom.js) example.
-* Create as many methods inside the test case as the Qunit Test files you want to execute. Each method must have the `@QUnitTest()` annotation which points to a QUnit HTML Test file.
+* If you would like to execute the QUnit Test Suites without deploying any application then do not add any method with the `@Deployment` annotation inside your test.
+* Sometimes you might want the QUnit Test Suites and their relevant resources to be packaged, deployed and executed on a container. This can be done by defining a method with the `@Deployment` annotation and returning null `return null;`.
+* Create as many methods inside the test case as the Qunit Test Suites you want to execute. Each method must have the `@QUnitTest()` annotation which points to a QUnit HTML Test file.
 * In method level you can use the `@InSequence()` annotation to define the execution order.
 
 ### Sample Test Case
@@ -101,7 +103,7 @@ By default the arq-jboss-managed (managed container) profile is active. An Arqui
           *
           * @return Archive
           */
-         @Deployment()
+         @Deployment
          public static Archive<?> createDeployment() {
              return ShrinkWrap.createFromZipFile(WebArchive.class, new File(DEPLOYMENT));
          }
@@ -137,6 +139,7 @@ By default the arq-jboss-managed (managed container) profile is active. An Arqui
      
 ## Known Limitations
 The run/execution time printed in the report  is not accurate.
+Multiple deployments are not supported.
 
 ## Documentation
 

@@ -22,4 +22,6 @@ public final class QUnitConstants {
     }
 
     public static final String DELIMITER = "!__ARQ-QUnit__!";
+
+    public static final String TMP_FOLDER = "target/qunit-temp";
 }

@@ -18,8 +18,6 @@ package org.jboss.arquillian.qunit.api.model;
 
 import java.lang.reflect.Method;
 
-import org.jboss.shrinkwrap.api.Archive;
-
 /**
  * An abstraction for the deployment method.
  * 
@@ -41,5 +39,5 @@ public interface DeploymentMethod {
      * 
      * @return Archive
      */
-    Archive<?> getArchive();
+    Object getArchive();
 }

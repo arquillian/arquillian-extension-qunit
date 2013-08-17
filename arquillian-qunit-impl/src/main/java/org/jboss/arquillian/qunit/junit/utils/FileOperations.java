@@ -21,8 +21,11 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
+import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import org.apache.commons.io.FileUtils;
 
 public final class FileOperations {
 
@@ -70,5 +73,18 @@ public final class FileOperations {
                 LOGGER.log(Level.WARNING, "writeToFile: resourse not closed", ignore);
             }
         }
+    }
+
+    public static void deleteDirectory(String path) throws IOException {
+        File dir = new File(path);
+        if (dir.exists()) {
+            FileUtils.deleteDirectory(dir);
+        }
+    }
+
+    public static File createDirectory(String path) {
+        final File dir = new File(path);
+        dir.mkdir();
+        return dir;
     }
 }
