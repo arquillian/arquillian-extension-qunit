@@ -99,10 +99,12 @@ public class QUnitTestCase {
                             && !qunitSuiteNameTestsHM.get(testMethod.getQUnitTestSuiteFilePath()).isEmpty()) {
                         for (String notFinishedTest : qunitSuiteNameTestsHM.get(testMethod.getQUnitTestSuiteFilePath())) {
 
-                            final Description desc = Description.createTestDescription(testMethod.getMethod()
+                            final Description notifierDescription = Description.createTestDescription(testMethod.getMethod()
                                     .getDeclaringClass(), getTestNameForNotifier(notFinishedTest));
 
-                            notifier.fireTestFailure(new Failure(desc, new Exception(
+                            notifier.fireTestStarted(notifierDescription);
+
+                            notifier.fireTestFailure(new Failure(notifierDescription, new Exception(
                                     "QUnit test was not executed or stuck and did not finish within time")));
 
                             increaseNotifiedTestCounter(notFinishedTest);

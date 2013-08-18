@@ -17,7 +17,7 @@
 (function(window) {
     if (window.QUnit !== undefined) {
         
-        window.qunitTestArr = window.qunitTestArr || [];
+        window.arquillianQUnitTests = window.arquillianQUnitTests || [];
 
         if (!String.prototype.trim) {
             String.prototype.trim = function() {
@@ -26,41 +26,41 @@
         }
 
         window.test = function(testName, expected, callback, async) {
-            window.qunitTestArr
+            window.arquillianQUnitTests
                     .push(((QUnit.config.currentModule && String(
                             QUnit.config.currentModule).trim() !== "") ? QUnit.config.currentModule
                             : "")
-                            + "!_ARQ_!"
+                            + "!__ARQ-QUnit__!"
                             + ((testName && testName.trim() !== "") ? testName
                                     : ""));
         };
 
         window.asyncTest = function(testName, expected, callback) {
-            window.qunitTestArr
+            window.arquillianQUnitTests
                     .push(((QUnit.config.currentModule && String(
                             QUnit.config.currentModule).trim() !== "") ? QUnit.config.currentModule
                             : "")
-                            + "!_ARQ_!"
+                            + "!__ARQ-QUnit__!"
                             + ((testName && testName.trim() !== "") ? testName
                                     : ""));
         };
 
         window.QUnit.test = function(testName, expected, callback, async) {
-            window.qunitTestArr
+            window.arquillianQUnitTests
                     .push(((QUnit.config.currentModule && String(
                             QUnit.config.currentModule).trim() !== "") ? QUnit.config.currentModule
                             : "")
-                            + "!_ARQ_!"
+                            + "!__ARQ-QUnit__!"
                             + ((testName && testName.trim() !== "") ? testName
                                     : ""));
         };
 
         window.QUnit.asyncTest = function(testName, expected, callback) {
-            window.qunitTestArr
+            window.arquillianQUnitTests
                     .push(((QUnit.config.currentModule && String(
                             QUnit.config.currentModule).trim() !== "") ? QUnit.config.currentModule
                             : "")
-                            + "!_ARQ_!"
+                            + "!__ARQ-QUnit__!"
                             + ((testName && testName.trim() !== "") ? testName
                                     : ""));
         };

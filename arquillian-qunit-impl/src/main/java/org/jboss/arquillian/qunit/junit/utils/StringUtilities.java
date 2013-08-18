@@ -16,21 +16,12 @@
  */
 package org.jboss.arquillian.qunit.junit.utils;
 
-import java.util.List;
+public final class StringUtilities {
 
-import org.apache.commons.collections.CollectionUtils;
-import org.openqa.selenium.WebElement;
-
-public final class WebElementUtils {
-
-    private WebElementUtils() {
+    private StringUtilities() {
     }
 
-    public static String getTrimmedText(WebElement w) {
-        return w != null && w.getText() != null ? w.getText().trim() : null;
-    }
-
-    public static String getTextForElement(List<WebElement> list, int index) {
-        return !CollectionUtils.isEmpty(list) && list.size() >= index ? getTrimmedText(list.get(index)) : null;
+    public static String trim(String s) {
+        return s != null ? s.trim() : null;
     }
 }

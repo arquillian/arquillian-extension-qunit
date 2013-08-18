@@ -68,13 +68,13 @@ public final class SuiteReader {
     }
 
     private static final String QUNIT_READER = (new StringBuilder())
-            .append("(function(a){if(a.QUnit!==undefined){a.qunitTestArr=a.qunitTestArr||[];if(!String.prototype.trim){String.prototype.trim=function(){return this.replace(/^\\s+|\\s+$/g,\"\")}}a.test=function(b,d,e,c){a.qunitTestArr.push(((QUnit.config.currentModule&&String(QUnit.config.currentModule).trim()!==\"\")?QUnit.config.currentModule:\"\")+\"")
+            .append("(function(a){if(a.QUnit!==undefined){a.arquillianQUnitTests=a.arquillianQUnitTests||[];if(!String.prototype.trim){String.prototype.trim=function(){return this.replace(/^\\s+|\\s+$/g,\"\")}}a.test=function(b,d,e,c){a.arquillianQUnitTests.push(((QUnit.config.currentModule&&String(QUnit.config.currentModule).trim()!==\"\")?QUnit.config.currentModule:\"\")+\"")
             .append(QUnitConstants.DELIMITER)
-            .append("\"+((b&&b.trim()!==\"\")?b:\"\"))};a.asyncTest=function(b,c,d){a.qunitTestArr.push(((QUnit.config.currentModule&&String(QUnit.config.currentModule).trim()!==\"\")?QUnit.config.currentModule:\"\")+\"")
+            .append("\"+((b&&b.trim()!==\"\")?b:\"\"))};a.asyncTest=function(b,c,d){a.arquillianQUnitTests.push(((QUnit.config.currentModule&&String(QUnit.config.currentModule).trim()!==\"\")?QUnit.config.currentModule:\"\")+\"")
             .append(QUnitConstants.DELIMITER)
-            .append("\"+((b&&b.trim()!==\"\")?b:\"\"))};a.QUnit.test=function(b,d,e,c){a.qunitTestArr.push(((QUnit.config.currentModule&&String(QUnit.config.currentModule).trim()!==\"\")?QUnit.config.currentModule:\"\")+\"")
+            .append("\"+((b&&b.trim()!==\"\")?b:\"\"))};a.QUnit.test=function(b,d,e,c){a.arquillianQUnitTests.push(((QUnit.config.currentModule&&String(QUnit.config.currentModule).trim()!==\"\")?QUnit.config.currentModule:\"\")+\"")
             .append(QUnitConstants.DELIMITER)
-            .append("\"+((b&&b.trim()!==\"\")?b:\"\"))};a.QUnit.asyncTest=function(b,c,d){a.qunitTestArr.push(((QUnit.config.currentModule&&String(QUnit.config.currentModule).trim()!==\"\")?QUnit.config.currentModule:\"\")+\"")
+            .append("\"+((b&&b.trim()!==\"\")?b:\"\"))};a.QUnit.asyncTest=function(b,c,d){a.arquillianQUnitTests.push(((QUnit.config.currentModule&&String(QUnit.config.currentModule).trim()!==\"\")?QUnit.config.currentModule:\"\")+\"")
             .append(QUnitConstants.DELIMITER).append("\"+((b&&b.trim()!==\"\")?b:\"\"))}}})(this); \n \n").toString();
 
     private static final String JS_PATTERN = "([^\\s]+(\\.(js))$)";
@@ -106,7 +106,7 @@ public final class SuiteReader {
                     driver.get(url.toExternalForm());
 
                     @SuppressWarnings("unchecked")
-                    List<ConsString> qunitTestList = (List<ConsString>) driver.executeScript("return window.qunitTestArr");
+                    List<ConsString> qunitTestList = (List<ConsString>) driver.executeScript("return window.arquillianQUnitTests");
 
                     if (!CollectionUtils.isEmpty(qunitTestList)) {
 
