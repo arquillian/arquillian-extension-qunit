@@ -140,6 +140,7 @@ By default the arq-jboss-managed (managed container) profile is active. An Arqui
 ## Known Limitations
 * The run/execution time printed in the report  is not accurate.
 * Multiple deployments are not supported.
+* Supported browsers: Mozilla Firefox, Google Chrome
 
 ## Documentation
 
