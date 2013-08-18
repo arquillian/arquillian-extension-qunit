@@ -31,13 +31,13 @@ import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.drone.api.annotation.Drone;
 import org.jboss.arquillian.graphene.spi.annotations.Page;
 import org.jboss.arquillian.junit.Arquillian;
-import org.jboss.arquillian.qunit.api.model.QUnitAssertion;
 import org.jboss.arquillian.qunit.api.model.QUnitTest;
 import org.jboss.arquillian.qunit.api.model.TestMethod;
 import org.jboss.arquillian.qunit.api.model.TestSuite;
 import org.jboss.arquillian.qunit.junit.utils.FileOperations;
 import org.jboss.arquillian.qunit.junit.utils.QUnitConstants;
-import org.jboss.arquillian.qunit.pages.QUnitPage;
+import org.jboss.arquillian.qunit.junit.utils.ReportUtilities;
+import org.jboss.arquillian.qunit.pages.QUnitSuitePageImpl;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.exporter.ExplodedExporter;
 import org.junit.Test;
@@ -63,7 +63,7 @@ public class QUnitTestCaseSimple {
     private WebDriver driver;
 
     @Page
-    private QUnitPage qunitPage;
+    private QUnitSuitePageImpl qunitPage;
 
     private static Map<String, Integer> notifiedTestCounterHM = new HashMap<String, Integer>();
 
@@ -149,8 +149,8 @@ public class QUnitTestCaseSimple {
                     suiteDescription.addChild(notifierDescription);
                     notifier.fireTestStarted(notifierDescription);
                     if (qunitTestResult.isFailed()) {
-                        notifier.fireTestFailure(new Failure(notifierDescription, new Exception(
-                                generateFailedMessage(qunitTestResult.getAssertions()))));
+                        notifier.fireTestFailure(new Failure(notifierDescription, new Exception(ReportUtilities
+                                .generateFailedAssertionMessage(qunitTestResult.getAssertions()))));
                     } else {
                         notifier.fireTestFinished(notifierDescription);
                     }
@@ -163,10 +163,6 @@ public class QUnitTestCaseSimple {
         } catch (Exception ex) {
             LOGGER.log(Level.SEVERE, "Error: executeQunitTestSuite: ", ex);
         }
-    }
-
-    private String generateFailedMessage(QUnitAssertion[] assertions) {
-        return (new StringBuilder()).append("Failed ").append(qunitPage.getFailedAssertionMessages(assertions)).toString();
     }
 
     private String getTestNameForNotifier(String testName) {

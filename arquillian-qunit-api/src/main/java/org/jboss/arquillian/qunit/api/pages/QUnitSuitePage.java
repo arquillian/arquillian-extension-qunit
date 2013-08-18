@@ -25,19 +25,13 @@ import org.jboss.arquillian.qunit.api.model.QUnitTest;
  * @author Tolis Emmanouilidis
  * 
  */
-public interface QUnitTestPage {
+public interface QUnitSuitePage {
 
     /**
      * Waits until the tests execution is completed.
      */
     void waitUntilTestsExecutionIsCompleted();
 
-    /**
-     * Finds how many tests exist inside the QUnit page.
-     * 
-     * @return Tests size
-     */
-    int getTestsSize();
 
     /**
      * Returns the QUnit tests.

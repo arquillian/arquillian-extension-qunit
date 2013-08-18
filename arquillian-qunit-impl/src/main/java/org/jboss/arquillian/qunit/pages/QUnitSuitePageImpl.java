@@ -24,12 +24,11 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang3.ArrayUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.jboss.arquillian.graphene.enricher.findby.FindBy;
 import org.jboss.arquillian.graphene.spi.javascript.JavaScript;
 import org.jboss.arquillian.qunit.api.model.QUnitAssertion;
 import org.jboss.arquillian.qunit.api.model.QUnitTest;
+import org.jboss.arquillian.qunit.api.pages.QUnitSuitePage;
 import org.jboss.arquillian.qunit.junit.model.QUnitAssertionImpl;
 import org.jboss.arquillian.qunit.junit.model.QUnitTestImpl;
 import org.jboss.arquillian.qunit.junit.utils.StringUtilities;
@@ -43,9 +42,9 @@ import org.openqa.selenium.WebElement;
  * @author Tolis Emmanouilidis
  * 
  */
-public class QUnitPage {
+public class QUnitSuitePageImpl implements QUnitSuitePage {
 
-    private static final Logger LOGGER = Logger.getLogger(QUnitPage.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(QUnitSuitePageImpl.class.getName());
 
     @FindBy(jquery = "#qunit-testresult .total")
     private WebElement qunitTestResults;
@@ -53,7 +52,7 @@ public class QUnitPage {
     private static final String RESULTS_READER_JS = "(function(e){function g(h){if(!h){return null}else{return h.innerText||h.textContent}}function a(k){var j=[];if(k){for(var h=0;h<k.length;h++){var l=g(k[h].querySelector(\".test-source td pre\"));if(l!=null){j.push(l)}}}return j}var f=e.document.querySelectorAll(\"#qunit-tests > li[class~=pass], #qunit-tests > li[class~=fail]\"),c,d;e.arquillianQunitSuiteResults=[];for(var b=0;b<f.length;b++){c=f[b];d=[];d.push(g(c.querySelector(\"span.module-name\")));d.push(g(c.querySelector(\"span.test-name\")));d.push(g(c.querySelector(\"span.runtime\")));d.push(c.getAttribute(\"class\"));d.push(g(c.querySelector(\".failed\")));d.push(g(c.querySelector(\".passed\")));d.push(a(c.querySelectorAll(\".qunit-assert-list > li[class~=fail]\")));e.arquillianQunitSuiteResults.push(d)}})(this);";
 
     @ArquillianResource
-    JavascriptExecutor executor;
+    private JavascriptExecutor executor;
 
     public void waitUntilTestsExecutionIsCompleted() {
         try {
@@ -79,7 +78,6 @@ public class QUnitPage {
                     final String moduleName = StringUtilities.trim((String) qunitTestResultsList.get(0));
                     final String testName = StringUtilities.trim((String) qunitTestResultsList.get(1));
                     final String runTime = StringUtilities.trim((String) qunitTestResultsList.get(2));
-                    // final String statusClass = StringUtilities.trim(qunitTestResultsList.get(3).toString());
                     final int failedAssertions = Integer.valueOf((String) qunitTestResultsList.get(4));
                     final int passedAssertions = Integer.valueOf((String) qunitTestResultsList.get(5));
                     @SuppressWarnings("unchecked")
@@ -106,19 +104,6 @@ public class QUnitPage {
         }
 
         return null;
-    }
-
-    public String getFailedAssertionMessages(QUnitAssertion[] assertions) {
-        if (!ArrayUtils.isEmpty(assertions)) {
-            StringBuilder sources = new StringBuilder();
-            for (QUnitAssertion assertion : assertions) {
-                if (assertion.isFailed() && !StringUtils.isEmpty(assertion.getMessage())) {
-                    sources.append(assertion.getMessage()).append(" ");
-                }
-            }
-            return sources.toString();
-        }
-        return "";
     }
 
     private boolean isQunitTestFailed(int failedAssertions) {
