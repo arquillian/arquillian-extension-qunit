@@ -62,10 +62,12 @@
                 className = element.getAttribute("class");
                 if (className && className === "fail") {
                     var children = element.childNodes;
-                    if (children.length > 0) {
+                    if (children && children.length > 0) {
+                        var tableFound = false;
                         for (var k=0; k<children.length; k++) {
                             var child = children[k];
-                            if (child && child.tagName.toUpperCase() === "TABLE") {
+                            if (child && child.tagName && child.tagName.toUpperCase() === "TABLE") {
+                                tableFound = true;
                                 var testSourceTableRow = getElementsByAttributeValue(child, "class", "test-source");
                                 if (testSourceTableRow && testSourceTableRow.length > 0) {
                                     var testSourceTableData = testSourceTableRow[0].getElementsByTagName("td");
@@ -77,7 +79,18 @@
                                         }
                                     }    
                                 }
-                            }    
+                            } 
+                        }
+                        if (!tableFound) {
+                            var text = innerText(element);
+                            if (text != null) {
+                                assertions.push(text);
+                            }
+                        } 
+                    } else {
+                        var text = innerText(element);
+                        if (text != null) {
+                            assertions.push(text);
                         }
                     }
                 }    
@@ -113,6 +126,9 @@
             failedArr = getElementsByAttributeValue(element, "class", "failed");
             passedArr = getElementsByAttributeValue(element, "class", "passed");
             qunitAssertElement = getElementsByTagNameAndAttributeValue(element, "ol", "class", "qunit-assert-list");
+            if (qunitAssertElement === undefined || qunitAssertElement.length === 0) {
+                qunitAssertElement = element.getElementsByTagName("ol");
+            }
             qunitAssertList = qunitAssertElement && qunitAssertElement.length > 0 ? qunitAssertElement[0].childNodes : null;
             
             item.push(innerText(moduleNameArr && moduleNameArr.length > 0 ? moduleNameArr[0] : null));
