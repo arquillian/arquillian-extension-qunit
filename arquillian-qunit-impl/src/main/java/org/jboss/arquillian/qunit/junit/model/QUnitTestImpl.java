@@ -59,7 +59,7 @@ public class QUnitTestImpl implements QUnitTest {
     }
 
     public QUnitTest setAssertions(QUnitAssertion[] assertions) {
-        if (assertions != null) {
+        if (assertions != null && assertions.length > 0) {
             this.assertions = Arrays.copyOf(assertions, assertions.length);
         }
         return this;

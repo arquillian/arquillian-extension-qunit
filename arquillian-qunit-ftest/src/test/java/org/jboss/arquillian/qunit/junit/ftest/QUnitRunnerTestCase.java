@@ -53,19 +53,10 @@ public class QUnitRunnerTestCase {
     }
 
     /**
-     * Test the qunit-tests-dom.html file.
-     */
-    @QUnitTest("tests/ticketmonster/qunit-tests-dom.html")
-    @InSequence(1)
-    public void qunitDomTest() {
-        // empty body - only the annotations are used
-    }
-
-    /**
      * Test the qunit-tests-ajax.html file.
      */
     @QUnitTest("tests/ticketmonster/qunit-tests-ajax.html")
-    @InSequence(2)
+    @InSequence(1)
     public void qunitAjaxTest() {
         // empty body - only the annotations are used
     }
@@ -74,7 +65,7 @@ public class QUnitRunnerTestCase {
      * Test the qunitTest.html file.
      */
     @QUnitTest("tests/generic/qunitTest.html")
-    @InSequence(3)
+    @InSequence(2)
     public void qunitAssertionsTest() {
         // empty body - only the annotations are used
     }
@@ -83,7 +74,7 @@ public class QUnitRunnerTestCase {
      * Test the qunitTest.html file.
      */
     // @QUnitTest("tests/ticketmonster/qunit-tests-stuck.html")
-    // @InSequence(4)
+    // @InSequence(3)
     // public void qunitStuckTest() {
     // // empty body - only the annotations are used
     // }

@@ -46,10 +46,10 @@ public class QUnitSuitePageImpl implements QUnitSuitePage {
 
     private static final Logger LOGGER = Logger.getLogger(QUnitSuitePageImpl.class.getName());
 
-    @FindBy(jquery = "#qunit-testresult .total")
+    @FindBy(css = "p#qunit-testresult .total")
     private WebElement qunitTestResults;
 
-    private static final String RESULTS_READER_JS = "(function(e){function g(h){if(!h){return null}else{return h.innerText||h.textContent}}function a(k){var j=[];if(k){for(var h=0;h<k.length;h++){var l=g(k[h].querySelector(\".test-source td pre\"));if(l!=null){j.push(l)}}}return j}var f=e.document.querySelectorAll(\"#qunit-tests > li[class~=pass], #qunit-tests > li[class~=fail]\"),c,d;e.arquillianQunitSuiteResults=[];for(var b=0;b<f.length;b++){c=f[b];d=[];d.push(g(c.querySelector(\"span.module-name\")));d.push(g(c.querySelector(\"span.test-name\")));d.push(g(c.querySelector(\"span.runtime\")));d.push(c.getAttribute(\"class\"));d.push(g(c.querySelector(\".failed\")));d.push(g(c.querySelector(\".passed\")));d.push(a(c.querySelectorAll(\".qunit-assert-list > li[class~=fail]\")));e.arquillianQunitSuiteResults.push(d)}})(this);";
+    private static final String RESULTS_READER_JS = "(function(m){function g(i){if(!i){return null}else{return i.innerText||i.textContent}}function j(y,x,t){var w=[];var A=y.getElementsByTagName(\"*\");var v;for(var u=0;u<A.length;u++){v=A[u];var z=v.getAttribute(x);if(z&&z===t){w.push(v)}}return w}function h(v,w,B,A){var x=[];var t=v.getElementsByTagName(w);var y;for(var z=0;z<t.length;z++){y=t[z];var u=y.getAttribute(B);if(u&&u===A){x.push(y)}}return x}function s(A){var D=[];if(A){var y,B;for(var z=0;z<A.length;z++){y=A[z],B=y.getAttribute(\"class\");if(B&&B===\"fail\"){var v=y.childNodes;if(v.length>0){for(var x=0;x<v.length;x++){var u=v[x];if(u&&u.tagName.toUpperCase()===\"TABLE\"){var w=j(u,\"class\",\"test-source\");if(w&&w.length>0){var t=w[0].getElementsByTagName(\"td\");if(t&&t.length>0){var C=g(t[0]);if(C!=null){D.push(C);break}}}}}}}}}return D}var f=m.document.getElementById(\"qunit-tests\"),n=f.childNodes,c,d,r,q,e,l,a,b,k,o;m.arquillianQunitSuiteResults=[];for(var p=0;p<n.length;p++){c=n[p];d=c.getAttribute(\"class\");if(d&&(d===\"pass\"||d===\"fail\")){r=[];q=h(c,\"span\",\"class\",\"module-name\");e=h(c,\"span\",\"class\",\"test-name\");l=h(c,\"span\",\"class\",\"runtime\");a=j(c,\"class\",\"failed\");b=j(c,\"class\",\"passed\");k=h(c,\"ol\",\"class\",\"qunit-assert-list\");o=k&&k.length>0?k[0].childNodes:null;r.push(g(q&&q.length>0?q[0]:null));r.push(g(e&&e.length>0?e[0]:null));r.push(g(l&&l.length>0?l[0]:null));r.push(g(a&&a.length>0?a[0]:null));r.push(g(b&&b.length>0?b[0]:null));r.push(s(o));m.arquillianQunitSuiteResults.push(r)}}})(this);";
 
     @ArquillianResource
     private JavascriptExecutor executor;
@@ -63,44 +63,48 @@ public class QUnitSuitePageImpl implements QUnitSuitePage {
     }
 
     public QUnitTest[] getTests() {
+        try {
+            executor.executeScript(JavaScript.fromString(RESULTS_READER_JS).getSourceCode(), new Object[0]);
 
-        executor.executeScript(JavaScript.fromString(RESULTS_READER_JS).getSourceCode(), new Object[0]);
+            @SuppressWarnings("unchecked")
+            List<List<Object>> qunitSuiteResults = (List<List<Object>>) executor.executeScript(
+                    "return window.arquillianQunitSuiteResults;", new Object[0]);
 
-        @SuppressWarnings("unchecked")
-        List<List<Object>> qunitSuiteResults = (List<List<Object>>) executor.executeScript(
-                "return window.arquillianQunitSuiteResults;", new Object[0]);
+            if (!CollectionUtils.isEmpty(qunitSuiteResults)) {
+                final QUnitTest[] results = new QUnitTestImpl[qunitSuiteResults.size()];
+                int qunitTestIndex = 0;
+                for (List<Object> qunitTestResultsList : qunitSuiteResults) {
+                    if (!CollectionUtils.isEmpty(qunitTestResultsList)) {
+                        final String moduleName = StringUtilities.trim((String) qunitTestResultsList.get(0));
+                        final String testName = StringUtilities.trim((String) qunitTestResultsList.get(1));
+                        final String runTime = StringUtilities.trim((String) qunitTestResultsList.get(2));
+                        final int failedAssertions = Integer.valueOf((String) qunitTestResultsList.get(3));
+                        final int passedAssertions = Integer.valueOf((String) qunitTestResultsList.get(4));
+                        @SuppressWarnings("unchecked")
+                        final List<String> failedAssertionCauseList = (List<String>) qunitTestResultsList.get(5);
 
-        if (!CollectionUtils.isEmpty(qunitSuiteResults)) {
-            final QUnitTest[] results = new QUnitTestImpl[qunitSuiteResults.size()];
-            int qunitTestIndex = 0;
-            for (List<Object> qunitTestResultsList : qunitSuiteResults) {
-                if (!CollectionUtils.isEmpty(qunitTestResultsList)) {
-                    final String moduleName = StringUtilities.trim((String) qunitTestResultsList.get(0));
-                    final String testName = StringUtilities.trim((String) qunitTestResultsList.get(1));
-                    final String runTime = StringUtilities.trim((String) qunitTestResultsList.get(2));
-                    final int failedAssertions = Integer.valueOf((String) qunitTestResultsList.get(4));
-                    final int passedAssertions = Integer.valueOf((String) qunitTestResultsList.get(5));
-                    @SuppressWarnings("unchecked")
-                    final List<String> failedAssertionCauseList = (List<String>) qunitTestResultsList.get(6);
-
-                    QUnitAssertion[] qunitFailedAssertions = null;
-                    if (!CollectionUtils.isEmpty(failedAssertionCauseList)) {
-                        qunitFailedAssertions = new QUnitAssertionImpl[failedAssertionCauseList.size()];
-                        int assertionIndex = 0;
-                        for (String errorCause : failedAssertionCauseList) {
-                            qunitFailedAssertions[assertionIndex++] = (new QUnitAssertionImpl()).setFailed(true).setMessage(
-                                    StringUtilities.trim(errorCause));
+                        QUnitAssertion[] qunitFailedAssertions = null;
+                        if (!CollectionUtils.isEmpty(failedAssertionCauseList)) {
+                            qunitFailedAssertions = new QUnitAssertionImpl[failedAssertionCauseList.size()];
+                            int assertionIndex = 0;
+                            for (String errorCause : failedAssertionCauseList) {
+                                qunitFailedAssertions[assertionIndex++] = (new QUnitAssertionImpl()).setFailed(true)
+                                        .setMessage(StringUtilities.trim(errorCause != null ? errorCause.toString() : null));
+                            }
                         }
+
+                        final QUnitTest qunitTestResult = (new QUnitTestImpl()).setModuleName(moduleName).setName(testName)
+                                .setPassedAssertions(passedAssertions).setFailedAssertions(failedAssertions)
+                                .setRunTime(runTime).setFailed(isQunitTestFailed(failedAssertions))
+                                .setAssertions(qunitFailedAssertions);
+
+                        results[qunitTestIndex++] = qunitTestResult;
                     }
-
-                    final QUnitTest qunitTestResult = (new QUnitTestImpl()).setModuleName(moduleName).setName(testName)
-                            .setPassedAssertions(passedAssertions).setFailedAssertions(failedAssertions).setRunTime(runTime)
-                            .setFailed(isQunitTestFailed(failedAssertions)).setAssertions(qunitFailedAssertions);
-
-                    results[qunitTestIndex++] = qunitTestResult;
                 }
+                return results;
             }
-            return results;
+        } catch (Exception ex) {
+            LOGGER.log(Level.SEVERE, "Error: getTests: Error: ", ex);
         }
 
         return null;

@@ -7,7 +7,7 @@ For example when executing these [QUnit tests](https://github.com/arquillian/arq
 
 ![Stuck QUnit Test Suite](https://raw.github.com/tolis-e/readme-images/master/qunit-stuck-test.png)
 
-In order to verify this kind of QUnit Test Suite validation, uncomment the corresponding [showcase test](https://github.com/arquillian/arquillian-extension-qunit/blob/master/arquillian-qunit-ftest/src/test/java/org/jboss/arquillian/qunit/junit/ftest/QUnitRunnerTestCase.java#L85) and execute the functional test.
+In order to verify this kind of QUnit Test Suite validation, uncomment the corresponding [showcase test](https://github.com/arquillian/arquillian-extension-qunit/blob/master/arquillian-qunit-ftest/src/test/java/org/jboss/arquillian/qunit/junit/ftest/QUnitRunnerTestCase.java#L76) and execute the functional test.
 
 The execution results will be:
 
@@ -54,16 +54,8 @@ By default the arq-jboss-managed (managed container) profile is active. An Arqui
 * Create a new Java Class which will be the test case and configure the below annotations in TYPE/Class level:
     * `@RunWith(QUnitRunner.class)` — Instructs JUnit to use the QUnitRunner as test controller.
     * `@QUnitResources("src/test/resources/assets")` — Points to the assets folder where the QUnit HTML Test Files, QUnit JS, JQuery JS reside.
-* In some cases you might want your QUnit Tests to test pages of a Web Application. In such cases you can setup your test case as following:
-    * Add a method with the `@Deployment` annotation inside the test case. This method should create the Archive which will be deployed on the container. For more information you may check the [Arquillian Create Deployable Archives with ShrinkWrap](http://arquillian.org/guides/shrinkwrap_introduction/) guide.
-    * Insert the frameloader JavaScript file to the `<head>` section of the QUnit HTML test file by adding:
-
-            <script type="text/javascript" src="../../frameloader/frameloader.js"></script>
-    * Insert an `iframe` tag inside the `body` tag of your QUnit HTML Test file. The iframe will be used to load your actual test page inside the QUnit Test page.
-    
-            <iframe height="600" width="1000" id="frame"></iframe>
-    * In order to avoid hardcoding the host/port on your JavaScript QUnit test Files you can retrieve them from the Window Object `window.location.host`. For more information check the [qunit-tests-dom.js](https://github.com/arquillian/arquillian-extension-qunit/blob/master/arquillian-qunit-ftest/src/test/resources/assets/tests/ticketmonster/test-dom.js) example.
-* If you would like to execute the QUnit Test Suites without deploying any application then do not add any method with the `@Deployment` annotation inside your test.
+* In some cases you might want to run your tests against a deployed archive. In such cases add a public static method with the `@Deployment` annotation inside the test case. This method should create the archive which will be deployed on the container.
+* If you would like to execute the QUnit Test Suites without deploying any archive then do not include a method with the `@Deployment` annotation inside your test.
 * Sometimes you might want the QUnit Test Suites and their relevant resources to be packaged, deployed and executed on a container. This can be done by defining a method with the `@Deployment` annotation and returning null `return null;`.
 * Create as many methods inside the test case as the Qunit Test Suites you want to execute. Each method must have the `@QUnitTest()` annotation which points to a QUnit HTML Test file.
 * In method level you can use the `@InSequence()` annotation to define the execution order.
@@ -109,19 +101,10 @@ By default the arq-jboss-managed (managed container) profile is active. An Arqui
          }
      
          /**
-          * Test the qunit-tests-dom.html file.
-          */
-         @QUnitTest("tests/ticketmonster/qunit-tests-dom.html")
-         @InSequence(1)
-         public void qunitDomTest() {
-             // empty body - only the annotations are used
-         }
-     
-         /**
           * Test the qunit-tests-ajax.html file.
           */
          @QUnitTest("tests/ticketmonster/qunit-tests-ajax.html")
-         @InSequence(2)
+         @InSequence(1)
          public void qunitAjaxTest() {
              // empty body - only the annotations are used
          }
@@ -130,7 +113,7 @@ By default the arq-jboss-managed (managed container) profile is active. An Arqui
           * Test the qunit-tests.html file.
           */
          @QUnitTest("tests/generic/qunitTest.html")
-         @InSequence(3)
+         @InSequence(2)
          public void qunitAssertionsTest() {
              // empty body - only the annotations are used
          }
@@ -138,9 +121,8 @@ By default the arq-jboss-managed (managed container) profile is active. An Arqui
      }
      
 ## Known Limitations
-* The run/execution time printed in the report  is not accurate.
+* The run/execution time printed in the report is not accurate.
 * Multiple deployments are not supported.
-* Supported browsers: Mozilla Firefox, Google Chrome
 
 ## Documentation
 

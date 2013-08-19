@@ -36,6 +36,6 @@ public final class ReportUtilities {
             }
             return sources.toString();
         }
-        return "";
+        return "Failed assertion/s";
     }
 }
