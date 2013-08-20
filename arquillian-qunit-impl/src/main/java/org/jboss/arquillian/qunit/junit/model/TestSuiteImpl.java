@@ -28,8 +28,8 @@ import org.jboss.arquillian.qunit.api.model.DeploymentMethod;
 import org.jboss.arquillian.qunit.api.model.TestMethod;
 import org.jboss.arquillian.qunit.api.model.TestSuite;
 import org.jboss.arquillian.qunit.junit.annotations.QUnitResources;
-import org.jboss.arquillian.qunit.junit.utils.ReflectOperations;
 import org.jboss.arquillian.qunit.junit.utils.TestMethodComparator;
+import org.jboss.arquillian.qunit.utils.ReflectOperations;
 import org.junit.runner.Description;
 
 /**

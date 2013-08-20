@@ -22,7 +22,7 @@ import java.lang.reflect.Method;
 import org.jboss.arquillian.qunit.api.model.TestMethod;
 import org.jboss.arquillian.junit.InSequence;
 import org.jboss.arquillian.qunit.junit.annotations.QUnitTest;
-import org.jboss.arquillian.qunit.junit.utils.ReflectOperations;
+import org.jboss.arquillian.qunit.utils.ReflectOperations;
 
 /**
  * 

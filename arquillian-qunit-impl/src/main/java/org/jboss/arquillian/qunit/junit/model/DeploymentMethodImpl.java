@@ -19,7 +19,7 @@ package org.jboss.arquillian.qunit.junit.model;
 import java.lang.reflect.Method;
 
 import org.jboss.arquillian.qunit.api.model.DeploymentMethod;
-import org.jboss.arquillian.qunit.junit.utils.ReflectOperations;
+import org.jboss.arquillian.qunit.utils.ReflectOperations;
 
 /**
  * 

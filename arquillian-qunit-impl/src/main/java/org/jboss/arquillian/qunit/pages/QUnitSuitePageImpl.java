@@ -31,7 +31,7 @@ import org.jboss.arquillian.qunit.api.model.QUnitTest;
 import org.jboss.arquillian.qunit.api.pages.QUnitSuitePage;
 import org.jboss.arquillian.qunit.junit.model.QUnitAssertionImpl;
 import org.jboss.arquillian.qunit.junit.model.QUnitTestImpl;
-import org.jboss.arquillian.qunit.junit.utils.StringUtilities;
+import org.jboss.arquillian.qunit.utils.StringUtilities;
 import org.jboss.arquillian.test.api.ArquillianResource;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebElement;

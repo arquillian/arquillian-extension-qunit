@@ -59,7 +59,7 @@ By default the arq-jboss-managed (managed container) profile is active. An Arqui
 * Sometimes you might want the QUnit Test Suites and their relevant resources to be packaged, deployed and executed on a container. This can be done by defining a method with the `@Deployment` annotation and returning null `return null;`.
 * Create as many methods inside the test case as the Qunit Test Suites you want to execute. Each method must have the `@QUnitTest()` annotation which points to a QUnit HTML Test file.
 * In method level you can use the `@InSequence()` annotation to define the execution order.
-* Note that each QUnit Test Suite should have been completed in a time period of 2 minutes.
+* Note that each QUnit Test Suite should be completed in a time period of 2 minutes.
 
 ### Sample Test Case
 
