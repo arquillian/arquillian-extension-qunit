@@ -63,13 +63,11 @@ public class QUnitRunner extends Suite {
     }
 
     private void executeTests(JUnitCore core, TestSuite suite, RunNotifier notifier) {
+        QUnitTestCase.setNotifier(notifier);
+        QUnitTestCase.setSuite(suite);
         if (suite.getDeploymentMethod() != null) {
-            QUnitTestCase.setNotifier(notifier);
-            QUnitTestCase.setSuite(suite);
             core.run(QUnitTestCase.class);
         } else {
-            QUnitTestCaseSimple.setNotifier(notifier);
-            QUnitTestCaseSimple.setSuite(suite);
             core.run(QUnitTestCaseSimple.class);
         }
     }
