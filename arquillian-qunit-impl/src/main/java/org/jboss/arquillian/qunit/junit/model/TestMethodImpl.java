@@ -22,7 +22,7 @@ import java.lang.reflect.Method;
 import org.jboss.arquillian.qunit.api.model.TestMethod;
 import org.jboss.arquillian.junit.InSequence;
 import org.jboss.arquillian.qunit.junit.annotations.QUnitTest;
-import org.jboss.arquillian.qunit.utils.ReflectOperations;
+import org.jboss.arquillian.qunit.utils.ReflectionUtilities;
 
 /**
  * 
@@ -59,9 +59,9 @@ public class TestMethodImpl implements TestMethod {
     }
 
     private void build() {
-        final Annotation inSequence = ReflectOperations.getAnnotation(this.method, InSequence.class);
+        final Annotation inSequence = ReflectionUtilities.getAnnotation(this.method, InSequence.class);
         this.sequence = inSequence != null ? ((InSequence) inSequence).value() : 0;
-        final Annotation qunitTest = ReflectOperations.getAnnotation(this.method, QUnitTest.class);
+        final Annotation qunitTest = ReflectionUtilities.getAnnotation(this.method, QUnitTest.class);
         this.qunitTestFilePath = qunitTest != null ? ((QUnitTest) qunitTest).value() : null;
     }
 

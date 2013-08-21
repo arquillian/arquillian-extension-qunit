@@ -94,7 +94,7 @@ By default the arq-jboss-managed (managed container) profile is active. An Arqui
          /**
           * Creates the Archive which will be finally deployed on the AS.
           *
-          * @return Archive
+          * @return an Archive<?>
           */
          @Deployment
          public static Archive<?> createDeployment() {
@@ -102,7 +102,7 @@ By default the arq-jboss-managed (managed container) profile is active. An Arqui
          }
      
          /**
-          * Test the qunit-tests-ajax.html file.
+          * Execute the qunit-tests-ajax.html QUnit Test Suite.
           */
          @QUnitTest("tests/ticketmonster/qunit-tests-ajax.html")
          @InSequence(1)
@@ -111,7 +111,7 @@ By default the arq-jboss-managed (managed container) profile is active. An Arqui
          }
      
          /**
-          * Test the qunit-tests.html file.
+          * Execute the qunitTest.html QUnit Test Suite.
           */
          @QUnitTest("tests/generic/qunitTest.html")
          @InSequence(2)

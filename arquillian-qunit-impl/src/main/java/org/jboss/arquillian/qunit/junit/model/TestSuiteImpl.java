@@ -29,7 +29,7 @@ import org.jboss.arquillian.qunit.api.model.TestMethod;
 import org.jboss.arquillian.qunit.api.model.TestSuite;
 import org.jboss.arquillian.qunit.junit.annotations.QUnitResources;
 import org.jboss.arquillian.qunit.junit.utils.TestMethodComparator;
-import org.jboss.arquillian.qunit.utils.ReflectOperations;
+import org.jboss.arquillian.qunit.utils.ReflectionUtilities;
 import org.junit.runner.Description;
 
 /**
@@ -117,7 +117,7 @@ public class TestSuiteImpl implements TestSuite {
         }
         this.annotations = this.suiteClass.getAnnotations();
         this.qunitReqourcesPath = this.suiteClass.getAnnotation(QUnitResources.class).value();
-        final Method deployMethod = ReflectOperations.findFirstMethodWithAnnotation(getSuiteClass().getMethods(),
+        final Method deployMethod = ReflectionUtilities.findFirstMethodWithAnnotation(getSuiteClass().getMethods(),
                 Deployment.class);
         this.deploymentMethod = (deployMethod != null) ? new DeploymentMethodImpl(deployMethod) : null;
         return this;

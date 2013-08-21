@@ -27,11 +27,11 @@ import java.util.logging.Logger;
 
 import org.apache.commons.io.FileUtils;
 
-public final class FileOperations {
+public final class FileUtilities {
 
-    private static final Logger LOGGER = Logger.getLogger(FileOperations.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(FileUtilities.class.getName());
 
-    private FileOperations() {
+    private FileUtilities() {
     }
 
     public static String readFile(String fileNamePath) {

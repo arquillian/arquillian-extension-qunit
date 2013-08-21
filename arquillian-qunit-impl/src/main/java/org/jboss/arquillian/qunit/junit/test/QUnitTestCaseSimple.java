@@ -37,7 +37,7 @@ import org.jboss.arquillian.qunit.api.model.TestSuite;
 import org.jboss.arquillian.qunit.junit.utils.QUnitConstants;
 import org.jboss.arquillian.qunit.junit.utils.ReportUtilities;
 import org.jboss.arquillian.qunit.pages.QUnitSuitePageImpl;
-import org.jboss.arquillian.qunit.utils.FileOperations;
+import org.jboss.arquillian.qunit.utils.FileUtilities;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.exporter.ExplodedExporter;
 import org.junit.Test;
@@ -78,7 +78,7 @@ public class QUnitTestCaseSimple {
 
         final Archive<?> archive = DeploymentPackager.getInstance().createPackage(suite);
         QUnitTestCaseSimple.setQunitSuiteNameTestsHM(SuiteReader.getInstance().readQUnitTests(archive, suite));
-        final File tempFolder = FileOperations.createDirectory(QUnitConstants.TMP_FOLDER);
+        final File tempFolder = FileUtilities.createDirectory(QUnitConstants.TMP_FOLDER);
         archive.as(ExplodedExporter.class).exportExploded(tempFolder);
 
         final TestMethod[] qunitTestMethods = suite.getTestMethods();
@@ -107,7 +107,7 @@ public class QUnitTestCaseSimple {
         }
 
         try {
-            FileOperations.deleteDirectory(QUnitConstants.TMP_FOLDER);
+            FileUtilities.deleteDirectory(QUnitConstants.TMP_FOLDER);
         } catch (IOException ignore) {
             LOGGER.log(Level.WARNING, "deleteDirectory Error", ignore);
         }

@@ -31,12 +31,12 @@ import org.apache.commons.lang3.ArrayUtils;
  * @author Tolis Emmanouilidis
  * 
  */
-public final class ReflectOperations {
+public final class ReflectionUtilities {
 
-    private ReflectOperations() {
+    private ReflectionUtilities() {
     }
 
-    private static final Logger LOGGER = Logger.getLogger(ReflectOperations.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(ReflectionUtilities.class.getName());
 
     public static Method findFirstMethodWithAnnotation(Method[] m, Class<? extends Annotation> c) {
         if (!ArrayUtils.isEmpty(m) && c != null) {

@@ -19,7 +19,7 @@ package org.jboss.arquillian.qunit.junit.model;
 import java.lang.reflect.Method;
 
 import org.jboss.arquillian.qunit.api.model.DeploymentMethod;
-import org.jboss.arquillian.qunit.utils.ReflectOperations;
+import org.jboss.arquillian.qunit.utils.ReflectionUtilities;
 
 /**
  * 
@@ -40,7 +40,7 @@ public class DeploymentMethodImpl implements DeploymentMethod {
     }
 
     public Object getArchive() {
-        return this.getMethod() != null ? ReflectOperations
+        return this.getMethod() != null ? ReflectionUtilities
                 .invokeMethod(this.getMethod(), this.getMethod().getDeclaringClass()) : null;
     }
 }

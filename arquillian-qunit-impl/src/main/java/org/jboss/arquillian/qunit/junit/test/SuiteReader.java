@@ -38,7 +38,7 @@ import org.jboss.arquillian.qunit.api.model.TestMethod;
 import org.jboss.arquillian.qunit.api.model.TestSuite;
 import org.jboss.arquillian.qunit.junit.model.QUnitTestImpl;
 import org.jboss.arquillian.qunit.junit.utils.QUnitConstants;
-import org.jboss.arquillian.qunit.utils.FileOperations;
+import org.jboss.arquillian.qunit.utils.FileUtilities;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ArchivePath;
 import org.jboss.shrinkwrap.api.Filters;
@@ -127,7 +127,7 @@ public final class SuiteReader {
         }
 
         try {
-            FileOperations.deleteDirectory(QUnitConstants.TMP_FOLDER);
+            FileUtilities.deleteDirectory(QUnitConstants.TMP_FOLDER);
         } catch (IOException ignore) {
             LOGGER.log(Level.WARNING, "deleteDirectory Error", ignore);
         }
@@ -136,18 +136,18 @@ public final class SuiteReader {
     }
 
     private void injectQUnitSuiteReader(Archive<?> archive) throws IOException {
-        final File tempFolder = FileOperations.createDirectory(QUnitConstants.TMP_FOLDER);
+        final File tempFolder = FileUtilities.createDirectory(QUnitConstants.TMP_FOLDER);
         archive.as(ExplodedExporter.class).exportExploded(tempFolder);
 
         for (Entry<ArchivePath, Node> entry : archive.getContent(Filters.include(JS_PATTERN)).entrySet()) {
             final String jsFilePath = (new StringBuilder()).append(QUnitConstants.TMP_FOLDER).append("/")
                     .append(archive.getName()).append(entry.getValue()).toString();
             final File jsFile = new File(jsFilePath);
-            final String initialJsContent = FileOperations.readFile(jsFilePath);
+            final String initialJsContent = FileUtilities.readFile(jsFilePath);
             jsFile.delete();
             final String modifiedJsContent = new StringBuilder().append(QUNIT_READER).append(initialJsContent).toString();
             jsFile.createNewFile();
-            FileOperations.writeToFile(jsFile, modifiedJsContent);
+            FileUtilities.writeToFile(jsFile, modifiedJsContent);
         }
     }
 
