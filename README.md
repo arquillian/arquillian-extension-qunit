@@ -111,9 +111,9 @@ By default the arq-jboss-managed (managed container) profile is active. An Arqui
          }
      
          /**
-          * Execute the qunitTest.html QUnit Test Suite.
+          * Execute the qunit-assertions.html QUnit Test Suite.
           */
-         @QUnitTest("tests/generic/qunitTest.html")
+         @QUnitTest("tests/generic/qunit-assertions.html")
          @InSequence(2)
          public void qunitAssertionsTest() {
              // empty body - only the annotations are used
