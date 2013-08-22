@@ -103,7 +103,7 @@ public class QUnitTestCase {
         } finally {
             try {
                 // create reporter
-                QUnitReporter reporter = new QUnitReporter(suite, testMethod, notifier, qunitPage.getTests(), expectedTestsBySuiteName);
+                QUnitJUnitReporter reporter = new QUnitJUnitReporter(suite, testMethod, notifier, qunitPage.getTests(), expectedTestsBySuiteName);
                 // report
                 reporter.report();
             } catch (Exception ignore) {

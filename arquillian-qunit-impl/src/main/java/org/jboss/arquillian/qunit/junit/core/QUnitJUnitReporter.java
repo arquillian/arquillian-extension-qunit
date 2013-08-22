@@ -33,7 +33,7 @@ import org.junit.runner.Description;
 import org.junit.runner.notification.Failure;
 import org.junit.runner.notification.RunNotifier;
 
-public class QUnitReporter {
+public class QUnitJUnitReporter {
 
     private RunNotifier notifier;
 
@@ -49,7 +49,7 @@ public class QUnitReporter {
 
     private Description suiteDecsription;
 
-    public QUnitReporter(TestSuite suite, TestMethod testMethod, RunNotifier notifier, QUnitTest[] qunitTests,
+    public QUnitJUnitReporter(TestSuite suite, TestMethod testMethod, RunNotifier notifier, QUnitTest[] qunitTests,
             Map<String, List<String>> expectedTestsBySuiteName) {
         this.setNotifier(notifier);
         this.setQunitTests(qunitTests);
