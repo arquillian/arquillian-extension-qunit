@@ -20,9 +20,9 @@ import java.util.LinkedList;
 
 import org.jboss.arquillian.qunit.api.exceptions.ArquillianQunitException;
 import org.jboss.arquillian.qunit.api.model.TestSuite;
+import org.jboss.arquillian.qunit.junit.core.QUnitTestCase;
+import org.jboss.arquillian.qunit.junit.core.QUnitTestCaseSimple;
 import org.jboss.arquillian.qunit.junit.model.TestSuiteImpl;
-import org.jboss.arquillian.qunit.junit.test.QUnitTestCase;
-import org.jboss.arquillian.qunit.junit.test.QUnitTestCaseSimple;
 import org.junit.runner.Description;
 import org.junit.runner.JUnitCore;
 import org.junit.runner.Runner;

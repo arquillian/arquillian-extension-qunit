@@ -57,8 +57,9 @@ public class QUnitSuitePageImpl implements QUnitSuitePage {
     public void waitUntilTestsExecutionIsCompleted() {
         try {
             waitModel().withTimeout(2, TimeUnit.MINUTES).until().element(qunitTestResults).is().present();
+            LOGGER.log(Level.INFO, "QUnit Test Suite execution finished");
         } catch (Exception ex) {
-            LOGGER.log(Level.SEVERE, "Error: waitUntilTestsExecutionIsCompleted: Possible stuck suite: ", ex);
+            LOGGER.log(Level.SEVERE, "## Error: waitUntilTestsExecutionIsCompleted: Suite was not completed within 2 minutes");
         }
     }
 
