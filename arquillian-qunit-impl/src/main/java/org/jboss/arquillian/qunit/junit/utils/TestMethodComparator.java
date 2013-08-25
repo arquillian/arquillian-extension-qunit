@@ -16,6 +16,7 @@
  */
 package org.jboss.arquillian.qunit.junit.utils;
 
+import java.io.Serializable;
 import java.util.Comparator;
 
 import org.jboss.arquillian.qunit.api.model.TestMethod;
@@ -26,20 +27,23 @@ import org.jboss.arquillian.qunit.api.model.TestMethod;
  * @author Tolis Emmanouilidis
  * 
  */
-public final class TestMethodComparator implements Comparator<TestMethod> {
+public final class TestMethodComparator implements Comparator<TestMethod>,
+		Serializable {
 
-    private TestMethodComparator() {
-    }
+	private static final long serialVersionUID = 1L;
 
-    private static class SingletonHolder {
-        public static final TestMethodComparator INSTANCE = new TestMethodComparator();
-    }
+	private TestMethodComparator() {
+	}
 
-    public int compare(TestMethod q1, TestMethod q2) {
-        return q1.getSequence() < q2.getSequence() ? -1 : 1;
-    }
+	private static class SingletonHolder {
+		public static final TestMethodComparator INSTANCE = new TestMethodComparator();
+	}
 
-    public static TestMethodComparator getInstance() {
-        return SingletonHolder.INSTANCE;
-    }
+	public int compare(TestMethod q1, TestMethod q2) {
+		return q1.getSequence() < q2.getSequence() ? -1 : 1;
+	}
+
+	public static TestMethodComparator getInstance() {
+		return SingletonHolder.INSTANCE;
+	}
 }

@@ -41,7 +41,7 @@ public final class ReflectionUtilities {
     public static Method findFirstMethodWithAnnotation(Method[] m, Class<? extends Annotation> c) {
         if (!ArrayUtils.isEmpty(m) && c != null) {
             for (Method method : m) {
-                if (m != null && method.isAnnotationPresent(c)) {
+                if (method != null && method.isAnnotationPresent(c)) {
                     return method;
                 }
             }
