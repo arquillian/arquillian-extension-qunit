@@ -71,13 +71,11 @@ public class QUnitTestCase {
 
     @Deployment(testable = false)
     public static Archive<?> deployment() throws IOException {
-        QUnitTestCase.setArchive(DeploymentPackager.getInstance().createPackage(suite));
         return QUnitTestCase.getArchive();
     }
 
     @Test
     public void executeQUnitTestSuites() throws IOException {
-        QUnitTestCase.setExpectedTestsBySuiteName(SuiteReader.getInstance().readQUnitTests(archive, suite));
         QUnitTestCase.setArchive(null);
 
         final TestMethod[] qunitTestMethods = suite.getTestMethods();
@@ -103,7 +101,8 @@ public class QUnitTestCase {
         } finally {
             try {
                 // create reporter
-                QUnitJUnitReporter reporter = new QUnitJUnitReporter(suite, testMethod, notifier, qunitPage.getTests(), expectedTestsBySuiteName);
+                QUnitJUnitReporter reporter = new QUnitJUnitReporter(suite, testMethod, notifier, qunitPage.getTests(),
+                        expectedTestsBySuiteName);
                 // report
                 reporter.report();
             } catch (Exception ignore) {

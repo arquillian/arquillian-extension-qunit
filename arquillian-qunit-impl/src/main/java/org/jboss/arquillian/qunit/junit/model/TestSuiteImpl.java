@@ -19,6 +19,7 @@ package org.jboss.arquillian.qunit.junit.model;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.Arrays;
+import java.util.Map;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -49,8 +50,8 @@ public class TestSuiteImpl implements TestSuite {
     private Class<?> suiteClass;
 
     private String qunitReqourcesPath;
-
-    private Description description;
+    
+    private Map<String, Description> testDescriptions;
 
     public TestSuiteImpl(Class<?> suite) throws ArquillianQunitException {
         this.suiteClass = suite;
@@ -99,13 +100,7 @@ public class TestSuiteImpl implements TestSuite {
         return;
     }
 
-    @Override
-    public Description getDescription() {
-        return this.description;
-    }
-
     public TestSuite build() {
-        this.description = Description.createSuiteDescription(this.suiteClass);
         final Method[] methods = this.suiteClass.getMethods();
         if (!ArrayUtils.isEmpty(methods)) {
             this.testMethod = new TestMethod[methods.length];
@@ -121,6 +116,14 @@ public class TestSuiteImpl implements TestSuite {
                 Deployment.class);
         this.deploymentMethod = (deployMethod != null) ? new DeploymentMethodImpl(deployMethod) : null;
         return this;
+    }
+
+    public Map<String, Description> getTestDescriptions() {
+        return testDescriptions;
+    }
+
+    public void setTestDescriptions(Map<String, Description> testDescriptions) {
+        this.testDescriptions = testDescriptions;
     }
 
 }

@@ -41,4 +41,8 @@ public final class QUnitTestNameCounter {
     public int getCounter(String name) {
         return QUNIT_TEST_COUNTER_HM.containsKey(name) ? QUNIT_TEST_COUNTER_HM.get(name) : 0;
     }
+
+    public void clear() {
+        QUNIT_TEST_COUNTER_HM.clear();
+    }
 }

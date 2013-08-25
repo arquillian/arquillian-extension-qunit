@@ -16,13 +16,21 @@
  */
 package org.jboss.arquillian.qunit.junit;
 
+import java.io.IOException;
 import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 
 import org.jboss.arquillian.qunit.api.exceptions.ArquillianQunitException;
 import org.jboss.arquillian.qunit.api.model.TestSuite;
+import org.jboss.arquillian.qunit.junit.core.DeploymentPackager;
 import org.jboss.arquillian.qunit.junit.core.QUnitTestCase;
 import org.jboss.arquillian.qunit.junit.core.QUnitTestCaseSimple;
+import org.jboss.arquillian.qunit.junit.core.SuiteReader;
 import org.jboss.arquillian.qunit.junit.model.TestSuiteImpl;
+import org.jboss.arquillian.qunit.junit.utils.DescriptionUtils;
+import org.jboss.arquillian.qunit.junit.utils.QUnitTestNameCounter;
+import org.jboss.shrinkwrap.api.Archive;
 import org.junit.runner.Description;
 import org.junit.runner.JUnitCore;
 import org.junit.runner.Runner;
@@ -40,36 +48,48 @@ public class QUnitRunner extends Suite {
 
     private TestSuite suite;
 
-    private Description desc;
+    private Archive<?> archive;
 
-    public QUnitRunner(Class<?> suiteClass) throws InitializationError, ArquillianQunitException {
+    private Map<String, List<String>> expectedTestsBySuiteName;
+
+    private Description suiteDescription;
+
+    public QUnitRunner(Class<?> suiteClass) throws InitializationError, ArquillianQunitException, IOException {
         super(suiteClass, new LinkedList<Runner>());
         this.suite = new TestSuiteImpl(suiteClass).build();
+        this.archive = DeploymentPackager.getInstance().createPackage(suite);
+        this.expectedTestsBySuiteName = SuiteReader.getInstance().readQUnitTests(archive, suite);
+        if (this.suiteDescription == null) {
+            this.suiteDescription = Description.createSuiteDescription(this.suite.getSuiteClass().getName());
+            this.suite.setTestDescriptions(DescriptionUtils.addChildDescriptions(this.suiteDescription, suiteClass.getName(),
+                    this.expectedTestsBySuiteName));
+        }
     }
 
     @Override
     public void run(RunNotifier notifier) {
         JUnitCore core = new JUnitCore();
-        executeTests(core, suite, notifier);
+        executeTests(core, notifier);
     }
 
     @Override
     public Description getDescription() {
-        if (this.desc == null) {
-            this.desc = Description.createSuiteDescription(suite.getSuiteClass().getName(), suite.getSuiteClass()
-                    .getAnnotations());
-        }
-        return this.desc;
+        return this.suiteDescription;
     }
 
-    private void executeTests(JUnitCore core, TestSuite suite, RunNotifier notifier) {
-        if (suite.getDeploymentMethod() != null) {
+    private void executeTests(JUnitCore core, RunNotifier notifier) {
+        QUnitTestNameCounter.getInstance().clear();
+        if (this.suite.getDeploymentMethod() != null) {
             QUnitTestCase.setNotifier(notifier);
-            QUnitTestCase.setSuite(suite);
+            QUnitTestCase.setSuite(this.suite);
+            QUnitTestCase.setArchive(this.archive);
+            QUnitTestCase.setExpectedTestsBySuiteName(this.expectedTestsBySuiteName);
             core.run(QUnitTestCase.class);
         } else {
             QUnitTestCaseSimple.setNotifier(notifier);
-            QUnitTestCaseSimple.setSuite(suite);
+            QUnitTestCaseSimple.setSuite(this.suite);
+            QUnitTestCaseSimple.setArchive(this.archive);
+            QUnitTestCaseSimple.setExpectedTestsBySuiteName(this.expectedTestsBySuiteName);
             core.run(QUnitTestCaseSimple.class);
         }
     }

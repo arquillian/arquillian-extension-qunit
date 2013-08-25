@@ -17,6 +17,7 @@
 package org.jboss.arquillian.qunit.api.model;
 
 import java.lang.annotation.Annotation;
+import java.util.Map;
 
 import org.junit.runner.Description;
 
@@ -64,10 +65,8 @@ public interface TestSuite {
      */
     String getQUnitResourcesPath();
 
-    /**
-     * Returns the JUnit Decsription.
-     * 
-     * @return JUnit Description
-     */
-    Description getDescription();
+    Map<String, Description> getTestDescriptions();
+
+    void setTestDescriptions(Map<String, Description> testDescriptions);
+
 }

@@ -65,11 +65,10 @@ public class QUnitTestCaseSimple {
 
     private static Map<String, List<String>> expectedTestsBySuiteName = null;
 
+    private static Archive<?> archive = null;
+
     @Test
     public void executeQUnitTestSuites() throws IOException {
-
-        final Archive<?> archive = DeploymentPackager.getInstance().createPackage(suite);
-        QUnitTestCaseSimple.setExpectedTestsBySuiteName(SuiteReader.getInstance().readQUnitTests(archive, suite));
         final File tempFolder = FileUtilities.createDirectory(QUnitConstants.TMP_FOLDER);
         archive.as(ExplodedExporter.class).exportExploded(tempFolder);
 
@@ -87,6 +86,14 @@ public class QUnitTestCaseSimple {
         } catch (IOException ignore) {
             LOGGER.log(Level.WARNING, "deleteDirectory Error", ignore);
         }
+    }
+
+    public static Archive<?> getArchive() {
+        return archive;
+    }
+
+    public static void setArchive(Archive<?> archive) {
+        QUnitTestCaseSimple.archive = archive;
     }
 
     private void executeQunitTestSuite(TestMethod testMethod, Archive<?> archive) {

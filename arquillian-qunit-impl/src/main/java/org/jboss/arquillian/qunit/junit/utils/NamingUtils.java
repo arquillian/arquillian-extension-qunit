@@ -14,28 +14,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.arquillian.qunit.utils;
+package org.jboss.arquillian.qunit.junit.utils;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
+public final class NamingUtils {
 
-public final class MapUtilities {
-
-    private MapUtilities() {
+    private NamingUtils() {
     }
 
-    public static <K, M> Map<K, List<M>> copy(Map<K, List<M>> original) {
-        Map<K, List<M>> copy = new HashMap<K, List<M>>();
-        for (Entry<K, List<M>> entry : original.entrySet()) {
-            copy.put(entry.getKey(), new ArrayList<M>(entry.getValue()));
+    public static String createUniqueTestName(String testName) {
+        final int counter = QUnitTestNameCounter.getInstance().getCounter(testName);
+        final StringBuilder sb = new StringBuilder().append("module: ").append(
+                testName.replace(QUnitConstants.DELIMITER, " test: "));
+        if (counter > 0) {
+            sb.append(" #").append(counter + 1);
         }
-        return copy;
-    }
-
-    public static <K, M> boolean isEmpty(Map<K, M> map) {
-        return map == null || map.isEmpty();
+        QUnitTestNameCounter.getInstance().add(testName);
+        return sb.toString();
     }
 }
