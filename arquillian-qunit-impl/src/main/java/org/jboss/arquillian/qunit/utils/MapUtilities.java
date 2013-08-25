@@ -27,15 +27,15 @@ public final class MapUtilities {
     private MapUtilities() {
     }
 
-    public static <K, M> Map<K, List<M>> copy(Map<K, List<M>> original) {
-        Map<K, List<M>> copy = new HashMap<K, List<M>>();
-        for (Entry<K, List<M>> entry : original.entrySet()) {
-            copy.put(entry.getKey(), new ArrayList<M>(entry.getValue()));
+    public static <K, E> Map<K, List<E>> copy(Map<K, List<E>> original) {
+        Map<K, List<E>> copy = new HashMap<K, List<E>>();
+        for (Entry<K, List<E>> entry : original.entrySet()) {
+            copy.put(entry.getKey(), new ArrayList<E>(entry.getValue()));
         }
         return copy;
     }
 
-    public static <K, M> boolean isEmpty(Map<K, M> map) {
+    public static <K, V> boolean isEmpty(Map<K, V> map) {
         return map == null || map.isEmpty();
     }
 }
