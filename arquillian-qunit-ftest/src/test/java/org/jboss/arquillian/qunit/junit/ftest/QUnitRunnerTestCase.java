@@ -16,46 +16,49 @@
  */
 package org.jboss.arquillian.qunit.junit.ftest;
 
-import java.io.File;
-
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.junit.InSequence;
 import org.jboss.arquillian.qunit.junit.QUnitRunner;
 import org.jboss.arquillian.qunit.junit.annotations.QUnitResources;
 import org.jboss.arquillian.qunit.junit.annotations.QUnitTest;
+import org.jboss.arquillian.qunit.showcase.data.CarRepository;
+import org.jboss.arquillian.qunit.showcase.model.Car;
+import org.jboss.arquillian.qunit.showcase.rest.CarService;
+import org.jboss.arquillian.qunit.showcase.rest.JaxRsActivator;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.runner.RunWith;
 
 /**
  * Junit uses the QunitRunner controller as a test controller.
- * 
+ *
  * @author Lukas Fryc
  * @author Tolis Emmanouilidis
- * 
+ *
  */
 @RunWith(QUnitRunner.class)
 @QUnitResources("src/test/resources/assets")
 @RunAsClient
 public class QUnitRunnerTestCase {
 
-    private static final String DEPLOYMENT = "src/test/resources/archives/ticket-monster.war";
-
     /**
      * Creates the Archive which will be finally deployed on the AS.
-     * 
+     *
      */
     @Deployment
     public static Archive<?> createDeployment() {
-        return ShrinkWrap.createFromZipFile(WebArchive.class, new File(DEPLOYMENT));
+        return ShrinkWrap.create(WebArchive.class, "rest-service.war")
+                .addClasses(Car.class, CarService.class, CarRepository.class, JaxRsActivator.class)
+                .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");
     }
 
     /**
      * Execute the qunit-tests-ajax.html QUnit Test Suite.
      */
-    @QUnitTest("tests/ticketmonster/qunit-tests-ajax.html")
+    @QUnitTest("tests/rest-service/qunit-tests-ajax.html")
     @InSequence(1)
     public void qunitAjaxTest() {
         // empty body - only the annotations are used
@@ -73,7 +76,7 @@ public class QUnitRunnerTestCase {
     /**
      * Execute the qunit-tests-stuck.html QUnit Test Suite.
      */
-    // @QUnitTest("tests/ticketmonster/qunit-tests-stuck.html")
+    // @QUnitTest("tests/rest-service/qunit-tests-stuck.html")
     // @InSequence(3)
     // public void qunitStuckTest() {
     // empty body - only the annotations are used
