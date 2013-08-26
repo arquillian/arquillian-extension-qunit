@@ -17,7 +17,6 @@
 package org.jboss.arquillian.qunit.junit.ftest;
 
 import org.jboss.arquillian.container.test.api.Deployment;
-import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.junit.InSequence;
 import org.jboss.arquillian.qunit.junit.QUnitRunner;
 import org.jboss.arquillian.qunit.junit.annotations.QUnitResources;
@@ -41,7 +40,6 @@ import org.junit.runner.RunWith;
  */
 @RunWith(QUnitRunner.class)
 @QUnitResources("src/test/resources/assets")
-@RunAsClient
 public class QUnitRunnerTestCase {
 
     /**
