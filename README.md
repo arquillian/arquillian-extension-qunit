@@ -15,7 +15,7 @@ The execution results will be:
 
 
 ## Execute QUnit tests through IDE
-You have the option to execute the [QUnitRunnerTestCase](https://github.com/arquillian/arquillian-extensi    on-qunit/blob/master/arquillian-qunit-ftest/src/test/java/org/jboss/arquillian/qunit/junit/ftest/QUnitRunnerTestCase.java) through an IDE.
+You can execute the [QUnitRunnerTestCase](https://github.com/arquillian/arquillian-extension-qunit/blob/master/arquillian-qunit-ftest/src/test/java/org/jboss/arquillian/qunit/junit/ftest/QUnitRunnerTestCase.java) through an IDE.
 
 The results for the showcase example will be:
 
