@@ -22,28 +22,27 @@ import java.util.Comparator;
 import org.jboss.arquillian.qunit.api.model.TestMethod;
 
 /**
- * 
+ *
  * @author Lukas Fryc
  * @author Tolis Emmanouilidis
- * 
+ *
  */
-public final class TestMethodComparator implements Comparator<TestMethod>,
-		Serializable {
+public final class TestMethodComparator implements Comparator<TestMethod>, Serializable {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	private TestMethodComparator() {
-	}
+    private TestMethodComparator() {
+    }
 
-	private static class SingletonHolder {
-		public static final TestMethodComparator INSTANCE = new TestMethodComparator();
-	}
+    private static class SingletonHolder {
+        public static final TestMethodComparator INSTANCE = new TestMethodComparator();
+    }
 
-	public int compare(TestMethod q1, TestMethod q2) {
-		return q1.getSequence() < q2.getSequence() ? -1 : 1;
-	}
+    public int compare(TestMethod q1, TestMethod q2) {
+        return q1.getSequence() < q2.getSequence() ? -1 : 1;
+    }
 
-	public static TestMethodComparator getInstance() {
-		return SingletonHolder.INSTANCE;
-	}
+    public static TestMethodComparator getInstance() {
+        return SingletonHolder.INSTANCE;
+    }
 }
