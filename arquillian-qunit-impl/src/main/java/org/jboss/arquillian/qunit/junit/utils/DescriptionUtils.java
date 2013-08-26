@@ -21,7 +21,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.lang3.StringUtils;
 import org.jboss.arquillian.qunit.utils.MapUtilities;
 import org.junit.runner.Description;
 
@@ -30,15 +29,15 @@ public final class DescriptionUtils {
     private DescriptionUtils() {
     }
 
-    public static Map<String, Description> addChildDescriptions(Description suiteDescription, String className,
+    public static Map<String, Description> addChildDescriptions(Description suiteDescription, Class<?> clazz,
             Map<String, List<String>> expectedTestsBySuiteName) {
         final Map<String, Description> map = new HashMap<String, Description>();
-        if (!StringUtils.isEmpty(className) && !MapUtilities.isEmpty(expectedTestsBySuiteName)) {
+        if (!MapUtilities.isEmpty(expectedTestsBySuiteName)) {
             Collection<List<String>> collection = expectedTestsBySuiteName.values();
             for (List<String> testList : collection) {
                 for (String test : testList) {
                     final String uniqname = NamingUtils.createUniqueTestName(test);
-                    final Description desc = Description.createTestDescription(className, uniqname);
+                    final Description desc = Description.createTestDescription(clazz, uniqname);
                     suiteDescription.addChild(desc);
                     map.put(uniqname, desc);
                 }

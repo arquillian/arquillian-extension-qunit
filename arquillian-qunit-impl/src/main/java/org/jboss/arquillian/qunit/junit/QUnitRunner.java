@@ -61,7 +61,7 @@ public class QUnitRunner extends Suite {
         this.expectedTestsBySuiteName = SuiteReader.getInstance().readQUnitTests(archive, suite);
         if (this.suiteDescription == null) {
             this.suiteDescription = Description.createSuiteDescription(this.suite.getSuiteClass().getName());
-            this.suite.setTestDescriptions(DescriptionUtils.addChildDescriptions(this.suiteDescription, suiteClass.getName(),
+            this.suite.setTestDescriptions(DescriptionUtils.addChildDescriptions(this.suiteDescription, suiteClass,
                     this.expectedTestsBySuiteName));
         }
     }
