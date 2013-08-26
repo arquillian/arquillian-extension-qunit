@@ -54,9 +54,9 @@ By default the arq-jboss-managed (managed container) profile is active. An Arqui
 * Add the Arquillian-QUnit dependency to the POM file:
     
         <dependency>
-            <groupId>org.jboss.arquillian.qunit</groupId>
-            <artifactId>arquillian-qunit-impl</artifactId>
-            <version>${version.org.jboss.arquillian.qunit.impl}</version>
+            <groupId>org.jboss.arquillian.extension</groupId>
+            <artifactId>arquillian-qunit</artifactId>
+            <version>${project.version}</version>
         </dependency>
 
 * Create a new Java Class which will be the test case and configure the below annotations in TYPE/Class level:
