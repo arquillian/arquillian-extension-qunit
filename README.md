@@ -13,6 +13,14 @@ The execution results will be:
 
 ![Results](https://raw.github.com/tolis-e/readme-images/master/arquillian-qunit-stuck-tests-report.png)
 
+
+## Execute QUnit tests through IDE
+You have the option to execute the [QUnitRunnerTestCase](https://github.com/arquillian/arquillian-extensi    on-qunit/blob/master/arquillian-qunit-ftest/src/test/java/org/jboss/arquillian/qunit/junit/ftest/QUnitRunnerTestCase.java) through an IDE.
+
+The results for the showcase example will be:
+
+![Results](https://raw.github.com/tolis-e/readme-images/master/ARQ-QUnit-IDE.png)
+
 ## Arquillian-QUnit Installation
 To install it navigate to the arquillian-extension-qunit folder and execute:
 
