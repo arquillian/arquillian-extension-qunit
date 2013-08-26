@@ -3,11 +3,11 @@
 
 Arquillian-Qunit knows the number of QUnit tests that have to be executed before the actual QUnit tests execution. In the case where a Qunit Test Suite gets stuck because of a stuck QUnit test, Arquillian-QUnit marks the stuck test and the rest of QUnit tests which are not executed/reached as failed.
 
-For example when executing these [QUnit tests](https://github.com/arquillian/arquillian-extension-qunit/blob/master/arquillian-qunit-ftest/src/test/resources/assets/tests/ticketmonster/test-stuck.js) you will realize that the QUnit Test Suite gets stuck as shown in the below image. Arquillian-QUnit knows that these tests did not finish and marks them as failed.
+For example when executing these [QUnit tests](https://github.com/arquillian/arquillian-extension-qunit/blob/master/arquillian-qunit-ftest/src/test/resources/assets/tests/rest-service/qunit-tests-stuck.html) you will realize that the QUnit Test Suite gets stuck as shown in the below image. Arquillian-QUnit knows that these tests did not finish and marks them as failed.
 
 ![Stuck QUnit Test Suite](https://raw.github.com/tolis-e/readme-images/master/qunit-stuck-test.png)
 
-In order to verify this kind of QUnit Test Suite validation, uncomment the corresponding [showcase test](https://github.com/arquillian/arquillian-extension-qunit/blob/master/arquillian-qunit-ftest/src/test/java/org/jboss/arquillian/qunit/junit/ftest/QUnitRunnerTestCase.java#L76) and execute the functional test.
+In order to verify this kind of QUnit Test Suite validation, uncomment the corresponding [showcase test](https://github.com/arquillian/arquillian-extension-qunit/blob/master/arquillian-qunit-ftest/src/test/java/org/jboss/arquillian/qunit/junit/ftest/QUnitRunnerTestCase.java#L79) and execute the functional test.
 
 The execution results will be:
 
@@ -61,66 +61,6 @@ By default the arq-jboss-managed (managed container) profile is active. An Arqui
 * In method level you can use the `@InSequence()` annotation to define the execution order.
 * Note that each QUnit Test Suite should be completed in a time period of 2 minutes.
 
-### Sample Test Case
-
-     package org.jboss.arquillian.qunit.junit.ftest;
-     
-     import java.io.File;
-     
-     import org.jboss.arquillian.container.test.api.Deployment;
-     import org.jboss.arquillian.container.test.api.RunAsClient;
-     import org.jboss.arquillian.junit.InSequence;
-     import org.jboss.arquillian.qunit.junit.QUnitRunner;
-     import org.jboss.arquillian.qunit.junit.annotations.QUnitResources;
-     import org.jboss.arquillian.qunit.junit.annotations.QUnitTest;
-     import org.jboss.shrinkwrap.api.Archive;
-     import org.jboss.shrinkwrap.api.ShrinkWrap;
-     import org.jboss.shrinkwrap.api.spec.WebArchive;
-     import org.junit.runner.RunWith;
-     
-     /**
-      * Junit uses the QunitRunner controller as a test controller.
-      *
-      * @author Lukas Fryc
-      * @author Tolis Emmanouilidis
-      *
-      */
-     @RunWith(QUnitRunner.class)
-     @QUnitResources("src/test/resources/assets")
-     public class QUnitRunnerTestCase {
-     
-         private static final String DEPLOYMENT = "src/test/resources/archives/ticket-monster.war";
-     
-         /**
-          * Creates the Archive which will be finally deployed on the AS.
-          *
-          * @return an Archive<?>
-          */
-         @Deployment
-         public static Archive<?> createDeployment() {
-             return ShrinkWrap.createFromZipFile(WebArchive.class, new File(DEPLOYMENT));
-         }
-     
-         /**
-          * Execute the qunit-tests-ajax.html QUnit Test Suite.
-          */
-         @QUnitTest("tests/ticketmonster/qunit-tests-ajax.html")
-         @InSequence(1)
-         public void qunitAjaxTest() {
-             // empty body - only the annotations are used
-         }
-     
-         /**
-          * Execute the qunit-assertions.html QUnit Test Suite.
-          */
-         @QUnitTest("tests/generic/qunit-assertions.html")
-         @InSequence(2)
-         public void qunitAssertionsTest() {
-             // empty body - only the annotations are used
-         }
-     
-     }
-     
 ## Known Limitations
 * The run/execution time printed in the report is not accurate.
 * Multiple deployments are not supported.
