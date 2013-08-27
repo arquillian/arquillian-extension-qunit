@@ -26,8 +26,9 @@
 
     <modelVersion>4.0.0</modelVersion>
     <artifactId>arquillian-qunit-api</artifactId>
-
+    <name>Arquillian Extension QUnit: API</name>
     <url>http://jboss.org/jbossas</url>
+
     <licenses>
         <license>
             <name>Apache License, Version 2.0</name>
@@ -47,34 +48,14 @@
         </developer>
     </developers>
 
-    <dependencyManagement>
-        <dependencies>
-
-            <!-- Arquillian BOM (Bill Of Materials). -->
-            <dependency>
-                <groupId>org.jboss.arquillian</groupId>
-                <artifactId>arquillian-bom</artifactId>
-                <version>${version.org.jboss.arquillian}</version>
-                <scope>import</scope>
-                <type>pom</type>
-            </dependency>
-
-        </dependencies>
-    </dependencyManagement>
-
     <dependencies>
-        
-        <!-- JUnit Container Implementation for the Arquillian Project -->
-        <dependency>
-            <groupId>org.jboss.arquillian.junit</groupId>
-            <artifactId>arquillian-junit-container</artifactId>
-        </dependency>
-        
+
         <!-- JUnit regression testing framework. -->
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <version>${version.junit}</version>
+            <scope>provided</scope>
         </dependency>
 
     </dependencies>

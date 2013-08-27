@@ -15,8 +15,7 @@
   See the License for the specific language governing permissions and
   limitations under the License.
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
     <parent>
         <groupId>org.jboss.arquillian.extension</groupId>
@@ -28,6 +27,7 @@
     <modelVersion>4.0.0</modelVersion>
     <artifactId>arquillian-qunit</artifactId>
     <url>http://jboss.org/jbossas</url>
+    <name>Arquillian Extension QUnit</name>
 
     <licenses>
         <license>
@@ -48,15 +48,6 @@
 
     <dependencyManagement>
         <dependencies>
-
-            <!-- This POM serves as BOM (Bill of Materials) for managing core Selenium dependency versions. -->
-            <dependency>
-                <groupId>org.jboss.arquillian.selenium</groupId>
-                <artifactId>selenium-bom</artifactId>
-                <version>${version.selenium}</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
 
             <!-- Starting point for integration Graphene test suites. -->
             <dependency>
@@ -85,7 +76,24 @@
             <groupId>org.jboss.arquillian.extension</groupId>
             <artifactId>arquillian-qunit-api</artifactId>
             <version>${project.version}</version>
-            <scope>compile</scope>
+        </dependency>
+
+        <!-- Arquillian and ShrinkWrap API -->
+        <dependency>
+            <groupId>org.jboss.shrinkwrap</groupId>
+            <artifactId>shrinkwrap-api</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jboss.arquillian.container</groupId>
+            <artifactId>arquillian-container-test-api</artifactId>
+        </dependency>
+        
+        <!-- Arquillian JUnit bindings for the Arquillian Project -->
+        <!-- Arquillian QUnit extension relies on arquillian-junit-container -->
+        <dependency>
+            <groupId>org.jboss.arquillian.junit</groupId>
+            <artifactId>arquillian-junit-container</artifactId>
         </dependency>
         
         <!-- Starting point for integration Graphene test suites. -->
@@ -94,26 +102,13 @@
             <artifactId>graphene-webdriver</artifactId>
             <type>pom</type>
         </dependency>
-
-        <!-- Arquillian BOM (Bill Of Materials). -->
-        <dependency>
-            <groupId>org.jboss.arquillian</groupId>
-            <artifactId>arquillian-bom</artifactId>
-            <version>${version.org.jboss.arquillian}</version>
-            <type>pom</type>
-        </dependency>
-
+        
         <!-- JUnit regression testing framework. -->
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <version>${version.junit}</version>
-        </dependency>
-        
-        <!-- JUnit Container Implementation for the Arquillian Project -->
-        <dependency>
-            <groupId>org.jboss.arquillian.junit</groupId>
-            <artifactId>arquillian-junit-container</artifactId>
+            <scope>provided</scope>
         </dependency>
 
     </dependencies>

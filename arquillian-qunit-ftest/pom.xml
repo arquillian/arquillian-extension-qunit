@@ -26,6 +26,7 @@
 
     <modelVersion>4.0.0</modelVersion>
     <artifactId>arquillian-qunit-ftest</artifactId>
+    <name>Arquillian Extension QUnit: Functional tests example</name>
 
     <developers>
         <developer>
@@ -50,10 +51,20 @@
     <properties>
         <version.org.jboss.spec.jboss.javaee.6.0>3.0.2.Final</version.org.jboss.spec.jboss.javaee.6.0>
         <version.org.hibernate.validator>4.2.0.Final</version.org.hibernate.validator>
+        <version.org.jboss.arquillian.drone>1.2.0.Alpha3</version.org.jboss.arquillian.drone>
     </properties>
 
     <dependencyManagement>
         <dependencies>
+
+            <!-- This POM serves as BOM (Bill of Materials) for managing core Selenium dependency versions. -->
+            <dependency>
+                <groupId>org.jboss.arquillian.selenium</groupId>
+                <artifactId>selenium-bom</artifactId>
+                <version>${version.selenium}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
 
             <dependency>
                 <groupId>org.jboss.spec</groupId>
@@ -67,6 +78,15 @@
                         <artifactId>xalan</artifactId>
                     </exclusion>
                 </exclusions>
+            </dependency>
+            
+            <!-- Arquillian BOM (Bill Of Materials). -->
+            <dependency>
+                <groupId>org.jboss.arquillian.extension</groupId>
+                <artifactId>arquillian-drone-bom</artifactId>
+                <version>${version.org.jboss.arquillian.drone}</version>
+                <scope>import</scope>
+                <type>pom</type>
             </dependency>
 
             <!-- Arquillian BOM (Bill Of Materials). -->
@@ -82,13 +102,6 @@
     </dependencyManagement>
 
     <dependencies>
-
-        <!-- Arquillian QUnit -->
-        <dependency>
-            <groupId>org.jboss.arquillian.extension</groupId>
-            <artifactId>arquillian-qunit</artifactId>
-            <version>${project.version}</version>
-        </dependency>
 
         <dependency>
             <groupId>org.jboss.spec</groupId>
@@ -152,8 +165,37 @@
                 </exclusion>
             </exclusions>
         </dependency>
+        
+        <!-- Test dependencies -->
+        <!-- Arquillian QUnit -->
+        <dependency>
+            <groupId>org.jboss.arquillian.extension</groupId>
+            <artifactId>arquillian-qunit</artifactId>
+            <version>${project.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>${version.junit}</version>
+            <scope>test</scope>
+        </dependency>
 
     </dependencies>
+
+    <build>
+        <plugins>
+            <!-- we don't wont to deploy functional tests to the Maven repository -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-deploy-plugin</artifactId>
+                <configuration>
+                    <skip>true</skip>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 
     <profiles>
         <!-- By default, we skip test execution in CI -->
@@ -177,7 +219,7 @@
         
         <!-- Arquillian JBoss AS7 profile -->
         <profile>
-            <id>arq-jbossas-managed</id>            
+            <id>arq-jbossas-managed</id>
             <dependencies>
                 <dependency>
                     <groupId>org.jboss.as</groupId>
@@ -259,9 +301,9 @@
             </build>
         </profile>
         
-        <!-- Arquillian JBoss remote profile -->
+        <!-- Arquillian JBoss AS remote profile -->
         <profile>
-            <id>arq-jboss-remote</id>
+            <id>arq-jbossas-remote</id>
             <dependencies>
                 <dependency>
                     <groupId>org.jboss.as</groupId>
