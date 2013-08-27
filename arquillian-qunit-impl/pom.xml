@@ -26,8 +26,8 @@
 
     <modelVersion>4.0.0</modelVersion>
     <artifactId>arquillian-qunit</artifactId>
-    <url>http://jboss.org/jbossas</url>
     <name>Arquillian Extension QUnit</name>
+    <url>https://github.com/arquillian/arquillian-extension-qunit</url>
 
     <licenses>
         <license>
