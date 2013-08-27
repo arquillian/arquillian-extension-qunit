@@ -15,9 +15,14 @@
   See the License for the specific language governing permissions and
   limitations under the License.
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>org.jboss</groupId>
+        <artifactId>jboss-parent</artifactId>
+        <version>11</version>
+    </parent>
 
     <groupId>org.jboss.arquillian.extension</groupId>
     <artifactId>arquillian-qunit-parent</artifactId>
@@ -44,7 +49,7 @@
             <email>aemmanou@redhat.com</email>
         </developer>
     </developers>
-    
+
     <scm>
         <connection>scm:git:git://git@github.com:arquillian/arquillian-extension-qunit.git</connection>
         <developerConnection>scm:git:ssh://github.com/arquillian/arquillian-extension-qunit.git</developerConnection>
@@ -64,8 +69,46 @@
         <version.org.jboss.as>7.1.1.Final</version.org.jboss.as>
         <version.org.jboss.spec>3.0.2.Final</version.org.jboss.spec>
         <version.junit>4.11</version.junit>
+        
+        <!-- override from parent -->
+        <maven.compiler.argument.target>1.6</maven.compiler.argument.target>
+        <maven.compiler.argument.source>1.6</maven.compiler.argument.source>
     </properties>
-   
+
+    <build>
+        <plugins>
+            <plugin>
+                <artifactId>maven-release-plugin</artifactId>
+                <configuration>
+                    <autoVersionSubmodules>true</autoVersionSubmodules>
+                    <pushChanges>false</pushChanges>
+                    <localCheckout>true</localCheckout>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>animal-sniffer-maven-plugin</artifactId>
+                <version>1.7</version>
+                <executions>
+                    <execution>
+                        <id>signature-check</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <signature>
+                        <groupId>org.codehaus.mojo.signature</groupId>
+                        <artifactId>java16</artifactId>
+                        <version>1.0</version>
+                    </signature>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
     <modules>
         <module>arquillian-qunit-api</module>
         <module>arquillian-qunit-impl</module>
