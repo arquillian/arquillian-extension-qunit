@@ -64,13 +64,12 @@
         <version.org.jboss.as>7.1.1.Final</version.org.jboss.as>
         <version.org.jboss.spec>3.0.2.Final</version.org.jboss.spec>
         <version.junit>4.11</version.junit>
-        <version.maven.install.plugin>2.4</version.maven.install.plugin>
     </properties>
    
     <modules>
         <module>arquillian-qunit-api</module>
         <module>arquillian-qunit-impl</module>
-        <!--module>arquillian-qunit-ftest</module-->
+        <module>arquillian-qunit-ftest</module>
     </modules>
 
 </project>
