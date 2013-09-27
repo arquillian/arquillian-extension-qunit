@@ -47,10 +47,10 @@ import org.jboss.shrinkwrap.api.exporter.ExplodedExporter;
 import org.openqa.selenium.htmlunit.HtmlUnitDriver;
 
 /**
- * 
+ *
  * @author Lukas Fryc
  * @author Tolis Emmanouilidis
- * 
+ *
  */
 public final class SuiteReader {
 
@@ -91,6 +91,8 @@ public final class SuiteReader {
         final TestMethod[] qunitTestMethods = suite.getTestMethods();
         if (!ArrayUtils.isEmpty(qunitTestMethods)) {
 
+            // FIXME this might be replaced in future, Drone could handle that
+            //PhantomJSDriver driver = new PhantomJSDriver(DesiredCapabilities.phantomjs());
             HtmlUnitDriver driver = new HtmlUnitDriver(true);
 
             for (TestMethod method : qunitTestMethods) {
