@@ -55,7 +55,7 @@
         <connection>scm:git:git://git@github.com:arquillian/arquillian-extension-qunit.git</connection>
         <developerConnection>scm:git:ssh://github.com/arquillian/arquillian-extension-qunit.git</developerConnection>
         <url>git://github.com/arquillian/arquillian-extension-qunit.git</url>
-      <tag>HEAD</tag>
+        <tag>HEAD</tag>
   </scm>
 
     <issueManagement>
@@ -65,9 +65,9 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <version.org.jboss.arquillian.graphene>2.0.0.Alpha4</version.org.jboss.arquillian.graphene>
+        <version.org.jboss.arquillian.graphene>2.0.0.CR1</version.org.jboss.arquillian.graphene>
         <version.org.jboss.arquillian>1.1.1.Final</version.org.jboss.arquillian>
-        <version.selenium>2.33.0</version.selenium>
+        <version.selenium>2.35.0</version.selenium>
         <version.org.jboss.as>7.1.1.Final</version.org.jboss.as>
         <version.org.jboss.spec>3.0.2.Final</version.org.jboss.spec>
         <version.junit>4.11</version.junit>
