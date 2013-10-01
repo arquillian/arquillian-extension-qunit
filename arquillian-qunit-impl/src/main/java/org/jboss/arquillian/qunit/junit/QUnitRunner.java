@@ -34,15 +34,17 @@ import org.jboss.shrinkwrap.api.Archive;
 import org.junit.internal.builders.AllDefaultPossibilitiesBuilder;
 import org.junit.runner.Description;
 import org.junit.runner.Runner;
+import org.junit.runner.notification.Failure;
+import org.junit.runner.notification.RunListener;
 import org.junit.runner.notification.RunNotifier;
 import org.junit.runners.Suite;
 import org.junit.runners.model.InitializationError;
 
 /**
- *
+ * 
  * @author Lukas Fryc
  * @author Tolis Emmanouilidis
- *
+ * 
  */
 public class QUnitRunner extends Suite {
 
@@ -87,6 +89,8 @@ public class QUnitRunner extends Suite {
     private void executeTests(RunNotifier notifier) throws Throwable {
         QUnitTestNameCounter.getInstance().clear();
 
+        IGNORING_RUN_NOTIFIER.addListener(new FailListener(notifier, this.suiteDescription));
+
         if (this.suite.getDeploymentMethod() != null) {
             QUnitTestCase.setNotifier(notifier);
             QUnitTestCase.setSuite(this.suite);
@@ -99,6 +103,23 @@ public class QUnitRunner extends Suite {
             QUnitTestCaseSimple.setArchive(this.archive);
             QUnitTestCaseSimple.setExpectedTestsBySuiteName(this.expectedTestsBySuiteName);
             new AllDefaultPossibilitiesBuilder(true).runnerForClass(QUnitTestCaseSimple.class).run(IGNORING_RUN_NOTIFIER);
+        }
+    }
+
+    public class FailListener extends RunListener {
+
+        private RunNotifier qunitRunNotifier;
+        private Description suiteDescription;
+
+        public FailListener(RunNotifier qunitRunNotifier, Description suiteDescription) {
+            super();
+            this.qunitRunNotifier = qunitRunNotifier;
+            this.suiteDescription = suiteDescription;
+        }
+
+        @Override
+        public void testFailure(Failure failure) throws Exception {
+            this.qunitRunNotifier.fireTestFailure(new Failure(this.suiteDescription, failure.getException()));
         }
     }
 }
