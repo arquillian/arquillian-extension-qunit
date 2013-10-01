@@ -133,8 +133,8 @@ public class QUnitJUnitReporter {
                 if (qunitTest.isFailed()) {
                     // notify test failure
                     this.getNotifier().fireTestFailure(
-                            new Failure(testDescription, new Exception(
-                                    generateFailedAssertionMessage(qunitTest.getAssertions()))));
+                            new Failure(testDescription, new AssertionError(generateFailedAssertionMessage(qunitTest
+                                    .getAssertions()))));
                 } else {
                     // notify test finished
                     this.getNotifier().fireTestFinished(testDescription);
