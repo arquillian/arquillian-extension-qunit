@@ -33,6 +33,7 @@ import net.sourceforge.htmlunit.corejs.javascript.ConsString;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.logging.LogFactory;
 import org.jboss.arquillian.qunit.api.model.QUnitTest;
 import org.jboss.arquillian.qunit.api.model.TestMethod;
 import org.jboss.arquillian.qunit.api.model.TestSuite;
@@ -55,6 +56,10 @@ import org.openqa.selenium.htmlunit.HtmlUnitDriver;
 public final class SuiteReader {
 
     private static final Logger LOGGER = Logger.getLogger(SuiteReader.class.getName());
+
+    static {
+        LogFactory.getFactory().setAttribute("org.apache.commons.logging.Log", "org.apache.commons.logging.impl.NoOpLog");
+    }
 
     private SuiteReader() {
     }
@@ -92,7 +97,7 @@ public final class SuiteReader {
         if (!ArrayUtils.isEmpty(qunitTestMethods)) {
 
             // FIXME this might be replaced in future, Drone could handle that
-            //PhantomJSDriver driver = new PhantomJSDriver(DesiredCapabilities.phantomjs());
+            // PhantomJSDriver driver = new PhantomJSDriver(DesiredCapabilities.phantomjs());
             HtmlUnitDriver driver = new HtmlUnitDriver(true);
 
             for (TestMethod method : qunitTestMethods) {
@@ -108,7 +113,8 @@ public final class SuiteReader {
                     driver.get(url.toExternalForm());
 
                     @SuppressWarnings("unchecked")
-                    List<ConsString> qunitTestList = (List<ConsString>) driver.executeScript("return window.arquillianQUnitTests");
+                    List<ConsString> qunitTestList = (List<ConsString>) driver
+                            .executeScript("return window.arquillianQUnitTests");
 
                     if (!CollectionUtils.isEmpty(qunitTestList)) {
 
