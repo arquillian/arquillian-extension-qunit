@@ -24,7 +24,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.apache.commons.collections.CollectionUtils;
-import org.jboss.arquillian.graphene.enricher.findby.FindBy;
 import org.jboss.arquillian.graphene.spi.javascript.JavaScript;
 import org.jboss.arquillian.qunit.api.model.QUnitAssertion;
 import org.jboss.arquillian.qunit.api.model.QUnitTest;
@@ -35,12 +34,13 @@ import org.jboss.arquillian.qunit.utils.StringUtilities;
 import org.jboss.arquillian.test.api.ArquillianResource;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.FindBy;
 
 /**
- * 
+ *
  * @author Lukas Fryc
  * @author Tolis Emmanouilidis
- * 
+ *
  */
 public class QUnitSuitePageImpl implements QUnitSuitePage {
 

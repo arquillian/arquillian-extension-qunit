@@ -31,20 +31,23 @@ import org.jboss.arquillian.qunit.junit.model.TestSuiteImpl;
 import org.jboss.arquillian.qunit.junit.utils.DescriptionUtils;
 import org.jboss.arquillian.qunit.junit.utils.QUnitTestNameCounter;
 import org.jboss.shrinkwrap.api.Archive;
+import org.junit.internal.builders.AllDefaultPossibilitiesBuilder;
 import org.junit.runner.Description;
-import org.junit.runner.JUnitCore;
 import org.junit.runner.Runner;
 import org.junit.runner.notification.RunNotifier;
 import org.junit.runners.Suite;
 import org.junit.runners.model.InitializationError;
 
 /**
- * 
+ *
  * @author Lukas Fryc
  * @author Tolis Emmanouilidis
- * 
+ *
  */
 public class QUnitRunner extends Suite {
+
+    // this is used to ignore method that encapsulates test QUnit test execution for method results
+    private static final RunNotifier IGNORING_RUN_NOTIFIER = new RunNotifier();
 
     private TestSuite suite;
 
@@ -68,8 +71,12 @@ public class QUnitRunner extends Suite {
 
     @Override
     public void run(RunNotifier notifier) {
-        JUnitCore core = new JUnitCore();
-        executeTests(core, notifier);
+        try {
+            executeTests(notifier);
+        } catch (Throwable e) {
+            // FIXME ArquillianQunit exception is useless here, because we can' throw it
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
@@ -77,20 +84,21 @@ public class QUnitRunner extends Suite {
         return this.suiteDescription;
     }
 
-    private void executeTests(JUnitCore core, RunNotifier notifier) {
+    private void executeTests(RunNotifier notifier) throws Throwable {
         QUnitTestNameCounter.getInstance().clear();
+
         if (this.suite.getDeploymentMethod() != null) {
             QUnitTestCase.setNotifier(notifier);
             QUnitTestCase.setSuite(this.suite);
             QUnitTestCase.setArchive(this.archive);
             QUnitTestCase.setExpectedTestsBySuiteName(this.expectedTestsBySuiteName);
-            core.run(QUnitTestCase.class);
+            new AllDefaultPossibilitiesBuilder(true).runnerForClass(QUnitTestCase.class).run(IGNORING_RUN_NOTIFIER);
         } else {
             QUnitTestCaseSimple.setNotifier(notifier);
             QUnitTestCaseSimple.setSuite(this.suite);
             QUnitTestCaseSimple.setArchive(this.archive);
             QUnitTestCaseSimple.setExpectedTestsBySuiteName(this.expectedTestsBySuiteName);
-            core.run(QUnitTestCaseSimple.class);
+            new AllDefaultPossibilitiesBuilder(true).runnerForClass(QUnitTestCaseSimple.class).run(IGNORING_RUN_NOTIFIER);
         }
     }
 }
