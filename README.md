@@ -1,9 +1,9 @@
 # Arquillian QUnit
-[Arquillian QUnit](https://github.com/arquillian/arquillian-extension-qunit) is an [Arquillian](http://arquillian.org/) extension which automates QUnit JavaScript unit testing. It integrates transparently with the JUnit testing framework and therefore can be easily used in continuous integration environments.
+[Arquillian QUnit](https://github.com/arquillian/arquillian-extension-qunit) is an [Arquillian](http://arquillian.org/) extension which automates QUnit JavaScript unit testing. It integrates transparently with the JUnit testing framework and can be easily used in continuous integration environments.
 
-Arquillian-Qunit knows the number of QUnit tests that have to be executed before the actual QUnit tests execution. In the case where a Qunit Test Suite gets stuck because of a stuck QUnit test, Arquillian-QUnit marks the stuck test and the rest of QUnit tests which are not executed/reached as failed.
+Arquillian-Qunit identifies the number of QUnit tests that have to be executed before the actual QUnit tests execution. In the case of a stuck QUnit Test Suite, the stuck tests are marked as errored.
 
-For example when executing these [QUnit tests](https://github.com/arquillian/arquillian-extension-qunit/blob/master/arquillian-qunit-ftest/src/test/resources/assets/tests/rest-service/qunit-tests-stuck.html) you will realize that the QUnit Test Suite gets stuck as shown in the below image. Arquillian-QUnit knows that these tests did not finish and marks them as failed.
+For instance, when executing these [QUnit tests](https://github.com/arquillian/arquillian-extension-qunit/blob/master/arquillian-qunit-ftest/src/test/resources/assets/tests/rest-service/qunit-tests-stuck.html), the QUnit Test Suite gets stuck as shown in the below image. Arquillian-QUnit marks the stuck tests as errored.
 
 ![Stuck QUnit Test Suite](https://raw.github.com/tolis-e/readme-images/master/qunit-stuck-test.png)
 
@@ -14,8 +14,8 @@ The execution results will be:
 ![Results](https://raw.github.com/tolis-e/readme-images/master/arquillian-qunit-stuck-tests-report.png)
 
 
-## Execute QUnit tests through IDE
-You can execute the [QUnitRunnerTestCase](https://github.com/arquillian/arquillian-extension-qunit/blob/master/arquillian-qunit-ftest/src/test/java/org/jboss/arquillian/qunit/junit/ftest/QUnitRunnerTestCase.java) through an IDE.
+## Execute QUnit tests through an IDE
+You can execute the [QUnitRunnerTestCase](https://github.com/arquillian/arquillian-extension-qunit/blob/master/arquillian-qunit-ftest/src/test/java/org/jboss/arquillian/qunit/junit/ftest/QUnitRunnerTestCase.java) through your favorite IDE.
 
 The results for the showcase example will be:
 
@@ -48,9 +48,8 @@ The [POM](https://github.com/arquillian/arquillian-extension-qunit/blob/master/a
 
 By default the arq-jboss-managed (managed container) profile is active. An Arquillian managed container is a remote container whose lifecycle is managed by Arquillian. The specific profile is also configured to download and unpack the JBoss Application Server 7.1.1.Final distribution zip from the Maven Central repository.
 
-### Instructions to setup a new test case
+### Instructions to setup a new test class
 
-* Install the Arquillian-QUnit to the local Maven repository
 * Add the Arquillian-QUnit dependency to the POM file:
     
         <dependency>
@@ -58,16 +57,21 @@ By default the arq-jboss-managed (managed container) profile is active. An Arqui
             <artifactId>arquillian-qunit</artifactId>
             <version>${project.version}</version>
         </dependency>
+* Add the `arquillian-junit-container` (whole lifecycle of the container and deployment will be managed by Arquillian) or `arquillian-junit-standalone` dependency.
 
-* Create a new Java Class which will be the test case and configure the below annotations in TYPE/Class level:
-    * `@RunWith(QUnitRunner.class)` — Instructs JUnit to use the QUnitRunner as test controller.
-    * `@QUnitResources("src/test/resources/assets")` — Points to the assets folder where the QUnit HTML Test Files, QUnit JS, JQuery JS reside.
-* In some cases you might want to run your tests against a deployed archive. In such cases add a public static method with the `@Deployment` annotation inside the test case. This method should create the archive which will be deployed on the container.
-* If you would like to execute the QUnit Test Suites without deploying any archive then do not include a method with the `@Deployment` annotation inside your test.
-* Sometimes you might want the QUnit Test Suites and their relevant resources to be packaged, deployed and executed on a container. This can be done by defining a method with the `@Deployment` annotation and returning null `return null;`.
-* Create as many methods inside the test case as the Qunit Test Suites you want to execute. Each method must have the `@QUnitTest()` annotation which points to a QUnit HTML Test file.
-* In method level you can use the `@InSequence()` annotation to define the execution order.
+        <dependency>
+            <groupId>org.jboss.arquillian.junit</groupId>
+            <artifactId>arquillian-junit-container</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jboss.arquillian.junit</groupId>
+            <artifactId>arquillian-junit-standalone</artifactId>
+        </dependency>
+* To create an Arquillian QUnit test class, annotate the test class with the `@RunWith(QUnitRunner.class)` and `@QUnitResources` annotations. The `@QUnitResources` annotation’s value should be the path of the folder which contains all the QUnit resources and dependencies which are required for your QUnit tests execution. For each QUnit Test Suite that you would like to execute, create a method and annotate it with the `@QUnitTest` annotation. The annotation’s value should be the QUnit Test Suite path, relative to the `@QUnitResources` path.
 * Note that each QUnit Test Suite should be completed in a time period of 2 minutes.
+
+
 
 ## Known Limitations
 * The run/execution time printed in the report is not accurate.

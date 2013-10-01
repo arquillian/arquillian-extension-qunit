@@ -93,7 +93,7 @@
         <!-- Arquillian QUnit extension relies on arquillian-junit-container -->
         <dependency>
             <groupId>org.jboss.arquillian.junit</groupId>
-            <artifactId>arquillian-junit-container</artifactId>
+            <artifactId>arquillian-junit-core</artifactId>
         </dependency>
         
         <!-- Starting point for integration Graphene test suites. -->
