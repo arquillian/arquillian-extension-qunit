@@ -24,7 +24,6 @@ import java.util.Map;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.jboss.arquillian.container.test.api.Deployment;
-import org.jboss.arquillian.qunit.api.exceptions.ArquillianQunitException;
 import org.jboss.arquillian.qunit.api.model.DeploymentMethod;
 import org.jboss.arquillian.qunit.api.model.TestMethod;
 import org.jboss.arquillian.qunit.api.model.TestSuite;
@@ -34,10 +33,10 @@ import org.jboss.arquillian.qunit.utils.ReflectionUtilities;
 import org.junit.runner.Description;
 
 /**
- * 
+ *
  * @author Lukas Fryc
  * @author Tolis Emmanouilidis
- * 
+ *
  */
 public class TestSuiteImpl implements TestSuite {
 
@@ -50,10 +49,10 @@ public class TestSuiteImpl implements TestSuite {
     private Class<?> suiteClass;
 
     private String qunitReqourcesPath;
-    
+
     private Map<String, Description> testDescriptions;
 
-    public TestSuiteImpl(Class<?> suite) throws ArquillianQunitException {
+    public TestSuiteImpl(Class<?> suite) {
         this.suiteClass = suite;
         this.validateSuite();
     }
@@ -87,14 +86,14 @@ public class TestSuiteImpl implements TestSuite {
         this.testMethod[index] = m;
     }
 
-    private void validateSuite() throws ArquillianQunitException {
+    private void validateSuite() {
         if (this.suiteClass == null) {
-            throw new ArquillianQunitException("SuiteClass is missing");
+            throw new IllegalStateException("SuiteClass is missing");
         }
         if (this.suiteClass != null) {
             final QUnitResources qunitResources = this.suiteClass.getAnnotation(QUnitResources.class);
             if (qunitResources == null || StringUtils.isEmpty(qunitResources.value())) {
-                throw new ArquillianQunitException("QunitResources annotation is missing");
+                throw new IllegalStateException("QunitResources annotation is missing");
             }
         }
         return;

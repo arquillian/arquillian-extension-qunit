@@ -21,7 +21,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import org.jboss.arquillian.qunit.api.exceptions.ArquillianQunitException;
 import org.jboss.arquillian.qunit.api.model.TestSuite;
 import org.jboss.arquillian.qunit.junit.core.DeploymentPackager;
 import org.jboss.arquillian.qunit.junit.core.QUnitTestCase;
@@ -41,10 +40,10 @@ import org.junit.runners.Suite;
 import org.junit.runners.model.InitializationError;
 
 /**
- * 
+ *
  * @author Lukas Fryc
  * @author Tolis Emmanouilidis
- * 
+ *
  */
 public class QUnitRunner extends Suite {
 
@@ -59,7 +58,7 @@ public class QUnitRunner extends Suite {
 
     private Description suiteDescription;
 
-    public QUnitRunner(Class<?> suiteClass) throws InitializationError, ArquillianQunitException, IOException {
+    public QUnitRunner(Class<?> suiteClass) throws InitializationError, IOException {
         super(suiteClass, new LinkedList<Runner>());
         this.suite = new TestSuiteImpl(suiteClass).build();
         this.archive = DeploymentPackager.getInstance().createPackage(suite);
