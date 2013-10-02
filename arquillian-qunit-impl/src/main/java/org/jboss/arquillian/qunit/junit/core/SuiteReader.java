@@ -48,18 +48,14 @@ import org.jboss.shrinkwrap.api.exporter.ExplodedExporter;
 import org.openqa.selenium.htmlunit.HtmlUnitDriver;
 
 /**
- *
+ * 
  * @author Lukas Fryc
  * @author Tolis Emmanouilidis
- *
+ * 
  */
 public final class SuiteReader {
 
     private static final Logger LOGGER = Logger.getLogger(SuiteReader.class.getName());
-
-    static {
-        LogFactory.getFactory().setAttribute("org.apache.commons.logging.Log", "org.apache.commons.logging.impl.NoOpLog");
-    }
 
     private SuiteReader() {
     }
@@ -99,7 +95,20 @@ public final class SuiteReader {
             // FIXME this might be replaced in future, Drone could handle that
             // PhantomJSDriver driver = new PhantomJSDriver(DesiredCapabilities.phantomjs());
             HtmlUnitDriver driver = new HtmlUnitDriver(true);
+            
+            Level initialLogLevel = null;
+            String initialLogAttribute = null;
+            try {
+                initialLogLevel = Logger.getLogger("com.gargoylesoftware").getLevel();
+                Logger.getLogger("com.gargoylesoftware").setLevel(Level.OFF);
+                // throw HtmlUnit warnings
+                initialLogAttribute = (String) LogFactory.getFactory().getAttribute("org.apache.commons.logging.Log");
+                LogFactory.getFactory().setAttribute("org.apache.commons.logging.Log",
+                        "org.apache.commons.logging.impl.NoOpLog");
+            } catch (Exception ignore) {
 
+            }
+            
             for (TestMethod method : qunitTestMethods) {
                 if (!StringUtils.isEmpty(method.getQUnitTestSuiteFilePath())) {
 
@@ -131,6 +140,15 @@ public final class SuiteReader {
                         }
                     }
                 }
+            }
+
+            try {
+                Logger.getLogger("com.gargoylesoftware").setLevel(initialLogLevel);
+                // throw HtmlUnit warnings
+                initialLogAttribute = (String) LogFactory.getFactory().getAttribute("org.apache.commons.logging.Log");
+                LogFactory.getFactory().setAttribute("org.apache.commons.logging.Log", initialLogAttribute);
+            } catch (Exception ignore) {
+
             }
         }
 
