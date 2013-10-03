@@ -21,15 +21,10 @@ The results for the showcase example will be:
 
 ![Results](https://raw.github.com/tolis-e/readme-images/master/ARQ-QUnit-IDE.png)
 
-## Arquillian-QUnit Installation
-To install it navigate to the arquillian-extension-qunit folder and execute:
-
-    mvn install
-
 ## Arquillian QUnit Functional Test / Showcase
 This project contains the functional test / showcase for the Arquillian-QUnit project. Navigate to the arquillian-qunit-ftest project and execute:
 
-    mvn test
+    mvn test -P arq-jbossas-managed
  
 The Arquillian QUnit Functional Test defines the three core aspects needed for the execution of an [Arquillian](http://arquillian.org/) test case:
 
@@ -46,7 +41,7 @@ The [POM](https://github.com/arquillian/arquillian-extension-qunit/blob/master/a
 * arq-jboss-managed — managed container 
 * arq-jboss-remote — remote container
 
-By default the arq-jboss-managed (managed container) profile is active. An Arquillian managed container is a remote container whose lifecycle is managed by Arquillian. The specific profile is also configured to download and unpack the JBoss Application Server 7.1.1.Final distribution zip from the Maven Central repository.
+An Arquillian managed container is a remote container whose lifecycle is managed by Arquillian. The specific profile is also configured to download and unpack the JBoss Application Server 7.1.1.Final distribution zip from the Maven Central repository.
 
 ### Instructions to setup a new test class
 
