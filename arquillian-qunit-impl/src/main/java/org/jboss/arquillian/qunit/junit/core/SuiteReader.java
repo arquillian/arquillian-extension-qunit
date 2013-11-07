@@ -18,7 +18,6 @@ package org.jboss.arquillian.qunit.junit.core;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -28,12 +27,10 @@ import java.util.Map.Entry;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import net.sourceforge.htmlunit.corejs.javascript.ConsString;
-
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.logging.LogFactory;
+import org.jboss.arquillian.phantom.resolver.ResolvingPhantomJSDriverService;
 import org.jboss.arquillian.qunit.api.model.QUnitTest;
 import org.jboss.arquillian.qunit.api.model.TestMethod;
 import org.jboss.arquillian.qunit.api.model.TestSuite;
@@ -45,13 +42,14 @@ import org.jboss.shrinkwrap.api.ArchivePath;
 import org.jboss.shrinkwrap.api.Filters;
 import org.jboss.shrinkwrap.api.Node;
 import org.jboss.shrinkwrap.api.exporter.ExplodedExporter;
-import org.openqa.selenium.htmlunit.HtmlUnitDriver;
+import org.openqa.selenium.phantomjs.PhantomJSDriver;
+import org.openqa.selenium.remote.DesiredCapabilities;
 
 /**
- * 
+ *
  * @author Lukas Fryc
  * @author Tolis Emmanouilidis
- * 
+ *
  */
 public final class SuiteReader {
 
@@ -85,30 +83,16 @@ public final class SuiteReader {
         return readQUnitSuite(archive, suite);
     }
 
-    private Map<String, List<String>> readQUnitSuite(Archive<?> archive, TestSuite suite) throws MalformedURLException {
+    private Map<String, List<String>> readQUnitSuite(Archive<?> archive, TestSuite suite) throws IOException {
 
         Map<String, List<String>> qunitSuiteNameTestsHM = new LinkedHashMap<String, List<String>>();
 
         final TestMethod[] qunitTestMethods = suite.getTestMethods();
         if (!ArrayUtils.isEmpty(qunitTestMethods)) {
 
-            // FIXME this might be replaced in future, Drone could handle that
-            // PhantomJSDriver driver = new PhantomJSDriver(DesiredCapabilities.phantomjs());
-            HtmlUnitDriver driver = new HtmlUnitDriver(true);
-            
-            Level initialLogLevel = null;
-            String initialLogAttribute = null;
-            try {
-                initialLogLevel = Logger.getLogger("com.gargoylesoftware").getLevel();
-                Logger.getLogger("com.gargoylesoftware").setLevel(Level.OFF);
-                // throw HtmlUnit warnings
-                initialLogAttribute = (String) LogFactory.getFactory().getAttribute("org.apache.commons.logging.Log");
-                LogFactory.getFactory().setAttribute("org.apache.commons.logging.Log",
-                        "org.apache.commons.logging.impl.NoOpLog");
-            } catch (Exception ignore) {
+            PhantomJSDriver driver = new PhantomJSDriver(ResolvingPhantomJSDriverService.createDefaultService(),
+                    DesiredCapabilities.phantomjs());
 
-            }
-            
             for (TestMethod method : qunitTestMethods) {
                 if (!StringUtils.isEmpty(method.getQUnitTestSuiteFilePath())) {
 
@@ -122,14 +106,13 @@ public final class SuiteReader {
                     driver.get(url.toExternalForm());
 
                     @SuppressWarnings("unchecked")
-                    List<ConsString> qunitTestList = (List<ConsString>) driver
-                            .executeScript("return window.arquillianQUnitTests");
+                    List<String> qunitTestList = (List<String>) driver.executeScript("return window.arquillianQUnitTests");
 
                     if (!CollectionUtils.isEmpty(qunitTestList)) {
 
-                        for (ConsString moduleConsString : qunitTestList) {
+                        for (String moduleTestNameStr : qunitTestList) {
 
-                            final String moduleTestNameStr = moduleConsString.toString();
+                            // final String moduleTestNameStr = moduleConsString.toString();
 
                             final int delimiterIndex = moduleTestNameStr.indexOf(QUnitConstants.DELIMITER);
 
@@ -140,15 +123,6 @@ public final class SuiteReader {
                         }
                     }
                 }
-            }
-
-            try {
-                Logger.getLogger("com.gargoylesoftware").setLevel(initialLogLevel);
-                // throw HtmlUnit warnings
-                initialLogAttribute = (String) LogFactory.getFactory().getAttribute("org.apache.commons.logging.Log");
-                LogFactory.getFactory().setAttribute("org.apache.commons.logging.Log", initialLogAttribute);
-            } catch (Exception ignore) {
-
             }
         }
 
