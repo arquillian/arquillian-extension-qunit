@@ -112,7 +112,7 @@ public class QUnitTestImpl implements QUnitTest {
 
     public String getDescriptionName() {
         return (new StringBuilder()).append(StringUtils.trimToEmpty(this.moduleName)).append(QUnitConstants.DELIMITER)
-                .append(StringUtils.trimToEmpty(this.name)).toString();
+                .append(StringUtils.trimToEmpty(this.name)).toString().replaceAll("\\s+", " ");
     }
 
     @Override
