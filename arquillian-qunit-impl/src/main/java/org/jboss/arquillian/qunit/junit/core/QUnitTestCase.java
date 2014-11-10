@@ -18,8 +18,11 @@ package org.jboss.arquillian.qunit.junit.core;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.ServiceLoader;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -32,6 +35,8 @@ import org.jboss.arquillian.graphene.page.Page;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.arquillian.qunit.api.model.TestMethod;
 import org.jboss.arquillian.qunit.api.model.TestSuite;
+import org.jboss.arquillian.qunit.api.plugin.CodeCoverageQUnitTestSuiteHook;
+import org.jboss.arquillian.qunit.api.plugin.CodeCoverageQUnitTestSuitesHook;
 import org.jboss.arquillian.qunit.pages.QUnitSuitePageImpl;
 import org.jboss.arquillian.test.api.ArquillianResource;
 import org.jboss.shrinkwrap.api.Archive;
@@ -81,70 +86,28 @@ public class QUnitTestCase {
         final TestMethod[] qunitTestMethods = suite.getTestMethods();
         if (!ArrayUtils.isEmpty(qunitTestMethods)) {
 
-            for (TestMethod testMethod : qunitTestMethods) {
-                if (!StringUtils.isEmpty(testMethod.getQUnitTestSuiteFilePath())) {
-                    executeQunitTestSuite(testMethod);
-        /** ===code coverage
             List<String> coverageFolders = new ArrayList<String>();
             for (TestMethod testMethod : qunitTestMethods) {
                 if (!StringUtils.isEmpty(testMethod.getQUnitTestSuiteFilePath())) {
                     executeQunitTestSuite(testMethod, coverageFolders);
                 }
             }
-
-            // aggregate results and create lcov and cobertura xml
+            
+            // Aggregate code coverage reports via plugins
             if (coverageFolders.size() > 1) {
-                try {
-                    CommandLine cmdLine = new CommandLine("java");
-                    cmdLine.addArgument("-cp");
-                    cmdLine.addArgument("src/test/resources/jscover/binaries/JSCover-all.jar");
-                    cmdLine.addArgument("jscover.report.Main");
-                    cmdLine.addArgument("--merge");
-                    String[] projectNamePaths = suite.getQUnitResourcesPath().split("/");
-                    String projectName = projectNamePaths[projectNamePaths.length - 1];
-                    for (String coverageFolder : coverageFolders) {
-                        cmdLine.addArgument(coverageFolder);
-                    }
-                    String aggregationFolder = "target/cc/" + projectName + "/aggregation";
-                    cmdLine.addArgument(aggregationFolder);
-                    Executor nexecutor = new DefaultExecutor();
-                    nexecutor.execute(cmdLine);
-
-                    FileUtils.copyDirectory(new File("src/test/resources/jscover/html-reporter"), new File(aggregationFolder));
-                    
-                    // create lcov && cobertura xml
-                    final String originalSrc = aggregationFolder + "/" + "original-src";
-                    cmdLine = new CommandLine("java");
-                    cmdLine.addArgument("-cp");
-                    cmdLine.addArgument("src/test/resources/jscover/binaries/JSCover-all.jar");
-                    cmdLine.addArgument("jscover.report.Main");
-                    cmdLine.addArgument("--format=COBERTURAXML");
-                    cmdLine.addArgument(aggregationFolder);
-                    cmdLine.addArgument(originalSrc);
-                    nexecutor = new DefaultExecutor();
-                    nexecutor.execute(cmdLine);
-                    
-                    cmdLine = new CommandLine("java");
-                    cmdLine.addArgument("-cp");
-                    cmdLine.addArgument("src/test/resources/jscover/binaries/JSCover-all.jar");
-                    cmdLine.addArgument("jscover.report.Main");
-                    cmdLine.addArgument("--format=LCOV");
-                    cmdLine.addArgument(aggregationFolder);
-                    cmdLine.addArgument(originalSrc);
-                    nexecutor = new DefaultExecutor();
-                    nexecutor.execute(cmdLine);
-                } catch (Exception ex) {
-                    LOGGER.log(Level.SEVERE, "Error: coverage aggregation failure: report: ", ex);
-                */
+                ServiceLoader<CodeCoverageQUnitTestSuitesHook> codeCoverageTestSuitesServiceLoader = ServiceLoader.load(CodeCoverageQUnitTestSuitesHook.class);
+                Iterator<CodeCoverageQUnitTestSuitesHook> iterator = codeCoverageTestSuitesServiceLoader.iterator();
+                
+                while(iterator.hasNext()) {
+                    System.out.println("QUnit code coverage aggregation plugin found");
+                    CodeCoverageQUnitTestSuitesHook current = iterator.next();
+                    current.processTestSuitesResults(suite, coverageFolders);
                 }
             }
         }
     }
 
-    private void executeQunitTestSuite(TestMethod testMethod) {
-    /** ===code coverage
     private void executeQunitTestSuite(TestMethod testMethod, List<String> coverageFolders) {
-    */
         try {
             driver.get((new StringBuilder()).append(contextPath.toExternalForm())
                     .append(testMethod.getQUnitTestSuiteFilePath()).toString());
@@ -153,34 +116,16 @@ public class QUnitTestCase {
             // wait until the suite is completed
             qunitPage.waitUntilTestsExecutionIsCompleted();
 
-            /** ===code coverage
-
-            Object o = qunitPage.executeScript("return jscoverage_serializeCoverageToJSON();", null);
-
-            String[] paths = testMethod.getQUnitTestSuiteFilePath().split("/");
-            String fileName = paths[paths.length - 2] + "_"
-                    + paths[paths.length - 1].substring(0, paths[paths.length - 1].indexOf("."));
-            String[] projectNamePaths = suite.getQUnitResourcesPath().split("/");
-            String projectName = projectNamePaths[projectNamePaths.length - 1];
-            String destination = "target/cc/" + projectName + "/" + fileName;
-            File destFolder = new File(destination);
-            destFolder.mkdirs();
-
-            File destFile = new File(destFolder.getAbsolutePath() + "/jscoverage.json");
-            destFile.createNewFile();
-            PrintWriter writer = new PrintWriter(destFile, "UTF-8");
-            writer.println(o.toString());
-            writer.close();
-
-            coverageFolders.add(destination);
-
-            // copy src
-            FileUtils.copyDirectoryToDirectory(new File(suite.getQUnitResourcesPath() + "/original-src"), destFolder);
-
-            // copy html reporter
-            FileUtils.copyDirectory(new File("src/test/resources/jscover/html-reporter"), destFolder);
-
-            */
+            // Generate code coverage reports via plugins
+            ServiceLoader<CodeCoverageQUnitTestSuiteHook> codeCoverageTestSuiteServiceLoader = ServiceLoader.load(CodeCoverageQUnitTestSuiteHook.class);
+            Iterator<CodeCoverageQUnitTestSuiteHook> iterator = codeCoverageTestSuiteServiceLoader.iterator();
+            
+            while(iterator.hasNext()) {
+                System.out.println("QUnit code coverage report plugin found");
+                CodeCoverageQUnitTestSuiteHook current = iterator.next();
+                current.processTestSuiteResults(suite, qunitPage, testMethod.getQUnitTestSuiteFilePath().split("/"), coverageFolders);
+            }
+            
         } catch (Exception ex) {
             LOGGER.log(Level.SEVERE, "Error: executeQunitTestSuite: ", ex);
         } finally {

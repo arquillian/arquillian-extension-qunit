@@ -66,9 +66,9 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <version.org.jboss.arquillian.graphene>2.0.3.Final</version.org.jboss.arquillian.graphene>
+        <version.org.jboss.arquillian.graphene>2.0.3.Final</version.org.jboss.arquillian.graphene> <!-- 2.0.3.Final, 2.0.0.Final -->
         <version.org.jboss.arquillian>1.1.5.Final</version.org.jboss.arquillian>
-        <version.selenium>2.42.0</version.selenium>
+        <version.selenium>2.43.1</version.selenium>
         <version.org.jboss.as>7.1.1.Final</version.org.jboss.as>
         <version.org.jboss.spec>3.0.2.Final</version.org.jboss.spec>
         <version.junit>4.11</version.junit>
