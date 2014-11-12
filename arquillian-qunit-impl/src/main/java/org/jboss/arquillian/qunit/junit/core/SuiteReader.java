@@ -91,9 +91,6 @@ public final class SuiteReader {
         final TestMethod[] qunitTestMethods = suite.getTestMethods();
         if (!ArrayUtils.isEmpty(qunitTestMethods)) {
 
-            //PhantomJSDriver driver = new PhantomJSDriver(ResolvingPhantomJSDriverService.createDefaultService(),
-            //        DesiredCapabilities.phantomjs());
-
             PhantomJSDriverService driverService = (PhantomJSDriverService) ResolvingPhantomJSDriverService
                    .createDefaultService();
             PhantomJSDriver driver = new PhantomJSDriver(driverService, DesiredCapabilities.phantomjs());

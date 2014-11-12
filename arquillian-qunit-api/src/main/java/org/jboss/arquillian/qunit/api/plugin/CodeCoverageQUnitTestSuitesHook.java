@@ -27,12 +27,12 @@ import org.jboss.arquillian.qunit.api.model.TestSuite;
  */
 public interface CodeCoverageQUnitTestSuitesHook {
 
-	/**
-	 * This method gets called after all test suites have been executed
-	 * 
-	 * @param test suite
-	 * @param affected folders
-	 */
+    /**
+     * This method gets called after all test suites have been executed
+     * 
+     * @param test suite
+     * @param affected folders
+     */
     public void processTestSuitesResults(TestSuite suite, List<String> affectedFolders);
     
 }
