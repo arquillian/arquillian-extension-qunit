@@ -99,7 +99,7 @@ public class QUnitTestCase {
                 Iterator<CodeCoverageQUnitTestSuitesHook> iterator = codeCoverageTestSuitesServiceLoader.iterator();
                 
                 while(iterator.hasNext()) {
-                    System.out.println("QUnit code coverage aggregation plugin found");
+                    LOGGER.log(Level.INFO, "QUnit code coverage aggregation plugin found");
                     CodeCoverageQUnitTestSuitesHook current = iterator.next();
                     current.processTestSuitesResults(suite, coverageFolders);
                 }
@@ -121,7 +121,7 @@ public class QUnitTestCase {
             Iterator<CodeCoverageQUnitTestSuiteHook> iterator = codeCoverageTestSuiteServiceLoader.iterator();
             
             while(iterator.hasNext()) {
-                System.out.println("QUnit code coverage report plugin found");
+                LOGGER.log(Level.INFO, "QUnit code coverage report plugin found");
                 CodeCoverageQUnitTestSuiteHook current = iterator.next();
                 current.processTestSuiteResults(suite, qunitPage, testMethod.getQUnitTestSuiteFilePath().split("/"), coverageFolders);
             }
