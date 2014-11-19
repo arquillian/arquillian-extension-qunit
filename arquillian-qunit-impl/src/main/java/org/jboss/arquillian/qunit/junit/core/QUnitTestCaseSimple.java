@@ -18,8 +18,11 @@ package org.jboss.arquillian.qunit.junit.core;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.ServiceLoader;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -31,6 +34,8 @@ import org.jboss.arquillian.graphene.page.Page;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.arquillian.qunit.api.model.TestMethod;
 import org.jboss.arquillian.qunit.api.model.TestSuite;
+import org.jboss.arquillian.qunit.api.plugin.CodeCoverageQUnitTestSuiteHook;
+import org.jboss.arquillian.qunit.api.plugin.CodeCoverageQUnitTestSuitesHook;
 import org.jboss.arquillian.qunit.junit.utils.QUnitConstants;
 import org.jboss.arquillian.qunit.pages.QUnitSuitePageImpl;
 import org.jboss.arquillian.qunit.utils.FileUtilities;
@@ -42,10 +47,10 @@ import org.junit.runner.notification.RunNotifier;
 import org.openqa.selenium.WebDriver;
 
 /**
- *
+ * 
  * @author Lukas Fryc
  * @author Tolis Emmanouilidis
- *
+ * 
  */
 @RunWith(Arquillian.class)
 @RunAsClient
@@ -74,9 +79,23 @@ public class QUnitTestCaseSimple {
 
         final TestMethod[] qunitTestMethods = suite.getTestMethods();
         if (!ArrayUtils.isEmpty(qunitTestMethods)) {
+          
+            List<String> coverageFolders = new ArrayList<String>();
             for (TestMethod testMethod : qunitTestMethods) {
                 if (!StringUtils.isEmpty(testMethod.getQUnitTestSuiteFilePath())) {
-                    executeQunitTestSuite(testMethod, archive);
+                    executeQunitTestSuite(testMethod, archive, coverageFolders);
+                }
+            }
+            
+            // Aggregate code coverage reports via plugins
+            if (coverageFolders.size() > 1) {
+                ServiceLoader<CodeCoverageQUnitTestSuitesHook> codeCoverageTestSuitesServiceLoader = ServiceLoader.load(CodeCoverageQUnitTestSuitesHook.class);
+                Iterator<CodeCoverageQUnitTestSuitesHook> iterator = codeCoverageTestSuitesServiceLoader.iterator();
+                
+                while(iterator.hasNext()) {
+                    LOGGER.log(Level.INFO, "QUnit code coverage aggregation plugin found");
+                    CodeCoverageQUnitTestSuitesHook current = iterator.next();
+                    current.processTestSuitesResults(suite, coverageFolders);
                 }
             }
         }
@@ -96,17 +115,29 @@ public class QUnitTestCaseSimple {
         QUnitTestCaseSimple.archive = archive;
     }
 
-    private void executeQunitTestSuite(TestMethod testMethod, Archive<?> archive) {
-        try {
+    private void executeQunitTestSuite(TestMethod testMethod, Archive<?> archive, List<String> coverageFolders) {
 
+        try {
             final String qunitTestFilePath = (new StringBuilder()).append(QUnitConstants.TMP_FOLDER).append("/")
                     .append(archive.getName()).append("/").append(testMethod.getQUnitTestSuiteFilePath()).toString();
 
             driver.get((new File(qunitTestFilePath).toURI().toURL()).toExternalForm());
-            LOGGER.log(Level.INFO, (new StringBuilder()).append("Waiting for: ").append(testMethod.getQUnitTestSuiteFilePath())
-                    .append(" QUnit Test Suite to finish..").toString());
+
+            LOGGER.log(Level.INFO, "Waiting for: {0}. QUnit Test Suite to finish...", testMethod.getQUnitTestSuiteFilePath());
+            
             // wait until tests are finished
             qunitPage.waitUntilTestsExecutionIsCompleted();
+
+            // Generate code coverage reports via plugins
+            ServiceLoader<CodeCoverageQUnitTestSuiteHook> codeCoverageTestSuiteServiceLoader = ServiceLoader.load(CodeCoverageQUnitTestSuiteHook.class);
+            Iterator<CodeCoverageQUnitTestSuiteHook> iterator = codeCoverageTestSuiteServiceLoader.iterator();
+            
+            while(iterator.hasNext()) {
+                LOGGER.log(Level.INFO, "QUnit code coverage report plugin found");
+                CodeCoverageQUnitTestSuiteHook current = iterator.next();
+                current.processTestSuiteResults(suite, qunitPage, qunitTestFilePath.split("/"), coverageFolders);
+            }
+            
         } catch (Exception ex) {
             LOGGER.log(Level.SEVERE, "Error: executeQunitTestSuite: ", ex);
         } finally {
