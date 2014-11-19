@@ -111,8 +111,9 @@ public class QUnitTestCase {
         try {
             driver.get((new StringBuilder()).append(contextPath.toExternalForm())
                     .append(testMethod.getQUnitTestSuiteFilePath()).toString());
-            LOGGER.log(Level.INFO, (new StringBuilder()).append("Waiting for: ").append(testMethod.getQUnitTestSuiteFilePath())
-                    .append(" QUnit Test Suite to finish..").toString());
+            
+            LOGGER.log(Level.INFO, "Waiting for: {0}. QUnit Test Suite to finish...", testMethod.getQUnitTestSuiteFilePath());
+            
             // wait until the suite is completed
             qunitPage.waitUntilTestsExecutionIsCompleted();
 
