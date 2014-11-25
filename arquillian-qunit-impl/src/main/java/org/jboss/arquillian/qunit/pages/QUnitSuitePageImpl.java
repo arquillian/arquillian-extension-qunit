@@ -63,6 +63,10 @@ public class QUnitSuitePageImpl implements QUnitSuitePage {
         }
     }
 
+    public Object executeScript(String js, Object[] args) {
+        return executor.executeScript(JavaScript.fromString(js).getSourceCode(), args == null ? new Object[0] : args);
+    }
+
     public QUnitTest[] getTests() {
         try {
             executor.executeScript(JavaScript.fromString(RESULTS_READER_JS).getSourceCode(), new Object[0]);

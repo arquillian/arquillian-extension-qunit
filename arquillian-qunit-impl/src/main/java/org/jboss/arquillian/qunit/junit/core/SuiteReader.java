@@ -43,6 +43,7 @@ import org.jboss.shrinkwrap.api.Filters;
 import org.jboss.shrinkwrap.api.Node;
 import org.jboss.shrinkwrap.api.exporter.ExplodedExporter;
 import org.openqa.selenium.phantomjs.PhantomJSDriver;
+import org.openqa.selenium.phantomjs.PhantomJSDriverService;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
 /**
@@ -90,9 +91,10 @@ public final class SuiteReader {
         final TestMethod[] qunitTestMethods = suite.getTestMethods();
         if (!ArrayUtils.isEmpty(qunitTestMethods)) {
 
-            PhantomJSDriver driver = new PhantomJSDriver(ResolvingPhantomJSDriverService.createDefaultService(),
-                    DesiredCapabilities.phantomjs());
-
+            PhantomJSDriverService driverService = (PhantomJSDriverService) ResolvingPhantomJSDriverService
+                   .createDefaultService();
+            PhantomJSDriver driver = new PhantomJSDriver(driverService, DesiredCapabilities.phantomjs());
+            
             for (TestMethod method : qunitTestMethods) {
                 if (!StringUtils.isEmpty(method.getQUnitTestSuiteFilePath())) {
 
