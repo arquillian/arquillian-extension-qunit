@@ -76,3 +76,11 @@ An Arquillian managed container is a remote container whose lifecycle is managed
 
 * [Arquillian Guides](http://arquillian.org/guides/)
 * [Create Deployable Archives with ShrinkWrap](http://arquillian.org/guides/shrinkwrap_introduction/)
+
+## Releasing new version
+
+Run following commands:
+
+    mvn clean release:prepare release:perform
+
+Make sure that you push the tag, close all issues with given version in JIRA and mark version as released.
