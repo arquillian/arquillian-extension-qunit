@@ -22,7 +22,7 @@
   <parent>
     <groupId>org.jboss</groupId>
     <artifactId>jboss-parent</artifactId>
-    <version>11</version>
+    <version>22</version>
   </parent>
 
   <groupId>org.jboss.arquillian.extension</groupId>
@@ -67,16 +67,17 @@
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <version.org.jboss.arquillian.graphene>2.1.0.Alpha1</version.org.jboss.arquillian.graphene>
-    <version.org.jboss.arquillian>1.1.5.Final</version.org.jboss.arquillian>
+    <version.org.jboss.arquillian.graphene>2.1.0.Final</version.org.jboss.arquillian.graphene>
+    <version.org.jboss.arquillian>1.1.13.Final</version.org.jboss.arquillian>
     <version.selenium>2.43.1</version.selenium>
     <version.org.jboss.as>7.1.1.Final</version.org.jboss.as>
     <version.org.jboss.spec>3.0.2.Final</version.org.jboss.spec>
-    <version.junit>4.11</version.junit>
+    <version.junit>4.12</version.junit>
 
     <!-- override from parent -->
-    <maven.compiler.argument.target>1.6</maven.compiler.argument.target>
-    <maven.compiler.argument.source>1.6</maven.compiler.argument.source>
+    <maven.compiler.target>1.6</maven.compiler.target>
+    <maven.compiler.source>1.6</maven.compiler.source>
+    <maven.min.version>3.0.4</maven.min.version>
   </properties>
 
   <build>
