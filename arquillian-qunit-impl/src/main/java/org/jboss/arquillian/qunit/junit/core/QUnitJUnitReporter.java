@@ -1,13 +1,13 @@
 /**
  * JBoss, Home of Professional Open Source
  * Copyright Red Hat, Inc., and individual contributors.
- *
+ * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
+ * <p>
  * http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -45,7 +45,7 @@ public class QUnitJUnitReporter {
     private Map<String, List<String>> expectedTestsBySuiteName;
 
     public QUnitJUnitReporter(TestSuite suite, TestMethod testMethod, RunNotifier notifier, QUnitTest[] qunitTests,
-            Map<String, List<String>> expectedTestsBySuiteName) {
+        Map<String, List<String>> expectedTestsBySuiteName) {
         this.setNotifier(notifier);
         this.setQunitTests(qunitTests);
         this.setTestMethod(testMethod);
@@ -114,7 +114,7 @@ public class QUnitJUnitReporter {
     private void decreaseExpectedTests(String qunitSuiteFilePath, String testDescriptionName) {
         final Map<String, List<String>> expectedTestsMap = this.getExpectedTestsBySuiteName();
         if (expectedTestsMap != null && expectedTestsMap.containsKey(qunitSuiteFilePath)
-                && expectedTestsMap.get(qunitSuiteFilePath).contains(testDescriptionName)) {
+            && expectedTestsMap.get(qunitSuiteFilePath).contains(testDescriptionName)) {
             final int index = expectedTestsMap.get(qunitSuiteFilePath).indexOf(testDescriptionName);
             expectedTestsMap.get(qunitSuiteFilePath).remove(index);
         }
@@ -127,14 +127,14 @@ public class QUnitJUnitReporter {
                 final String qunitTestDescriptionName = qunitTest.getDescriptionName();
                 // unique test description for notifier
                 final Description testDescription = this.getTestSuite().getTestDescriptions()
-                        .get(NamingUtils.createUniqueTestName(qunitTestDescriptionName));
+                    .get(NamingUtils.createUniqueTestName(qunitTestDescriptionName));
                 // notify that test started
                 this.getNotifier().fireTestStarted(testDescription);
                 if (qunitTest.isFailed()) {
                     // notify test failure
                     this.getNotifier().fireTestFailure(
-                            new Failure(testDescription, new AssertionError(generateFailedAssertionMessage(qunitTest
-                                    .getAssertions()))));
+                        new Failure(testDescription, new AssertionError(generateFailedAssertionMessage(qunitTest
+                            .getAssertions()))));
                 } else {
                     // notify test finished
                     this.getNotifier().fireTestFinished(testDescription);
@@ -152,10 +152,10 @@ public class QUnitJUnitReporter {
             final List<String> expectedTests = expectedTestsMap.get(this.getTestMethod().getQUnitTestSuiteFilePath());
             for (String test : expectedTests) {
                 final Description testDescription = this.getTestSuite().getTestDescriptions()
-                        .get(NamingUtils.createUniqueTestName(test));
+                    .get(NamingUtils.createUniqueTestName(test));
                 notifier.fireTestStarted(testDescription);
                 notifier.fireTestFailure(new Failure(testDescription, new Exception(
-                        "QUnit test was not executed or stuck and did not finish within time")));
+                    "QUnit test was not executed or stuck and did not finish within time")));
             }
         }
     }

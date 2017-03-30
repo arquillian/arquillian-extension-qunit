@@ -15,49 +15,50 @@
   See the License for the specific language governing permissions and
   limitations under the License.
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
-    <parent>
-        <groupId>org.jboss.arquillian.extension</groupId>
-        <artifactId>arquillian-qunit-parent</artifactId>
-        <version>1.0.0.Alpha5-SNAPSHOT</version>
-        <relativePath>../pom.xml</relativePath>
-    </parent>
+  <parent>
+    <groupId>org.jboss.arquillian.extension</groupId>
+    <artifactId>arquillian-qunit-parent</artifactId>
+    <version>1.0.0.Alpha5-SNAPSHOT</version>
+    <relativePath>../pom.xml</relativePath>
+  </parent>
 
-    <modelVersion>4.0.0</modelVersion>
-    <artifactId>arquillian-qunit-api</artifactId>
-    <name>Arquillian Extension QUnit: API</name>
-    <url>https://github.com/arquillian/arquillian-extension-qunit</url>
+  <modelVersion>4.0.0</modelVersion>
+  <artifactId>arquillian-qunit-api</artifactId>
+  <name>Arquillian Extension QUnit: API</name>
+  <url>https://github.com/arquillian/arquillian-extension-qunit</url>
 
-    <licenses>
-        <license>
-            <name>Apache License, Version 2.0</name>
-            <distribution>repo</distribution>
-            <url>http://www.apache.org/licenses/LICENSE-2.0.html</url>
-        </license>
-    </licenses>
+  <licenses>
+    <license>
+      <name>Apache License, Version 2.0</name>
+      <distribution>repo</distribution>
+      <url>http://www.apache.org/licenses/LICENSE-2.0.html</url>
+    </license>
+  </licenses>
 
-    <developers>
-        <developer>
-            <name>Lukas Fryc</name>
-            <email>lfryc@redhat.com</email>
-        </developer>
-        <developer>
-            <name>Tolis Emmanouilidis</name>
-            <email>aemmanou@redhat.com</email>
-        </developer>
-    </developers>
+  <developers>
+    <developer>
+      <name>Lukas Fryc</name>
+      <email>lfryc@redhat.com</email>
+    </developer>
+    <developer>
+      <name>Tolis Emmanouilidis</name>
+      <email>aemmanou@redhat.com</email>
+    </developer>
+  </developers>
 
-    <dependencies>
+  <dependencies>
 
-        <!-- JUnit regression testing framework. -->
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>${version.junit}</version>
-            <scope>provided</scope>
-        </dependency>
+    <!-- JUnit regression testing framework. -->
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>${version.junit}</version>
+      <scope>provided</scope>
+    </dependency>
 
-    </dependencies>
+  </dependencies>
 
 </project>

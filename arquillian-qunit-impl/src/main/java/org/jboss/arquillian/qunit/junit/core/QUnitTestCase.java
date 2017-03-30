@@ -1,13 +1,13 @@
 /**
  * JBoss, Home of Professional Open Source
  * Copyright Red Hat, Inc., and individual contributors.
- *
+ * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
+ * <p>
  * http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -46,10 +46,10 @@ import org.junit.runner.notification.RunNotifier;
 import org.openqa.selenium.WebDriver;
 
 /**
- * 
+ *
  * @author Lukas Fryc
  * @author Tolis Emmanouilidis
- * 
+ *
  */
 @RunWith(Arquillian.class)
 @RunAsClient
@@ -92,13 +92,14 @@ public class QUnitTestCase {
                     executeQunitTestSuite(testMethod, coverageFolders);
                 }
             }
-            
+
             // Aggregate code coverage reports via plugins
             if (coverageFolders.size() > 1) {
-                ServiceLoader<CodeCoverageQUnitTestSuitesHook> codeCoverageTestSuitesServiceLoader = ServiceLoader.load(CodeCoverageQUnitTestSuitesHook.class);
+                ServiceLoader<CodeCoverageQUnitTestSuitesHook> codeCoverageTestSuitesServiceLoader =
+                    ServiceLoader.load(CodeCoverageQUnitTestSuitesHook.class);
                 Iterator<CodeCoverageQUnitTestSuitesHook> iterator = codeCoverageTestSuitesServiceLoader.iterator();
-                
-                while(iterator.hasNext()) {
+
+                while (iterator.hasNext()) {
                     LOGGER.log(Level.INFO, "QUnit code coverage aggregation plugin found");
                     CodeCoverageQUnitTestSuitesHook current = iterator.next();
                     current.processTestSuitesResults(suite, coverageFolders);
@@ -110,30 +111,32 @@ public class QUnitTestCase {
     private void executeQunitTestSuite(TestMethod testMethod, List<String> coverageFolders) {
         try {
             driver.get((new StringBuilder()).append(contextPath.toExternalForm())
-                    .append(testMethod.getQUnitTestSuiteFilePath()).toString());
-            
-            LOGGER.log(Level.INFO, "Waiting for: {0}. QUnit Test Suite to finish...", testMethod.getQUnitTestSuiteFilePath());
-            
+                .append(testMethod.getQUnitTestSuiteFilePath()).toString());
+
+            LOGGER.log(Level.INFO, "Waiting for: {0}. QUnit Test Suite to finish...",
+                testMethod.getQUnitTestSuiteFilePath());
+
             // wait until the suite is completed
             qunitPage.waitUntilTestsExecutionIsCompleted();
 
             // Generate code coverage reports via plugins
-            ServiceLoader<CodeCoverageQUnitTestSuiteHook> codeCoverageTestSuiteServiceLoader = ServiceLoader.load(CodeCoverageQUnitTestSuiteHook.class);
+            ServiceLoader<CodeCoverageQUnitTestSuiteHook> codeCoverageTestSuiteServiceLoader =
+                ServiceLoader.load(CodeCoverageQUnitTestSuiteHook.class);
             Iterator<CodeCoverageQUnitTestSuiteHook> iterator = codeCoverageTestSuiteServiceLoader.iterator();
-            
-            while(iterator.hasNext()) {
+
+            while (iterator.hasNext()) {
                 LOGGER.log(Level.INFO, "QUnit code coverage report plugin found");
                 CodeCoverageQUnitTestSuiteHook current = iterator.next();
-                current.processTestSuiteResults(suite, qunitPage, testMethod.getQUnitTestSuiteFilePath().split("/"), coverageFolders);
+                current.processTestSuiteResults(suite, qunitPage, testMethod.getQUnitTestSuiteFilePath().split("/"),
+                    coverageFolders);
             }
-            
         } catch (Exception ex) {
             LOGGER.log(Level.SEVERE, "Error: executeQunitTestSuite: ", ex);
         } finally {
             try {
                 // create reporter
                 QUnitJUnitReporter reporter = new QUnitJUnitReporter(suite, testMethod, notifier, qunitPage.getTests(),
-                        expectedTestsBySuiteName);
+                    expectedTestsBySuiteName);
                 // report
                 reporter.report();
             } catch (Exception ignore) {

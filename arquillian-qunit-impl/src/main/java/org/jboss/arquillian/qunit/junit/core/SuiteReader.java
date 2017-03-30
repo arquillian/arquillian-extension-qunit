@@ -1,13 +1,13 @@
 /**
  * JBoss, Home of Professional Open Source
  * Copyright Red Hat, Inc., and individual contributors.
- *
+ * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
+ * <p>
  * http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -68,14 +68,18 @@ public final class SuiteReader {
     }
 
     private static final String QUNIT_READER = (new StringBuilder())
-            .append("(function(a){if(a.QUnit!==undefined){a.arquillianQUnitTests=a.arquillianQUnitTests||[];if(!String.prototype.trim){String.prototype.trim=function(){return this.replace(/^\\s+|\\s+$/g,\"\")}}a.test=function(b,d,e,c){a.arquillianQUnitTests.push(((QUnit.config.currentModule&&String(QUnit.config.currentModule).trim()!==\"\")?QUnit.config.currentModule:\"\")+\"")
-            .append(QUnitConstants.DELIMITER)
-            .append("\"+((b&&b.trim()!==\"\")?b:\"\"))};a.asyncTest=function(b,c,d){a.arquillianQUnitTests.push(((QUnit.config.currentModule&&String(QUnit.config.currentModule).trim()!==\"\")?QUnit.config.currentModule:\"\")+\"")
-            .append(QUnitConstants.DELIMITER)
-            .append("\"+((b&&b.trim()!==\"\")?b:\"\"))};a.QUnit.test=function(b,d,e,c){a.arquillianQUnitTests.push(((QUnit.config.currentModule&&String(QUnit.config.currentModule).trim()!==\"\")?QUnit.config.currentModule:\"\")+\"")
-            .append(QUnitConstants.DELIMITER)
-            .append("\"+((b&&b.trim()!==\"\")?b:\"\"))};a.QUnit.asyncTest=function(b,c,d){a.arquillianQUnitTests.push(((QUnit.config.currentModule&&String(QUnit.config.currentModule).trim()!==\"\")?QUnit.config.currentModule:\"\")+\"")
-            .append(QUnitConstants.DELIMITER).append("\"+((b&&b.trim()!==\"\")?b:\"\"))}}})(this); \n \n").toString();
+        .append(
+            "(function(a){if(a.QUnit!==undefined){a.arquillianQUnitTests=a.arquillianQUnitTests||[];if(!String.prototype.trim){String.prototype.trim=function(){return this.replace(/^\\s+|\\s+$/g,\"\")}}a.test=function(b,d,e,c){a.arquillianQUnitTests.push(((QUnit.config.currentModule&&String(QUnit.config.currentModule).trim()!==\"\")?QUnit.config.currentModule:\"\")+\"")
+        .append(QUnitConstants.DELIMITER)
+        .append(
+            "\"+((b&&b.trim()!==\"\")?b:\"\"))};a.asyncTest=function(b,c,d){a.arquillianQUnitTests.push(((QUnit.config.currentModule&&String(QUnit.config.currentModule).trim()!==\"\")?QUnit.config.currentModule:\"\")+\"")
+        .append(QUnitConstants.DELIMITER)
+        .append(
+            "\"+((b&&b.trim()!==\"\")?b:\"\"))};a.QUnit.test=function(b,d,e,c){a.arquillianQUnitTests.push(((QUnit.config.currentModule&&String(QUnit.config.currentModule).trim()!==\"\")?QUnit.config.currentModule:\"\")+\"")
+        .append(QUnitConstants.DELIMITER)
+        .append(
+            "\"+((b&&b.trim()!==\"\")?b:\"\"))};a.QUnit.asyncTest=function(b,c,d){a.arquillianQUnitTests.push(((QUnit.config.currentModule&&String(QUnit.config.currentModule).trim()!==\"\")?QUnit.config.currentModule:\"\")+\"")
+        .append(QUnitConstants.DELIMITER).append("\"+((b&&b.trim()!==\"\")?b:\"\"))}}})(this); \n \n").toString();
 
     private static final String JS_PATTERN = "([^\\s]+(\\.(js))$)";
 
@@ -92,23 +96,24 @@ public final class SuiteReader {
         if (!ArrayUtils.isEmpty(qunitTestMethods)) {
 
             PhantomJSDriverService driverService = (PhantomJSDriverService) ResolvingPhantomJSDriverService
-                   .createDefaultService();
+                .createDefaultService();
             PhantomJSDriver driver = new PhantomJSDriver(driverService, DesiredCapabilities.phantomjs());
-            
+
             for (TestMethod method : qunitTestMethods) {
                 if (!StringUtils.isEmpty(method.getQUnitTestSuiteFilePath())) {
 
                     qunitSuiteNameTestsHM.put(method.getQUnitTestSuiteFilePath(), new ArrayList<String>());
 
                     final String qunitTestFilePath = (new StringBuilder()).append(QUnitConstants.TMP_FOLDER).append("/")
-                            .append(archive.getName()).append("/").append(method.getQUnitTestSuiteFilePath()).toString();
+                        .append(archive.getName()).append("/").append(method.getQUnitTestSuiteFilePath()).toString();
 
                     URL url = new File(qunitTestFilePath).toURI().toURL();
 
                     driver.get(url.toExternalForm());
 
                     @SuppressWarnings("unchecked")
-                    List<String> qunitTestList = (List<String>) driver.executeScript("return window.arquillianQUnitTests");
+                    List<String> qunitTestList =
+                        (List<String>) driver.executeScript("return window.arquillianQUnitTests");
 
                     if (!CollectionUtils.isEmpty(qunitTestList)) {
 
@@ -118,8 +123,10 @@ public final class SuiteReader {
 
                             final int delimiterIndex = moduleTestNameStr.indexOf(QUnitConstants.DELIMITER);
 
-                            QUnitTest test = new QUnitTestImpl().setModuleName(moduleTestNameStr.substring(0, delimiterIndex))
-                                    .setName(moduleTestNameStr.substring(delimiterIndex + QUnitConstants.DELIMITER.length()));
+                            QUnitTest test =
+                                new QUnitTestImpl().setModuleName(moduleTestNameStr.substring(0, delimiterIndex))
+                                    .setName(
+                                        moduleTestNameStr.substring(delimiterIndex + QUnitConstants.DELIMITER.length()));
 
                             qunitSuiteNameTestsHM.get(method.getQUnitTestSuiteFilePath()).add(test.getDescriptionName());
                         }
@@ -143,7 +150,7 @@ public final class SuiteReader {
 
         for (Entry<ArchivePath, Node> entry : archive.getContent(Filters.include(JS_PATTERN)).entrySet()) {
             final String jsFilePath = (new StringBuilder()).append(QUnitConstants.TMP_FOLDER).append("/")
-                    .append(archive.getName()).append(entry.getValue()).toString();
+                .append(archive.getName()).append(entry.getValue()).toString();
             final File jsFile = new File(jsFilePath);
             final String initialJsContent = FileUtilities.readFile(jsFilePath);
             jsFile.delete();
@@ -152,5 +159,4 @@ public final class SuiteReader {
             FileUtilities.writeToFile(jsFile, modifiedJsContent);
         }
     }
-
 }

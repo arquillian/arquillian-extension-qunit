@@ -1,13 +1,13 @@
 /**
  * JBoss, Home of Professional Open Source
  * Copyright Red Hat, Inc., and individual contributors.
- *
+ * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
+ * <p>
  * http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -24,7 +24,7 @@ public final class NamingUtils {
     public static String createUniqueTestName(String testName) {
         final int counter = QUnitTestNameCounter.getInstance().getCounter(testName);
         final StringBuilder sb = new StringBuilder().append("module: ").append(
-                testName.replace(QUnitConstants.DELIMITER, " test: "));
+            testName.replace(QUnitConstants.DELIMITER, " test: "));
         if (counter > 0) {
             sb.append(" #").append(counter + 1);
         }
